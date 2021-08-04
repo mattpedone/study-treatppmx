@@ -1,40 +1,32 @@
 library("Rcpp")
-Rcpp::sourceCpp('calcola_dist.cpp')
+Rcpp::sourceCpp("src/calcola_dist.cpp")
 
-set.seed(123)
-X <- matrix(rnorm(40),ncol=4)
-X[,3] <- rbinom(5,p=0.4,1)
-X[,4] <- rbinom(5,p=0.4,1)
+#studio sui dati di Mueller et al. (2011) x articolo RPMx
+alldata <- read.table("data/dtasim.txt")#dimensioni: 1000 x 4
+#head(alldata)
 
-head(X)
-
-dist_r(X,2,2)
-## [1] 42
-
-centroide(X,2,2)
-
-
-
-
-alldata <- read.table("~/Vecchio_Desktop/ESEMPIO_AVIS_DATIPPMX/build/dtasim.txt")
-head(alldata)
-
-Indici <- read.table("~/Vecchio_Desktop/ESEMPIO_AVIS_DATIPPMX/build/indici.txt")
+Indici <- read.table("data/indici.txt") 
+# contiene 100 campioni di label, ciascuno di dimensione 200
+# praticamente ottiene 100 dataset di dimensioni 200 x 4
 
 Indici <- as.matrix(Indici)
 out <- vector(length=100)
+
 for(idx in 1:100){
-data<- alldata[Indici[idx,],]
-n = dim(data)[1]
-p = dim(data)[2]
-X = as.matrix(data[, 2:p])
-out[idx] <- calcola_D_norm(X,1,2);
+ data<- alldata[Indici[idx,],]
+ n = dim(data)[1]
+ p = dim(data)[2]
+ X = as.matrix(data[, 2:p])
+ out[idx] <- calcola_D_norm(X,1,2);
 }
 
+#questa è la distribuzione delle distanze normalizzate dal centroide
 hist(out)
 
+#dai dati di Mueller prende solo 1 continua e 2 binarie
 XX <- as.matrix(alldata[,c(2,3,4)])
 
+#prove (?)
 distanze=dist_r(XX,1,2)
 #plot(distanze$dist)
 calcola_D(XX,1,2);
@@ -44,7 +36,6 @@ calcola_D(XX[-c(1,2),],1,2);
 
 
 Nj <- 2:200
-
 
 Dmeannj <- matrix(nrow=200,ncol=3) 
 Dmeannj[1] <- 0
