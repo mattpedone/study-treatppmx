@@ -152,7 +152,7 @@ HCppCUT<-as.vector(countUT(case2HCppUT));
 NPC <- c(round(mean(HCppCUT), 4), round(sd(HCppCUT), 4))
 resHCpp <- rbind(MOT, MTUg,NPC)
 colnames(resHCpp) <- c("mean", "sd")
-save(resHCpp,file="resHCpp.rda")
+save(resHCpp,file="output/resHCpp.rda")
 
 
 
