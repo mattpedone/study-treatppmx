@@ -1,6 +1,13 @@
 # study-treatppmx
 This repo contains all the scripts and the study needed for treatppmx project
 
+* To obtain different scenarios work on the file `/data-raw/simout.R`
+* To obtain results for Ma et al. (2019) BiomJ, after having generated the data, run 
+  - `/doc/simulations-cov/case2HCpp.R`
+  - `/doc/simulations-cov/case"HCPPSummary.R`
+* To obtain results for our method, after having generated the data, run 
+  - `/doc/simulations-cov/PPMX.R`
+
 ## Structure of the project folder
 
 ### study-treatppmx
