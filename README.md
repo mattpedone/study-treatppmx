@@ -1,13 +1,6 @@
 # study-treatppmx
 This repo contains all the scripts and the study needed for treatppmx project
 
-* To obtain different scenarios work on the file `/data-raw/simout.R`
-* To obtain results for Ma et al. (2019) BiomJ, after having generated the data, run 
-  - `/doc/simulations-cov/case2HCpp.R`
-  - `/doc/simulations-cov/case"HCPPSummary.R`
-* To obtain results for our method, after having generated the data, run 
-  - `/doc/simulations-cov/PPMX.R`
-
 ## Structure of the project folder
 
 ### study-treatppmx
@@ -30,3 +23,15 @@ src is an optional folder for any files you may want to source() in your scripts
 
 #### more (for me)
 https://kdestasio.github.io/post/r_best_practices/
+
+## Simulation Studies 
+
+The files for the simulation studies are in the directory `/doc/simulations-cov`.
+
+* To obtain different scenarios work on the file `/data-raw/simout.R`
+* To obtain results for Ma et al. (2019) BiomJ, after having generated the data, run 
+  - `/doc/simulations-cov/case2HCpp.R`
+  - `/doc/simulations-cov/case"HCPPSummary.R`
+* To obtain results for our method, after having generated the data, run 
+  - `/doc/simulations-cov/PPMX.R`
+
