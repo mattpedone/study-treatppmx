@@ -1,16 +1,13 @@
 #load all rep1.rda.... and rbind them in case2PPMXUT
 
-#case2PPMXUT<-#utpred1APT.all;
+#case2PPMXUT<-#utpredAPT_all;
 my.pick<-1:K;
 wk<-c(0,40,100);
 mywk1<-myprob[[1]]%*%wk;  
-#mywk1 <- mywk1[1:50]
 mywk2<-myprob[[2]]%*%wk;
-#mywk2 <- mywk2[1:50]
 optrt<-as.numeric( mywk2> mywk1)+1; 
-#optrt <- optrt[1:50]
 ut.sum<-sum(abs(mywk2-mywk1));ut.diff<- abs(as.numeric(mywk2- mywk1));
-#HCppcont<- apply(abs((case2PPMXUT[,3, my.pick]-optrt)),1,sum);
+
 #MOT
 PPMXCT<-  apply(abs((case2PPMXUT[,3, my.pick]-optrt)),2,sum) 
 MOT <- c(round(mean(PPMXCT)), round(sd(PPMXCT), 1))

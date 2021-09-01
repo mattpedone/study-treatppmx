@@ -1,7 +1,3 @@
-#rm(list=ls())
-#
-#library(Rcpp)
-#library(RcppArmadillo)
 rm(list=ls())
 load("data/SimuOutsce2.rda")
 library(treatppmx)
@@ -9,13 +5,12 @@ source("src/countUT.R");
 
 K <- 2 #repliche
 npat <- 152
-utpred1APT.all<-array(0,dim=c(npat,9,K))
+predAPT_all<-array(0,dim=c(npat,10,K))
 
-vecadp <- c(1, 2, 10)
 idxsc <- 1
 
 for(k in 1:K){
-  utpred1APT<-matrix(1,nrow= npat,ncol=19);  ### ut1,ut2,trt,cluster
+  predAPT<-matrix(1,nrow= npat,ncol=10);  ### ut1,ut2,trt,cluster
  for(sub in 1:npat){
    X <- data.frame(t(mydata))[, -c(51:92)]#data.frame(mydata)#
    Z <- data.frame(cbind(myx2, myx3))#data.frame(orgx)#
@@ -35,8 +30,7 @@ for(k in 1:K){
    modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(10, ncol(Y))
    modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(10, ncol(Y))
    
-   #alpha_DP <- vecadp[alphadp]
-   n_aux <- 5
+   n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
    vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
    #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
    iterations <- 25000; 
@@ -52,26 +46,18 @@ for(k in 1:K){
                                alphagow = 5, calibration = 2, coardegree = 2,
                                similparam = vec_par, modelpriors, update_hierarchy = T,
                                iter = iterations, burn = burnin, thin = thinning, hsp = T))
-   #risultati[idxsc,9,k] <- as.double(time_ppmx[3])
+   predAPT[sub,10] <- as.double(time_ppmx[3])
    
    #posterior predictive probabilities ----
    A0 <- apply(out_ppmx$ypred, c(1,2,3), mean);#A0
    
-   #treatmente prediction with utility function ----
-   ut1preAPT<-A0[,,1]%*%wk; ut2preAPT<-A0[,,2]%*%wk;
-   utpred1APT[sub,1]<-ut1preAPT;  utpred1APT[sub,2]<-ut2preAPT;
-   if (ut2preAPT>ut1preAPT){utpred1APT[sub,3]=2};
-   utpred1APT[sub,4:6]<- A0[,,1];utpred1APT[sub,7:9]<-A0[,,2];
-   
-   #treatmente prediction with utility function ----
-   optrt <- as.numeric(myprob[[2]][idx,]%*%wk > myprob[[1]][idx,]%*%wk)+1
-   #cat("optrt: ", optrt, "\n")
-   predtrt <- as.numeric(A0[,,2]%*%wk > A0[,,1]%*%wk)+1
-   #cat("predtrt: ", predtrt, "\n")
-   cat("repl: ", k, "sub: ", sub, "pred: ", as.numeric(optrt==predtrt), "\n")
+   #treatment prediction with utility function ----
+   predAPT[sub,1]<-A0[,,1]%*%wk;  predAPT[sub,2]<-A0[,,2]%*%wk;
+   if (predAPT[sub,2]>predAPT[sub,1]){predAPT[sub,3]=2};
+   predAPT[sub,4:6]<- A0[,,1];predAPT[sub,7:9]<-A0[,,2];
+   cat("sample LOOCV: ", sub, "\n")
  }
-  utpred1APT.all[,,k]<-utpred1APT
-  cat("k: ", k, "\n")
+  predAPT_all[,,k]<-predAPT
 }
 
-save(utpred1APT.all, file="rep1.rda")
+save(predAPT_all, file="output/scen50/rep1.rda")
