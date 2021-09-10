@@ -5,7 +5,7 @@ library(parallel)
 library(doParallel)
 source("src/countUT.R");  
 
-K <- 2 #repliche
+K <- 30 #repliche
 npat <- 152
 predAPT_all<-array(0,dim=c(npat,9,K))
 
