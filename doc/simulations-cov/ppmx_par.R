@@ -27,9 +27,9 @@ for(k in 1:K){
   n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
   vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
   #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-  iterations <- 25#000; 
-  burnin <- 5#000; 
-  thinning <- 1
+  iterations <- 50000; 
+  burnin <- 25000; 
+  thinning <- 10
   
   nout <- (iterations-burnin)/thinning
   predAPT <- c()
@@ -40,7 +40,7 @@ for(k in 1:K){
                                 z = data.frame(Z[-sub,]), zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
                                 alpha = 1, CC = n_aux, reuse = 1,
                                 PPMx = 1, similarity = 2, consim = 2,  gowtot = 1,
-                                alphagow = 5, calibration = 2, coardegree = 2,
+                                alphagow = 5, calibration = 2, coardegree = 1,
                                 similparam = vec_par, modelpriors, update_hierarchy = T,
                                 iter = iterations, burn = burnin, thin = thinning, hsp = T)
     #posterior predictive probabilities ----
