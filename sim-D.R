@@ -6,7 +6,7 @@ XX <- t(mydata)[,c(1:10)]
 n <- nrow(XX)
 P <- ncol(XX)
 
-Nj <- 10
+Nj <- 100
 
 Dmeannj <- matrix(nrow = Nj, ncol = 3) 
 Dmeannj[1,] <- 0
@@ -72,7 +72,7 @@ matplot(1:Nj, Dmeannj,type="l")
 matplot(1:Nj, Dmeannjold,type="l")
 matplot(1:Nj, Dmeangow,type="l")
 
-x11()
+#x11()
 
 par(mfrow=c(1,3))
 matplot(apply(Dmeannj,2,diff),type="l")
@@ -80,4 +80,3 @@ abline(h=0)
 matplot(apply(Dmeannjold,2,diff),type="l")
 matplot(apply(Dmeangow,2,diff),type="l")
 abline(h=0)
-
