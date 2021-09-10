@@ -16,7 +16,7 @@ for(k in 1:K){
   cor_all <- parallel::detectCores()-1#cores to be allocated
   registerDoParallel(cores = cor_all)
   
-  X <- data.frame(t(mydata))[, -c(51:92)]#data.frame(mydata)#
+  X <- data.frame(t(mydata))[, -c(11:92)]#data.frame(mydata)#
   Z <- data.frame(cbind(myx2, myx3))#data.frame(orgx)#
   Y <- mytot[,,k]
   
