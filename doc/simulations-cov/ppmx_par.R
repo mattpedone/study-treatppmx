@@ -1,5 +1,6 @@
 rm(list=ls())
-load("data/SimuOutsce2.rda")
+#load("data/SimuOutsce2.rda")
+load("data/SimuOutsce2_noise.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
@@ -16,7 +17,8 @@ for(k in 1:K){
   cor_all <- parallel::detectCores()-1#cores to be allocated
   registerDoParallel(cores = cor_all)
   
-  X <- data.frame(t(mydata))[, -c(11:92)]#data.frame(mydata)#
+  #X <- data.frame(t(mydata))[, -c(11:92)]#data.frame(mydata)#
+  X <- data.frame(noisy_pbm)
   Z <- data.frame(cbind(myx2, myx3))#data.frame(orgx)#
   Y <- mytot[,,k]
   

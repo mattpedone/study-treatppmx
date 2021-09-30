@@ -2,7 +2,8 @@
 ### Date: Feb 12th/2016 
 ### Author: Junsheng Ma
 rm(list=ls())
-load("data/SimuOutsce2.rda")
+#load("data/SimuOutsce2.rda")
+load("data/SimuOutsce2_noise.rda")
 library(ConsensusClusterPlus);
 library("mvtnorm");
 
@@ -13,7 +14,8 @@ prior1 <- c(1/3,1/3,1/3)
 prior2<-c(1/3,1/3,1/3)
 kappa0<-1
 mu0<-c(0,0)
-gene.normAPT<-mydata[1:50,]
+#gene.normAPT<-mydata[1:50,]
+gene.normAPT<-noisy_pbm
 Rapp<-t(rbind(myx2,myx3))
 #Rapp <- Rapp[1:50,]
 trtAPT<-as.numeric(trtsgn)-1
