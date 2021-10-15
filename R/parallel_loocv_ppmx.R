@@ -1,14 +1,12 @@
 rm(list=ls())
-load("data/SimuOutsce2.rda")
-#load("data/SimuOutsce2_noise.rda")
+load("data/modscenario2.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
-source("src/countUT.R");  
 
 K <- 3 #repliche
-npat <- 152
-predAPT_all<-array(0,dim=c(npat,9,K))
+npat <- length(trtsgn)
+predAPT_all <- array(0, dim = c(npat, 9, K))
 
 wk <- c(0, 40, 100)
 
@@ -18,7 +16,7 @@ for(k in 1:K){
   registerDoParallel(cores = cor_all)
   
   #X <- data.frame(t(mydata))[, -c(11:92)]#data.frame(mydata)#
-  X <- data.frame(noisy_pbm)
+  X <- data.frame(mydata)
   Z <- data.frame(cbind(myx2, myx3))#data.frame(orgx)#
   Y <- mytot[,,k]
   
