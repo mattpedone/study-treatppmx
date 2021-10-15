@@ -6,6 +6,7 @@ library(doParallel)
 library(mcclust)
 library(mcclust.ext)
 
+name <- c("NGG_alpha_sigma.RData")
 K <- 10 #repliche
 npat <- length(trtsgn)
 
@@ -120,7 +121,9 @@ resPPMX <- rbind(MOT, MTUg, NPC, WAIC, lpml)
 colnames(resPPMX) <- c("mean", "sd")
 resPPMX
 
-numofclu <- rbind(NC, BI, VI)
-colnames(numofclu) <- c("mean trt 1", "mean trt 2", "sd trt 1", "sd trt 2")
-numofclu
-#save(predAPT_all, file="output/scen50/rep1.rda")
+cluPPMX <- rbind(NC, BI, VI)
+colnames(cluPPMX) <- c("mean trt 1", "mean trt 2", "sd trt 1", "sd trt 2")
+cluPPMX
+
+save(resPPMX, file=paste0("output/tuning_modscenario2/resPPMX", name))
+save(cluPPMX, file=paste0("output/tuning_modscenario2/cluPPMX", name))
