@@ -1,12 +1,12 @@
 rm(list=ls())
-#load("data/SimuOutsce2.rda")
-load("data/SimuOutsce2_noise.rda")
+load("data/SimuOutsce2.rda")
+#load("data/SimuOutsce2_noise.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
 source("src/countUT.R");  
 
-K <- 30 #repliche
+K <- 3 #repliche
 npat <- 152
 predAPT_all<-array(0,dim=c(npat,9,K))
 
@@ -29,9 +29,9 @@ for(k in 1:K){
   n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
   vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
   #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-  iterations <- 50000; 
-  burnin <- 25000; 
-  thinning <- 10
+  iterations <- 10#0000; 
+  burnin <- 1#5000; 
+  thinning <- 1#0
   
   nout <- (iterations-burnin)/thinning
   predAPT <- c()
@@ -41,8 +41,9 @@ for(k in 1:K){
     out_ppmx <- my_dm_ppmx_ct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), Xpred = data.frame(X[sub,]),
                                 z = data.frame(Z[-sub,]), zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
                                 alpha = 1, CC = n_aux, reuse = 1,
-                                PPMx = 1, similarity = 2, consim = 2,  gowtot = 1,
-                                alphagow = 5, calibration = 2, coardegree = 1,
+                                PPMx = 1, similarity = 2, consim = 2,  #gowtot = 1,
+                                #alphagow = 5, 
+                              calibration = 2, coardegree = 1,
                                 similparam = vec_par, modelpriors, update_hierarchy = T,
                                 iter = iterations, burn = burnin, thin = thinning, hsp = T)
     #posterior predictive probabilities ----
