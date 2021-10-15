@@ -6,13 +6,14 @@ library(doParallel)
 library(mcclust)
 library(mcclust.ext)
 
-name <- c("NGG_alpha_sigma.RData")
+name <- c("NGG_alpha_1sigma5.RData")
 K <- 10 #repliche
 npat <- length(trtsgn)
 
 predAPT_all <- array(0, dim = c(npat, 9, K))
 nclust_all <- matrix(0, nrow = K, ncol = 6)
 gof_all <- matrix(0, nrow = K, ncol = 2)
+sellines_all <- vector(mode = "list", length = K)
 
 wk <- c(0, 40, 100)
 
@@ -45,7 +46,7 @@ for(k in 1:K){
     out_ppmx <- tryCatch(expr = my_dm_ppmx_ct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                              PPMx = 1, cohesion = 2, alpha = 1, sigma = 0.2,
+                              PPMx = 1, cohesion = 2, alpha = 1, sigma = 0.5,
                               similarity = 2, consim = 2, similparam = vec_par, 
                               calibration = 2, coardegree = 1, modelpriors, update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
@@ -79,14 +80,15 @@ for(k in 1:K){
   sellines <- which(rowSums(myres) != 0)
   A1 <- myres[sellines, 1:3]%*%wk 
   A2 <- myres[sellines, 4:6]%*%wk
-  predAPT_all[, 1, k] <- A1
-  predAPT_all[, 2, k] <- A2
+  predAPT_all[sellines, 1, k] <- A1
+  predAPT_all[sellines, 2, k] <- A2
   myt <- as.numeric(A1 < A2) + 1
-  predAPT_all[, 3, k] <- myt
-  predAPT_all[, 4:9, k] <- myres[sellines, 1:6]
+  predAPT_all[sellines, 3, k] <- myt
+  predAPT_all[sellines, 4:9, k] <- myres[sellines, 1:6]
   
   nclust_all[k,] <- apply(myres[sellines, 7:12], 2, mean)
   gof_all[k,] <- apply(myres[sellines, 13:14], 2, mean)
+  sellines_all[[k]] <- sellines
 }
 
 mywk1 <- myprob[[1]]%*%wk
@@ -96,15 +98,29 @@ utsum <- sum(abs(mywk2 - mywk1))
 utdiff <- abs(as.numeric(mywk2 - mywk1))
 
 #MOT
-PPMXCT <-  apply(abs(predAPT_all[, 3, 1:K] - optrt), 2, sum)
+for(k in 1:K){
+  subset <- sellines_all[[k]]
+  PPMXCT[k] <-  sum(abs(predAPT_all[subset, 3, k] - optrt[subset]))
+}
+
 MOT <- c(round(mean(PPMXCT), 4), round(sd(PPMXCT), 4))
 
 #MTUg
-PPMXpp <-  -(2*apply(abs((predAPT_all[, 3, 1:K] - optrt)) * utdiff, 2, sum) - utsum);
+for(k in 1:K){
+  subset <- sellines_all[[k]]
+  PPMXpp[k] <- -(2*sum(abs((predAPT_all[subset, 3, k] - optrt[subset])) * utdiff[subset]) - utsum);
+}
+
 MTUg <- c(round(mean(PPMXpp/utsum), 4), round(sd(PPMXpp/utsum), 4))
 
 #NPC
-PPMXCUT<-as.vector(npc(predAPT_all[, 4:9,], trtsgn, myoutot));
+for(k in 1:1){
+  subset <- sellines_all[[k]]
+  temp <- array(0, dim = c(3, 3, 1))
+  temp <- predAPT_all[subset, 4:9,k]
+  PPMXCUT[k] <- (npc(temp, trtsgn[subset], myoutot[subset,]))
+}
+PPMXCUT <- as.vector(npc(predAPT_all[, 4:9,], trtsgn, myoutot));
 NPC <- c(round(mean(PPMXCUT), 4), round(sd(PPMXCUT), 4))
 
 #NCLU
