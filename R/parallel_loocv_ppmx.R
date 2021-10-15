@@ -139,6 +139,7 @@ resPPMX
 
 cluPPMX <- rbind(NC, BI, VI)
 colnames(cluPPMX) <- c("mean trt 1", "mean trt 2", "sd trt 1", "sd trt 2")
+cluPPMX <- cluPPMX[, c(1, 3, 2, 4)]
 cluPPMX
 
 save(resPPMX, file=paste0("output/tuning_modscenario2/resPPMX", name))
