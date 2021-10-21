@@ -3,7 +3,7 @@
 ## Scenarios
 1. 0 prognostiche e 10 predittive (come confronto con Ma et al. 2016, Biometrics dove il modello prevede solo markers predittivi)
 
-2. 2 prognostiche (nella scala originale) e 10 predittive. 
+2. 2 prognostiche (nella scala originale) e 10 predittive. The file is called `scenario2.rda`.
   
   - 2 mod 2 prognostiche (nella scala originale) e 10 predittive. 
     it is stored in `modscenario2.rda`
