@@ -1,12 +1,12 @@
 rm(list=ls())
-load("data/modscenario2.rda")
+load("data/scenario2.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
 library(mcclust)
 library(mcclust.ext)
 
-name <- c("NGG_alpha_1sigma5.RData")
+name <- c("DP_aux_cal_NN.RData")
 K <- 10 #repliche
 npat <- length(trtsgn)
 
@@ -46,9 +46,9 @@ for(k in 1:K){
     out_ppmx <- tryCatch(expr = my_dm_ppmx_ct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                              PPMx = 1, cohesion = 2, alpha = 1, sigma = 0.5,
-                              similarity = 2, consim = 2, similparam = vec_par, 
-                              calibration = 2, coardegree = 1, modelpriors, update_hierarchy = T,
+                              PPMx = 1, cohesion = 1, alpha = 1, sigma = 0.5,
+                              similarity = 1, consim = 1, similparam = vec_par, 
+                              calibration = 1, coardegree = 1, modelpriors, update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
                               mhtunepar = c(0.05, 0.05), CC = n_aux, reuse = 1, nclu_init = 5), error = function(e){FALSE})
     
@@ -76,8 +76,10 @@ for(k in 1:K){
     }
   
   ##treatment prediction with utility function ----
-  cat("errori: ", which(rowSums(myres) == 0), "\n")
-  sellines <- which(rowSums(myres) != 0)
+  #cat("errori: ", which(rowSums(myres) == 0), "\n")
+  myres <- myres[complete.cases(myres),]
+  sellines <- as.vector(which(rowSums(myres) != 0))
+  #sellines <- 1:npat
   A1 <- myres[sellines, 1:3]%*%wk 
   A2 <- myres[sellines, 4:6]%*%wk
   predAPT_all[sellines, 1, k] <- A1
@@ -98,6 +100,7 @@ utsum <- sum(abs(mywk2 - mywk1))
 utdiff <- abs(as.numeric(mywk2 - mywk1))
 
 #MOT
+PPMXCT <- c()
 for(k in 1:K){
   subset <- sellines_all[[k]]
   PPMXCT[k] <-  sum(abs(predAPT_all[subset, 3, k] - optrt[subset]))
@@ -106,6 +109,7 @@ for(k in 1:K){
 MOT <- c(round(mean(PPMXCT), 4), round(sd(PPMXCT), 4))
 
 #MTUg
+PPMXpp <- c()
 for(k in 1:K){
   subset <- sellines_all[[k]]
   PPMXpp[k] <- -(2*sum(abs((predAPT_all[subset, 3, k] - optrt[subset])) * utdiff[subset]) - utsum);
@@ -114,11 +118,12 @@ for(k in 1:K){
 MTUg <- c(round(mean(PPMXpp/utsum), 4), round(sd(PPMXpp/utsum), 4))
 
 #NPC
-for(k in 1:1){
+PPMXCUT <- c()
+for(k in 1:K){
   subset <- sellines_all[[k]]
-  temp <- array(0, dim = c(3, 3, 1))
-  temp <- predAPT_all[subset, 4:9,k]
-  PPMXCUT[k] <- (npc(temp, trtsgn[subset], myoutot[subset,]))
+  temp <- array(0, dim = c(length(subset), 6, 1))
+  temp[,,1] <- predAPT_all[subset, 4:9,k]
+  PPMXCUT[k] <- npc(temp, trtsgn[subset], myoutot[subset,])
 }
 PPMXCUT <- as.vector(npc(predAPT_all[, 4:9,], trtsgn, myoutot));
 NPC <- c(round(mean(PPMXCUT), 4), round(sd(PPMXCUT), 4))
@@ -142,5 +147,5 @@ colnames(cluPPMX) <- c("mean trt 1", "mean trt 2", "sd trt 1", "sd trt 2")
 cluPPMX <- cluPPMX[, c(1, 3, 2, 4)]
 cluPPMX
 
-save(resPPMX, file=paste0("output/tuning_modscenario2/resPPMX", name))
-save(cluPPMX, file=paste0("output/tuning_modscenario2/cluPPMX", name))
+save(resPPMX, file=paste0("output/baysm_scenario2/resPPMX", name))
+save(cluPPMX, file=paste0("output/baysm_scenario2/cluPPMX", name))
