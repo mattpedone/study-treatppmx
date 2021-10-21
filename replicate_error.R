@@ -42,7 +42,7 @@ thinning <- 10
 nout <- (iterations-burnin)/thinning
 predAPT <- c()
 
-sub <- sample(1:152)[1]
+sub <- 42
 
 
 out_ppmx <- my_dm_ppmx_ct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
