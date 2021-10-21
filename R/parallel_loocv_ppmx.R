@@ -1,4 +1,5 @@
 rm(list=ls())
+set.seed(121)
 load("data/scenario2.rda")
 library(treatppmx)
 library(parallel)
