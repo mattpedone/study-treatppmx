@@ -7,14 +7,14 @@ library(doParallel)
 library(mcclust)
 library(mcclust.ext)
 
-name <- c("DP_aux_cal_NN.RData")
+name <- c("nu_aux_cal_NN.RData")
 K <- 10 #repliche
 npat <- length(trtsgn)
 
 predAPT_all <- array(0, dim = c(npat, 9, K))
 nclust_all <- matrix(0, nrow = K, ncol = 6)
 gof_all <- matrix(0, nrow = K, ncol = 2)
-sellines_all <- vector(mode = "list", length = K)
+myres0 <- sellines_all <- vector(mode = "list", length = K)
 
 wk <- c(0, 40, 100)
 
@@ -49,7 +49,7 @@ for(k in 1:K){
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
                               PPMx = 1, cohesion = 1, alpha = 1, sigma = 0.5,
                               similarity = 1, consim = 1, similparam = vec_par, 
-                              calibration = 1, coardegree = 1, modelpriors, update_hierarchy = T,
+                              calibration = 1, coardegree = 1, modelpriors, update_hierarchy = F,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
                               mhtunepar = c(0.05, 0.05), CC = n_aux, reuse = 1, nclu_init = 5), error = function(e){FALSE})
     
@@ -78,6 +78,7 @@ for(k in 1:K){
   
   ##treatment prediction with utility function ----
   #cat("errori: ", which(rowSums(myres) == 0), "\n")
+  myres0[[k]] <- myres
   myres <- myres[complete.cases(myres),]
   sellines <- as.vector(which(rowSums(myres) != 0))
   #sellines <- 1:npat
@@ -148,5 +149,5 @@ colnames(cluPPMX) <- c("mean trt 1", "mean trt 2", "sd trt 1", "sd trt 2")
 cluPPMX <- cluPPMX[, c(1, 3, 2, 4)]
 cluPPMX
 
-save(resPPMX, file=paste0("output/baysm_scenario2/resPPMX", name))
-save(cluPPMX, file=paste0("output/baysm_scenario2/cluPPMX", name))
+save(resPPMX, file=paste0("output/baysm_scenario2/", name))
+save(cluPPMX, file=paste0("output/baysm_scenario2/", name))
