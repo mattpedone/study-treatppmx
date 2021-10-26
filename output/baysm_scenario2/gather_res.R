@@ -30,7 +30,6 @@ noupdate <- rbind(auxcalnn, auxcalnnig, auxcoa1nn, auxcoa1nnig, auxcoa2nn, auxco
 
 #save(noupdate, "output/baysm_scenario2/restabnu.RData")
 
-rm(list=ls())
 load("~/Dropbox/PHD/study-treatppmx/output/baysm_scenario2/res_u_aux_cal_NN.RData")
 auxcalnn <- t(resPPMX)
 load("~/Dropbox/PHD/study-treatppmx/output/baysm_scenario2/res_u_aux_cal_NNIG.RData")
@@ -61,3 +60,7 @@ update <- rbind(auxcalnn, auxcalnnig, auxcoa1nn, auxcoa1nnig, auxcoa2nn, auxcoa2
                   ddcalnn, ddcalnnig, ddcoa1nn, ddcoa1nnig, ddcoa2nn, ddcoa2nnig)
 
 #save(update, "output/baysm_scenario2/restabu.RData")
+
+tab <- cbind(noupdate, update)
+#xtable::xtable(tab, digits = 4)
+
