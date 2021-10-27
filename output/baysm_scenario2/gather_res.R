@@ -62,5 +62,12 @@ update <- rbind(auxcalnn, auxcalnnig, auxcoa1nn, auxcoa1nnig, auxcoa2nn, auxcoa2
 #save(update, "output/baysm_scenario2/restabu.RData")
 
 tab <- cbind(noupdate, update)
+rownames(tab) <- c("auxcalnn", " ", "auxcalnnig", " ", "auxcoa1nn", " ", 
+"auxcoa1nnig", " ", "auxcoa2nn", " ", "auxcoa2nnig", " ", "ddcalnn", " ", 
+"ddcalnnig", " ", "ddcoa1nn", " ", "ddcoa1nnig", " ", "ddcoa2nn", " ", "ddcoa2nnig", " ")
+
 #xtable::xtable(tab, digits = 4)
 
+xtable(tab[-c(1:4, 13:16),c(6:10)])
+
+#xtable::xtable(tab[-c(1:4, 13:16),c(6:10)])
