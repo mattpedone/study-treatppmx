@@ -44,7 +44,7 @@ for(k in 1:K){
   
   myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
     {
-    out_ppmx <- tryCatch(expr = my_dm_ppmx_ct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
+    out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
                               PPMx = 1, cohesion = 1, alpha = 1, sigma = 0.5,
