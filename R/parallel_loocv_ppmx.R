@@ -1,13 +1,13 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenario2.rda")
+load("data/scenario3.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
 library(mcclust)
 library(mcclust.ext)
 
-name <- c("nu_dd_coa2_NNIG.RData")
+name <- c("a1s01.RData")
 K <- 3 #repliche
 npat <- length(trtsgn)
 
@@ -47,9 +47,10 @@ for(k in 1:K){
     out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                              PPMx = 1, cohesion = 1, alpha = 1, sigma = 0.5,
-                              similarity = 2, consim = 2, similparam = vec_par, 
-                              calibration = 2, coardegree = 2, modelpriors, update_hierarchy = F,
+                              PPMx = 1, cohesion = 2, alpha = 1, sigma = 0.01,
+                              similarity = 2, consim = 1, similparam = vec_par, 
+                              calibration = 2, coardegree = 2, modelpriors, 
+                              update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
                               mhtunepar = c(0.05, 0.05), CC = n_aux, reuse = 1, nclu_init = 5), error = function(e){FALSE})
     
@@ -149,5 +150,5 @@ colnames(cluPPMX) <- c("mean trt 1", "mean trt 2", "sd trt 1", "sd trt 2")
 cluPPMX <- cluPPMX[, c(1, 3, 2, 4)]
 cluPPMX
 
-save(resPPMX, file=paste0("output/baysm_scenario2/res_", name))
-save(cluPPMX, file=paste0("output/baysm_scenario2/clu_", name))
+save(resPPMX, file=paste0("output/tuning_scenario3/res_", name))
+save(cluPPMX, file=paste0("output/tuning_scenario3/clu_", name))
