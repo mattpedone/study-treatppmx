@@ -8,7 +8,7 @@ library(vweights)
 library(treatppmx)
 set.seed(121)
 
-K <- 1000
+K <- 10
 nobs <- 50
 
 gendata <- function(n = 1000, pro = c(0.2,0.5,0.3), dim = 3){
@@ -134,3 +134,8 @@ ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
   #ylab(expression(P(C[n] == c)))
   labs(x = expression(c), y = expression(P(C[n] == c)), 
        color = expression(' '))
+
+ggsave("output/prior-ppmx/plot_.pdf")
+
+save(res, file = "output/prior-ppmx/results_.RData")
+
