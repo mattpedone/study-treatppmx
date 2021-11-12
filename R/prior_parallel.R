@@ -42,9 +42,12 @@ X <- gendata(n = nobs, dim = 10)
 #X <- X[,c(1:25)]
 #nobs <- nrow(X)
 
+X <- data.frame(scale(matchRTComp[,16:38]))
+nobs <- nrow(X)
+
 vec_par <- c(0.0, 10.0, .5, 1.0, 2.0, 2.0, 0.1)
 #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-iterations <- 1000; burnin <- 0; thinning <- 1
+iterations <- 100; burnin <- 0; thinning <- 1
 
 beta <- 48.4185; sigma <- .25; theta <- 19.233
 #beta <- 1.0; sigma <- .7553; theta <- 19.233
@@ -135,7 +138,7 @@ ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
   labs(x = expression(c), y = expression(P(C[n] == c)), 
        color = expression(' '))
 
-ggsave("output/prior-ppmx/plot_.pdf")
+#ggsave("output/prior-ppmx/plot_.pdf")
 
-save(res, file = "output/prior-ppmx/results_.RData")
+#save(res, file = "output/prior-ppmx/results_.RData")
 
