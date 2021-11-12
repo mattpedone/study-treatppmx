@@ -13,3 +13,7 @@
 4. 2 prognostiche (nella scala originale) e 25 predittive. Questo è un tentativo per aumentare il numero di marker predittivi.
 
 5. 2 prognostiche (nella scala originale) e 25 predittive, di cui 10 effettivamente usate per generare la risposta e le restanti di rumore. Questo è un tentativo per aumentare il numero di marker predittivi.
+
+## Lower Grade Glioma
+
+* `LGGdata.rda` is the version analysed in BiomJ
