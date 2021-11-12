@@ -44,7 +44,7 @@ thinning <- 10
 nout <- (iterations-burnin)/thinning
 predAPT <- c()
 
-myres <- foreach(sub = 1:100, .combine = rbind) %dopar%
+myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
   {
     out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                                        Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
