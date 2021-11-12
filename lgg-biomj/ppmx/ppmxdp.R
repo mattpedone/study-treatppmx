@@ -37,9 +37,9 @@ modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(10, ncol(Y))
 n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
 vec_par <- c(0.0, 10.0, .5, 1.0, 2.0, 2.0, 0.1)
 #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-iterations <- 150000; 
-burnin <- 75000; 
-thinning <- 10
+iterations <- 15000#0; 
+burnin <- 7500; 
+thinning <- 1
 
 nout <- (iterations-burnin)/thinning
 predAPT <- c()
@@ -49,7 +49,7 @@ myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
     out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                                        Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                                        Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                                       PPMx = 1, cohesion = 1, alpha = 1, sigma = 0.01,
+                                       PPMx = 1, cohesion = 2, alpha = 1, sigma = 0.25,
                                        similarity = 2, consim = 1, similparam = vec_par, 
                                        calibration = 2, coardegree = 2, modelpriors, 
                                        update_hierarchy = T,
@@ -57,6 +57,7 @@ myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
                                        mhtunepar = c(0.05, 0.05), CC = n_aux, reuse = 1, nclu_init = 5), error = function(e){FALSE})
     
     #number of a cluster, mean, binder &varinf ----
+    if(!is.logical(out_ppmx)){
     mc <- apply(out_ppmx$nclu, 1, mean)
     trt <- trtsgn[-sub]
     num_treat <- table(trt)
@@ -75,7 +76,7 @@ myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
     mc_vi <- c(max(mc_vi1$cl), max(mc_vi2$cl))
     
     #posterior predictive probabilities ----
-    A0 <- c(apply(out_ppmx$ypred, c(1,2,3), mean), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml);#A0
+    A0 <- c(apply(out_ppmx$ypred, c(1,2,3), mean), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)}#A0
     ifelse(is.logical(out_ppmx), return(rep(0, 14)), return(A0))
   }
 
@@ -126,8 +127,15 @@ NPC <- npc2(output = temp, trtsgn = trtsgn[sellines], myoutot = Y[sellines,])
 NPC
 
 #ESM
+myy <- c()
+my <- Y[sellines,]
+for (j in 1:nrow(my)) {
+  myy[j] <- match(1, my[j,])
+}
+
 #ho definito come respondent anche i partial responent
-mytab <- cbind(myass = predAPT_all[sellines,3], rndass = trtsgn[sellines], resp = as.numeric(Y[sellines,1]!=1))
+#mytab <- cbind(myass = predAPT_all[sellines,3], rndass = trtsgn[sellines], resp = as.numeric(Y[sellines,1]!=1))
+mytab <- cbind(myass = predAPT_all[sellines,3], rndass = trtsgn[sellines], resp = as.numeric(myy>=2))
 pred1 <- subset(mytab, mytab[,1]==1)
 table1 <- table(pred1[,3],pred1[,2])
 pred2 <- subset(mytab, mytab[,1]==2)
