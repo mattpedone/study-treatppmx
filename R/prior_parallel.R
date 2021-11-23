@@ -49,7 +49,7 @@ vec_par <- c(0.0, 10.0, .5, 1.0, 2.0, 2.0, 0.1)
 #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
 iterations <- 100; burnin <- 0; thinning <- 1
 
-beta <- 48.4185; sigma <- .25; theta <- 19.233
+beta <- 4.4185; sigma <- .25; theta <- 19.233
 #beta <- 1.0; sigma <- .7553; theta <- 19.233
 
 nout <- (iterations-burnin)/thinning
@@ -60,7 +60,7 @@ registerDoParallel(cores = cor_all)
 res_121 <- foreach(sub = 1:K, .combine = rbind) %dopar%
   {
     out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 2, alpha = beta*sigma,
-                                 sigma = sigma, similarity = 1, consim = 1,
+                                 sigma = sigma, similarity = 2, consim = 1,
                                  similparam = vec_par, calibration = 0,
                                  coardegree = 1, iter = iterations, burn = burnin,
                                  thin = thinning, nclu_init = 30)
@@ -69,7 +69,7 @@ res_121 <- foreach(sub = 1:K, .combine = rbind) %dopar%
 res_122 <- foreach(sub = 1:K, .combine = rbind) %dopar%
   {
     out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 2, alpha = beta*sigma,
-                                 sigma = sigma, similarity = 1, consim = 1,
+                                 sigma = sigma, similarity = 2, consim = 1,
                                  similparam = vec_par, calibration = 1,
                                  coardegree = 2, iter = iterations, burn = burnin,
                                  thin = thinning, nclu_init = 30)
@@ -78,7 +78,7 @@ res_122 <- foreach(sub = 1:K, .combine = rbind) %dopar%
 res_221 <- foreach(sub = 1:K, .combine = rbind) %dopar%
   {
     out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 2, alpha = beta*sigma,
-                                 sigma = sigma, similarity = 1, consim = 1,
+                                 sigma = sigma, similarity = 2, consim = 1,
                                  similparam = vec_par, calibration = 2,
                                  coardegree = 1, iter = iterations, burn = burnin,
                                  thin = thinning, nclu_init = 30)
@@ -87,7 +87,7 @@ res_221 <- foreach(sub = 1:K, .combine = rbind) %dopar%
 res_222 <- foreach(sub = 1:K, .combine = rbind) %dopar%
   {
     out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 2, alpha = beta*sigma,
-                                 sigma = sigma, similarity = 1, consim = 1,
+                                 sigma = sigma, similarity = 2, consim = 1,
                                  similparam = vec_par, calibration = 2,
                                  coardegree = 2, iter = iterations, burn = burnin,
                                  thin = thinning, nclu_init = 30)
@@ -111,10 +111,10 @@ res <- t(rbind(apply(res_121/nout, 2, mean), apply(res_122/nout, 2, mean),
 
 res <- (res[which(rowSums(res) != 0),])
 res <- rownames_to_column(as.data.frame(res), var = "cluster")
-newres <- cbind(similarity = c(rep("NGG-aux-nocal", nrow(res)), 
-                               rep("NGG-aux-cal", nrow(res)), 
-                               rep("NGG-aux-coa1", nrow(res)), 
-                               rep("NGG-aux-coa2", nrow(res)), 
+newres <- cbind(similarity = c(rep("NGG-dd-nocal", nrow(res)), 
+                               rep("NGG-dd-cal", nrow(res)), 
+                               rep("NGG-dd-coa1", nrow(res)), 
+                               rep("NGG-dd-coa2", nrow(res)), 
                                rep("DP", nrow(res)), rep("NGG", nrow(res))),
                 cluster = rep(res[,1], 6),
                 freq = c(unlist(res[, c(2:6, 12)])),
