@@ -8,7 +8,7 @@ library(mcclust)
 library(mcclust.ext)
 
 name <- c("a1s01.RData")
-K <- 3 #repliche
+K <- 10 #repliche
 npat <- length(trtsgn)
 
 predAPT_all <- array(0, dim = c(npat, 9, K))
@@ -29,14 +29,14 @@ for(k in 1:K){
   Y <- mytot[,,k]
   
   modelpriors <- list()
-  modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(100, ncol(Y))
-  modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(1, ncol(Y))
+  modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(10, ncol(Y))
+  modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(.1, ncol(Y))
   
   #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
   vec_par <- c(0.0, 10.0, .5, 1.0, 2.0, 2.0, 0.1)
   #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-  iterations <- 15000; 
-  burnin <- 5000; 
+  iterations <- 50000 
+  burnin <- 20000
   thinning <- 10
   
   nout <- (iterations-burnin)/thinning
@@ -47,12 +47,12 @@ for(k in 1:K){
     out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                              PPMx = 1, cohesion = 2, alpha = 1, sigma = 0.25,
+                              PPMx = 1, cohesion = 2, alpha = 10, sigma = 0.25,
                               similarity = 2, consim = 1, similparam = vec_par, 
                               calibration = 2, coardegree = 2, modelpriors, 
                               update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
-                              mhtunepar = c(0.05, 0.05), CC = 5, reuse = 1, nclu_init = 5), error = function(e){FALSE})
+                              mhtunepar = c(0.05, 0.05), CC = 5, reuse = 1, nclu_init = 10), error = function(e){FALSE})
     
     #number of a cluster, mean, binder &varinf ----
     mc <- apply(out_ppmx$nclu, 1, mean)
@@ -73,7 +73,8 @@ for(k in 1:K){
     mc_vi <- c(max(mc_vi1$cl), max(mc_vi2$cl))
     
     #posterior predictive probabilities ----
-    A0 <- c(apply(out_ppmx$ypred, c(1,2,3), mean), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml);#A0
+    #A0 <- c(apply(out_ppmx$ypred, c(1,2,3), mean), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)
+    A0 <- c(apply(out_ppmx$ypred, c(1,2,3), median, na.rm=TRUE), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)
     ifelse(is.logical(out_ppmx), return(rep(0, 14)), return(A0))
     }
   
