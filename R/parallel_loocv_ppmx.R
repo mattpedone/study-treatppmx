@@ -1,6 +1,6 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenario3.rda")
+load("data/scenario4.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
@@ -8,7 +8,7 @@ library(mcclust)
 library(mcclust.ext)
 
 name <- c("a1s01.RData")
-K <- 10 #repliche
+K <- 3 #repliche
 npat <- length(trtsgn)
 
 predAPT_all <- array(0, dim = c(npat, 9, K))
@@ -33,7 +33,7 @@ for(k in 1:K){
   modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(.1, ncol(Y))
   
   #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
-  vec_par <- c(0.0, 10.0, .5, 1.0, 2.0, 2.0, 0.1)
+  vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
   #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
   iterations <- 50000 
   burnin <- 20000
@@ -48,7 +48,7 @@ for(k in 1:K){
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
                               PPMx = 1, cohesion = 2, alpha = 10, sigma = 0.25,
-                              similarity = 2, consim = 1, similparam = vec_par, 
+                              similarity = 2, consim = 2, similparam = vec_par, 
                               calibration = 2, coardegree = 2, modelpriors, 
                               update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
@@ -74,7 +74,7 @@ for(k in 1:K){
     
     #posterior predictive probabilities ----
     #A0 <- c(apply(out_ppmx$ypred, c(1,2,3), mean), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)
-    A0 <- c(apply(out_ppmx$ypred, c(1,2,3), median, na.rm=TRUE), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)
+    A0 <- c(apply(out_ppmx$pipred, c(1,2,3), median, na.rm=TRUE), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)
     ifelse(is.logical(out_ppmx), return(rep(0, 14)), return(A0))
     }
   
