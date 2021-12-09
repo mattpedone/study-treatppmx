@@ -50,8 +50,6 @@ for(idx1 in 1:length(vecsigma)){
   
   nout <- (iterations-burnin)/thinning
   predAPT <- c()
-  kappa <- veckappa[idx1]
-  sig <- vecsigma[idx2]
   
   myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
     {

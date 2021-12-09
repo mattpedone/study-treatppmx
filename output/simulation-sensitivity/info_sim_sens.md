@@ -39,7 +39,7 @@ The structure of this folder is the following:
 
 *** 
 Considering that the parameters of the NGG measure are $NGG(\beta\sigma, \sigma)$, where $\kappa = \beta\times\sigma$, for a better understanding of the behavior of NGG for varying parameters, we will consider the parameter $\beta$. 
-The parameters are set at the following default values: $\beta = 40$, $\sigma = 0.25$, $\Sigma = 10\mathbf{1}$, $S_0 = 10\mathbf{1}$, $\sigma^{2}_{0} = 1$, where $\mathbf{1}$ is $3\times 3$ identity matrix. 
+The parameters are set at the following default values: $\beta = 40$, $\sigma = 0.25$, $\Sigma = 10\mathbf{1}$, $S_0 = 0.1\mathbf{1}$, $\sigma^{2}_{0} = 1$, where $\mathbf{1}$ is $3\times 3$ identity matrix. 
 Keeping all other parameters fixed, the pairs $(\beta, \sigma)$ and $(\Sigma, S_0)$ and the scalar $\sigma^{2}_{0}$ are evaluated over the following grids: 
 
 * $\beta=\{1, 10, 40\}$
@@ -64,7 +64,7 @@ See `R/sens-scripts/ev_nlu_ngg.R` to compute prior expected number of cluster.
 
 ***
 
-In order to obtain the performances in the 18 scenarios six scripts have been employed:
+In order to obtain the performances in the 21 scenarios six scripts have been employed:
 
 * `kappasigma_sd.R` for eveluating parameters $\kappa, \sigma$ in scenarios 1, 2
 * `kappasigma_lgg.R` for eveluating parameters $\kappa, \sigma$ in LGG data

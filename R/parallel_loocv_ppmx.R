@@ -1,14 +1,13 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenario4.rda")
+load("data/scenario1.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
 library(mcclust)
 library(mcclust.ext)
 
-name <- c("a1s01.RData")
-K <- 3 #repliche
+K <- 30 #repliche
 npat <- length(trtsgn)
 
 predAPT_all <- array(0, dim = c(npat, 9, K))
@@ -30,7 +29,7 @@ for(k in 1:K){
   
   modelpriors <- list()
   modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(10, ncol(Y))
-  modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(.1, ncol(Y))
+  modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(1.0, ncol(Y))
   
   #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
   vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
@@ -151,5 +150,8 @@ colnames(cluPPMX) <- c("mean trt 1", "mean trt 2", "sd trt 1", "sd trt 2")
 cluPPMX <- cluPPMX[, c(1, 3, 2, 4)]
 cluPPMX
 
-#save(resPPMX, file=paste0("output/tuning_scenario3/res_", name))
-#save(cluPPMX, file=paste0("output/tuning_scenario3/clu_", name))
+#save(resPPMX, file="output/simulation-scenarios/scen1/res.RData")
+#save(cluPPMX, file="output/simulation-scenarios/scen1/clu.RData")
+#save(MOT, file="output/simulation-scenarios/scen1/mot.RData")
+#save(MTUg, file="output/simulation-scenarios/scen1/mtug.RData")
+#save(NPC, file="output/simulation-scenarios/scen1/npc.RData")
