@@ -21,7 +21,7 @@ gene.normAPT <- t(mydata)
 Rapp<-t(rbind(myz2,myz3)) 
 trtAPT <- as.numeric(trtsgn)-1
 n.mysub <- length(trtAPT)
-nrep <- 2
+nrep <- 30
 
 HC.sum.all<-array(0,dim=c(n.mysub,14,nrep))
 

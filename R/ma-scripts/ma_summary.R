@@ -25,7 +25,7 @@ trtAPT<-as.numeric(trtsgn)-1
 #trtAPT <- trtAPT[1:50]
 n.mysub<-length(trtAPT);
 #trtsgn <- trtsgn[1:50]
-nrep<-2;
+nrep<-30;
 
 utpred1APT.all<-array(0,dim=c(n.mysub,19,nrep))
 
@@ -151,8 +151,13 @@ MTUg <- c(round(mean(HCpp/ut.sum), 4), round(sd(HCpp/ut.sum), 4))
 HCppCUT<-as.vector(countUT(case2HCppUT));
 NPC <- c(round(mean(HCppCUT), 4), round(sd(HCppCUT), 4))
 resHCpp <- rbind(MOT, MTUg,NPC)
-#colnames(resHCpp) <- c("mean", "sd")
-#save(resHCpp,file="output/resHCpp.rda")
 
+colnames(resHCpp) <- c("mean", "sd")
+
+mtug <- HCpp/ut.sum
+save(resHCpp, file="output/simulation-scenarios/scen1/res_ma_hc.rda")
+save(HCppCT, file="output/simulation-scenarios/scen1/mot_ma_hc.rda")
+save(mtug, file="output/simulation-scenarios/scen1/mtug_ma_hc.rda")
+save(HCppCUT, file="output/simulation-scenarios/scen1/npc_ma_hc.rda")
 
 
