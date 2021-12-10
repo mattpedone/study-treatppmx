@@ -150,8 +150,8 @@ colnames(cluPPMX) <- c("mean trt 1", "mean trt 2", "sd trt 1", "sd trt 2")
 cluPPMX <- cluPPMX[, c(1, 3, 2, 4)]
 cluPPMX
 
-#save(resPPMX, file="output/simulation-scenarios/scen1/res.RData")
-#save(cluPPMX, file="output/simulation-scenarios/scen1/clu.RData")
-#save(MOT, file="output/simulation-scenarios/scen1/mot.RData")
-#save(MTUg, file="output/simulation-scenarios/scen1/mtug.RData")
-#save(NPC, file="output/simulation-scenarios/scen1/npc.RData")
+save(resPPMX, file="output/simulation-scenarios/scen1/res.RData")
+save(cluPPMX, file="output/simulation-scenarios/scen1/clu.RData")
+save(PPMXCT, file="output/simulation-scenarios/scen1/mot.RData")
+save(PPMXpp/utsum, file="output/simulation-scenarios/scen1/mtug.RData")
+save(PPMXCUT, file="output/simulation-scenarios/scen1/npc.RData")
