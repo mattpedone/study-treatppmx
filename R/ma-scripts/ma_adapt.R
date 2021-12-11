@@ -63,7 +63,8 @@ for(foldNumber in 1:nrep){
     d=gene.norm;
     rst.hc<-ConsensusClusterPlus(d,maxK=15,reps=500,pItem=0.90,pFeature=1,
                                  #clusterAlg="hc",distance="pearson", 
-                                 clusterAlg="km",distance="euclidean", 
+                                 #clusterAlg="km",distance="euclidean", 
+                                 clusterAlg="pam",distance="manhattan",
                                  seed=126);
     
     myy<-matrix(0,nrow=select.sub.n,ncol=3);
@@ -178,4 +179,8 @@ for(foldNumber in 1:nrep){
   HC.sum.all[,,foldNumber] <- HC.sum
 }
 
+<<<<<<< HEAD
 save(HC.sum.all, file="output/res_ma_km_scen1.rda")
+=======
+save(HC.sum.all, file="output/res_ma_pam_scen1.rda")
+>>>>>>> 3d842e3582a83462e29b859700aa37ca685bd9a2
