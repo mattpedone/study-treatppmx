@@ -8,8 +8,8 @@ rm(list=ls()); set.seed(123456);
 library("gtools");  library("xtable"); library("mvtnorm");
 library("glmnetcr");library(ConsensusClusterPlus);
 
-load("data/scenario1.rda");     
-load("output/res_ma_pam_scen1.rda");  
+load("data/scenario2.rda");     
+load("output/res_ma_hc_scen2.rda");  
 
 source("src/countUT.R");  
 ################################ setup Parameters ########################################
@@ -158,9 +158,9 @@ resHCpp <- rbind(MOT, MTUg,NPC)
 colnames(resHCpp) <- c("mean", "sd")
 
 mtug <- HCpp/ut.sum
-save(resHCpp, file="output/simulation-scenarios/scen1/res_ma_pam.rda")
-save(HCppCT, file="output/simulation-scenarios/scen1/mot_ma_pam.rda")
-save(mtug, file="output/simulation-scenarios/scen1/mtug_ma_pam.rda")
-save(HCppCUT, file="output/simulation-scenarios/scen1/npc_ma_pam.rda")
+save(resHCpp, file="output/simulation-scenarios/scen2/res_ma_hc.rda")
+save(HCppCT, file="output/simulation-scenarios/scen2/mot_ma_hc.rda")
+save(mtug, file="output/simulation-scenarios/scen2/mtug_ma_hc.rda")
+save(HCppCUT, file="output/simulation-scenarios/scen2/npc_ma_hc.rda")
 
 
