@@ -5,7 +5,7 @@
 #############################################################################################
 rm(list=ls())
 set.seed(101027)
-load("data/scenario1.rda")
+load("data/scenario3.rda")
 
 library(ConsensusClusterPlus); 
 library("mvtnorm");
@@ -21,7 +21,7 @@ gene.normAPT <- t(mydata)
 Rapp<-t(rbind(myz2,myz3)) 
 trtAPT <- as.numeric(trtsgn)-1
 n.mysub <- length(trtAPT)
-nrep <- 2
+nrep <- 30
 
 HC.sum.all<-array(0,dim=c(n.mysub,14,nrep))
 
@@ -62,7 +62,10 @@ for(foldNumber in 1:nrep){
     ### clustering using CONSENSUS MATRIX method ###################################
     d=gene.norm;
     rst.hc<-ConsensusClusterPlus(d,maxK=15,reps=500,pItem=0.90,pFeature=1,
-                                 clusterAlg="hc",distance="pearson",seed=126);
+                                 clusterAlg="hc",distance="pearson", 
+                                 #clusterAlg="km",distance="euclidean", 
+                                 #clusterAlg="pam",distance="manhattan",
+                                 seed=126);
     
     myy<-matrix(0,nrow=select.sub.n,ncol=3);
     for (j in 1:select.sub.n){myy[j,outcom[j]+1]=1}
@@ -176,4 +179,5 @@ for(foldNumber in 1:nrep){
   HC.sum.all[,,foldNumber] <- HC.sum
 }
 
-save(HC.sum.all, file="output/res_ma_hc_scen1.rda")
+save(HC.sum.all, file="output/res_ma_hc_scen3.rda")
+
