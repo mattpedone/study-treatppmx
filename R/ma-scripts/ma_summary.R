@@ -8,8 +8,8 @@ rm(list=ls()); set.seed(123456);
 library("gtools");  library("xtable"); library("mvtnorm");
 library("glmnetcr");library(ConsensusClusterPlus);
 
-load("data/scenario1.rda");     
-load("output/res_ma_pam_scen1.rda");  
+load("data/scenario3.rda");     
+load("output/res_ma_hc_scen3.rda");  
 
 source("src/countUT.R");  
 ################################ setup Parameters ########################################
@@ -32,9 +32,9 @@ utpred1APT.all<-array(0,dim=c(n.mysub,19,nrep))
 ### clustering using CONSENSUS MATRIX method ###################################
 
 rst.hc<-ConsensusClusterPlus(gene.normAPT,maxK=15,reps=500,pItem=0.90,pFeature=1,
-                             #clusterAlg="hc",distance="pearson", 
+                             clusterAlg="hc",distance="pearson", 
                              #clusterAlg="km",distance="euclidean", 
-                             clusterAlg="pam",distance="manhattan", 
+                             #clusterAlg="pam",distance="manhattan", 
                              seed=126);
 
 ############Analyze the 100 replications ####################################;
@@ -158,9 +158,9 @@ resHCpp <- rbind(MOT, MTUg,NPC)
 colnames(resHCpp) <- c("mean", "sd")
 
 mtug <- HCpp/ut.sum
-save(resHCpp, file="output/simulation-scenarios/scen1/res_ma_pam.rda")
-save(HCppCT, file="output/simulation-scenarios/scen1/mot_ma_pam.rda")
-save(mtug, file="output/simulation-scenarios/scen1/mtug_ma_pam.rda")
-save(HCppCUT, file="output/simulation-scenarios/scen1/npc_ma_pam.rda")
+save(resHCpp, file="output/simulation-scenarios/scen3/res_ma_hc.rda")
+save(HCppCT, file="output/simulation-scenarios/scen3/mot_ma_hc.rda")
+save(mtug, file="output/simulation-scenarios/scen3/mtug_ma_hc.rda")
+save(HCppCUT, file="output/simulation-scenarios/scen3/npc_ma_hc.rda")
 
 
