@@ -32,9 +32,9 @@ utpred1APT.all<-array(0,dim=c(n.mysub,19,nrep))
 ### clustering using CONSENSUS MATRIX method ###################################
 
 rst.hc<-ConsensusClusterPlus(gene.normAPT,maxK=15,reps=500,pItem=0.90,pFeature=1,
-                             #clusterAlg="hc",distance="pearson", 
+                             clusterAlg="hc",distance="pearson", 
                              #clusterAlg="km",distance="euclidean", 
-                             clusterAlg="pam",distance="manhattan", 
+                             #clusterAlg="pam",distance="manhattan", 
                              seed=126);
 
 ############Analyze the 100 replications ####################################;
