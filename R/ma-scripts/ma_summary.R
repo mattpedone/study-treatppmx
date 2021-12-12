@@ -143,7 +143,7 @@ ut.sum<-sum(abs(mywk2-mywk1));ut.diff<- abs(as.numeric(mywk2- mywk1));
 HCppcont<- apply(abs((case2HCppUT[,3, my.pick]-optrt)),1,sum);
 #MOT
 HCppCT<-  apply(abs((case2HCppUT[,3, my.pick]-optrt)),2,sum) 
-MOT <- c(round(mean(HCppCT)), round(sd(HCppCT), 1))
+MOT <- c(round(mean(HCppCT), 4), round(sd(HCppCT), 1))
 
 #MTUg
 #MTUg<-cbind(MTU=round(apply(my.result,2,mean)/ut.sum,4),
