@@ -5,7 +5,7 @@
 #############################################################################################
 rm(list=ls())
 set.seed(101027)
-load("data/scenario1.rda")
+load("data/scenario2.rda")
 
 library(ConsensusClusterPlus); 
 library("mvtnorm");
@@ -179,8 +179,4 @@ for(foldNumber in 1:nrep){
   HC.sum.all[,,foldNumber] <- HC.sum
 }
 
-<<<<<<< HEAD
-save(HC.sum.all, file="output/res_ma_km_scen1.rda")
-=======
-save(HC.sum.all, file="output/res_ma_pam_scen1.rda")
->>>>>>> 3d842e3582a83462e29b859700aa37ca685bd9a2
+save(HC.sum.all, file="output/res_ma_pam_scen2.rda")
