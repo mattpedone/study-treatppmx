@@ -5,6 +5,7 @@
 #############################################################################################
 rm(list=ls())
 set.seed(101027)
+
 load("data/scenario2.rda")
 
 library(ConsensusClusterPlus); 
@@ -62,9 +63,9 @@ for(foldNumber in 1:nrep){
     ### clustering using CONSENSUS MATRIX method ###################################
     d=gene.norm;
     rst.hc<-ConsensusClusterPlus(d,maxK=15,reps=500,pItem=0.90,pFeature=1,
-                                 #clusterAlg="hc",distance="pearson", 
+                                 clusterAlg="hc",distance="pearson", 
                                  #clusterAlg="km",distance="euclidean", 
-                                 clusterAlg="pam",distance="manhattan",
+                                 #clusterAlg="pam",distance="manhattan",
                                  seed=126);
     
     myy<-matrix(0,nrow=select.sub.n,ncol=3);
@@ -180,3 +181,4 @@ for(foldNumber in 1:nrep){
 }
 
 save(HC.sum.all, file="output/res_ma_pam_scen2.rda")
+
