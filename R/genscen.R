@@ -24,3 +24,7 @@ treatppmx::genmech(npred = 10, progscen = 2, predscen = 2, nnoise = 15,
 # Scenario 5
 treatppmx::genmech(npred = 10, progscen = 2, predscen = 2, nnoise = 40, 
                    nset = 30, save = T, filename = "scenario5")
+
+# Scenario 6
+treatppmx::genmech(npred = 20, progscen = 2, predscen = 2, nnoise = 80, 
+                   nset = 30, save = T, filename = "scenario6")

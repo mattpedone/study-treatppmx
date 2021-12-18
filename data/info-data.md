@@ -16,6 +16,9 @@ It is stored in `scenario4.rda`
 5. 2 prognostic (with power trasformation) and 50 predictive markers. Among the predictive markers 10 are employed to generate the response and 40 are noise.
 It is stored in `scenario5.rda`
 
+6. 2 prognostic (with power trasformation) and 100 predictive markers. Among the predictive markers 20 are employed to generate the response and 80 are noise.
+It is stored in `scenario6.rda`
+
 ## Lower Grade Glioma
 
 * `LGGdata.rda` is the version analysed in BiomJ
