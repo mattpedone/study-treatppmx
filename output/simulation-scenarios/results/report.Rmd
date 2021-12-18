@@ -1,0 +1,51 @@
+---
+title: "Simulations"
+author: "Matt"
+date: "16/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(kableExtra)
+
+load("scen1.RData")
+load("scen2.RData")
+load("scen3.RData")
+load("scen4.RData")
+load("scen5.RData")
+```
+
+# Scenari
+
+```{r, echo = FALSE}
+scen1 %>%
+  kbl(caption = "Scenario 1: 2 prognostiche 10 predittive", table.attr = "style='width:50%;'") %>%
+  kable_classic(html_font = "Cambria")
+```
+
+```{r, echo = FALSE}
+scen2 %>%
+  kbl(caption = "Scenario 2: 2 prognostiche 25 predittive", table.attr = "style='width:50%;'") %>%
+  kable_classic(html_font = "Cambria")
+```
+
+```{r, echo = FALSE}
+scen3 %>%
+  kbl(caption = "Scenario 3: 2 prognostiche 50 predittive", table.attr = "style='width:50%;'") %>%
+  kable_classic(html_font = "Cambria")
+```
+
+```{r, echo = FALSE}
+scen4 %>%
+  kbl(caption = "Scenario 4: 2 prognostiche 25 predittive. Delle predittive solo 10 sono usate per generare la risposta.", table.attr = "style='width:50%;'") %>%
+  kable_classic(html_font = "Cambria")
+```
+
+```{r, echo = FALSE}
+scen5 %>%
+  kbl(caption = "Scenario 5: 2 prognostiche 25 predittive. Delle predittive solo 10 sono usate per generare la risposta.", table.attr = "style='width:50%;'") %>%
+  kable_classic(html_font = "Cambria")
+```
+
+

@@ -6,11 +6,14 @@
 rm(list=ls())
 set.seed(101027)
 
-load("data/scenario2.rda")
+load("data/scenario1.rda")
 
 library(ConsensusClusterPlus); 
 library("mvtnorm");
 
+################################ Functions ########################################
+
+#################################################################################
 #### function for covariates## for calculation of the density;
 mymultt<-function(Xtrain,X.pred){
   myln<-length(Xtrain[,1]);  myls<-Xtrain;
@@ -28,6 +31,7 @@ mymultt<-function(Xtrain,X.pred){
   lambdn<-lambda0+myS+kappa0*myln/(kappa0+myln)*(mylmu-mu0)%*%t(mylmu-mu0);
   return2<-dmvt(x=X.pred,sigma=(kappan+1)*lambdn/(kappan*(nun-myd+1)),df=nun-myd+1,log=FALSE);
 }
+
 con.cluster<-function(cons){ 
   mycons1<-cons;
   utpred1<-matrix(1,nrow=select.sub.n,ncol=12);  ### ut1,ut2,trt
@@ -72,6 +76,7 @@ con.cluster<-function(cons){
   }
   return<-utpred1;
 }
+
 PreUt<-function(mth){
   ########################################################################################
   ####trt equal 1 nontargeted; 2 targeted#################################################
@@ -97,7 +102,6 @@ PreUt<-function(mth){
   #### summary meaures
   return<-crt1*p1+crt2*p2-sum(out.response)/length(out.response);
 }
-
 ################################ setup Parameters ########################################
 
 wk <- c(0,40,100)
@@ -106,12 +110,15 @@ prior2 <- c(1/3,1/3,1/3)
 kappa0 <- 1
 mu0 <- c(0,0)
 gene.normAPT <- t(mydata)
-Rapp<-t(rbind(myz2,myz3)) 
+gene.normAPT <- gene.normAPT[,1:100]
+Rapp<-t(rbind(myz2,myz3))
+Rapp <- Rapp[1:100,]
 trtAPT <- as.numeric(trtsgn)-1
-n.mysub <- length(trtAPT)
-nrep <- 30
+trtAPT[1:100]
+n <- length(trtAPT)
+nrep <- 2#30
 
-HC.sum.all<-array(0,dim=c(n.mysub,14,nrep))
+HC.sum.all<-array(0,dim=c(n,14,nrep))
 
 ## define a function that could be used 
 ###################################################################################
@@ -120,14 +127,14 @@ for(foldNumber in 1:nrep){
   myrep<-foldNumber;
   myseed<-123*myrep;       set.seed(myseed);
   outcomAPT<-as.numeric(myoutot[,foldNumber])-1;
-  HC.sum<-matrix(0,nrow=n.mysub,ncol=14);
+  HC.sum<-matrix(0,nrow=100,ncol=14);
   
-  for (mysub in 1:n.mysub){
-    gene.norm<-gene.normAPT[,-mysub];
-    trt<-trtAPT[-mysub];
-    outcom<-outcomAPT[-mysub];
+  #for (mysub in 1:n){
+    gene.norm<-gene.normAPT[,1:100];
+    trt<-trtAPT[1:100];
+    outcom<-outcomAPT[1:100];
     select.sub.n<-length(outcom);
-    myRapp<-Rapp[-mysub,];
+    myRapp<-Rapp[1:100,];
     
     #################################################################################        
     ### clustering using CONSENSUS MATRIX method ###################################
@@ -162,11 +169,11 @@ for(foldNumber in 1:nrep){
     out.response<-as.numeric(outcom>1);
     SUB.ID<-c(1:select.sub.n)
     ########################################################################################
-    HC.sum[mysub,]<-c(PreUt(hc2),PreUt(hc3),PreUt(hc4),PreUt(hc5),PreUt(hc6),
+    HC.sum<-c(PreUt(hc2),PreUt(hc3),PreUt(hc4),PreUt(hc5),PreUt(hc6),
                       PreUt(hc7),PreUt(hc8),PreUt(hc9),PreUt(hc10),PreUt(hc11),PreUt(hc12),
                       PreUt(hc13),PreUt(hc14),PreUt(hc15));
     
-  }
+  #}
   ########################################################################################
   myresult2<- HC.sum;
   
@@ -177,5 +184,5 @@ for(foldNumber in 1:nrep){
   HC.sum.all[,,foldNumber] <- HC.sum
 }
 
-save(HC.sum.all, file="output/res_ma_pam_scen2.rda")
+save(HC.sum.all, file="R/ma-scripts/test.RData")
 
