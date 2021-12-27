@@ -208,6 +208,6 @@ npc3 <- ggplot(df, aes(x=method, y=npc, fill=method)) +
   theme(legend.position="none") +
   scale_fill_brewer(palette="Accent") 
 
+p <- gridExtra::grid.arrange(mot1, mot2, mot3, mtug1, mtug2, mtug3, npc1, npc2, npc3, nrow = 3)
 
-gridExtra::grid.arrange(mot1, mot2, mot3, mtug1, mtug2, mtug3, npc1, npc2, npc3, nrow = 3)
-
+ggsave(p, filename = "figs/bp_sim_scen_13.png",  bg = "transparent")
