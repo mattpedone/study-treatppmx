@@ -5,13 +5,13 @@ library(reshape2)
 library(dplyr)
 library(tibble)
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/mot_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/mot_ma_pam.rda"))
 pam <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/mot_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/mot_ma_km.rda")
 km <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/mot_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/mot_ma_hc.rda")
 hc <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/mot.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/mot.RData")
 ppmx <- PPMXCT
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -28,13 +28,13 @@ mot1 <- ggplot(df, aes(x=method, y=mot, fill=method)) +
   ggtitle("Scenario 1") + 
   scale_fill_brewer(palette="Accent") 
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/mot_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/mot_ma_pam.rda"))
 pam <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/mot_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/mot_ma_km.rda")
 km <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/mot_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/mot_ma_hc.rda")
 hc <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/mot.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/mot.RData")
 ppmx <- PPMXCT
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -51,13 +51,13 @@ mot2 <- ggplot(df, aes(x=method, y=mot, fill=method)) +
   ggtitle("Scenario 2") + 
   scale_fill_brewer(palette="Accent") 
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/mot_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/mot_ma_pam.rda"))
 pam <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/mot_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/mot_ma_km.rda")
 km <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/mot_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/mot_ma_hc.rda")
 hc <- HCppCT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/mot.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/mot.RData")
 ppmx <- PPMXCT
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -75,13 +75,13 @@ mot3 <- ggplot(df, aes(x=method, y=mot, fill=method)) +
   scale_fill_brewer(palette="Accent") 
 
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/mtug_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/mtug_ma_pam.rda"))
 pam <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/mtug_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/mtug_ma_km.rda")
 km <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/mtug_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/mtug_ma_hc.rda")
 hc <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/mtug.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/mtug.RData")
 ppmx <- PPMXpp
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -97,13 +97,13 @@ mtug1 <- ggplot(df, aes(x=method, y=mtug, fill=method)) +
   theme(legend.position="none") +
   scale_fill_brewer(palette="Accent") 
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/mtug_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/mtug_ma_pam.rda"))
 pam <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/mtug_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/mtug_ma_km.rda")
 km <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/mtug_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/mtug_ma_hc.rda")
 hc <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/mtug.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/mtug.RData")
 ppmx <- PPMXpp
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -119,13 +119,13 @@ mtug2 <- ggplot(df, aes(x=method, y=mtug, fill=method)) +
   theme(legend.position="none") +
   scale_fill_brewer(palette="Accent") 
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/mtug_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/mtug_ma_pam.rda"))
 pam <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/mtug_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/mtug_ma_km.rda")
 km <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/mtug_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/mtug_ma_hc.rda")
 hc <- mtug
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/mtug.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/mtug.RData")
 ppmx <- PPMXpp
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -142,13 +142,13 @@ mtug3 <- ggplot(df, aes(x=method, y=mtug, fill=method)) +
   scale_fill_brewer(palette="Accent")
 
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/npc_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/npc_ma_pam.rda"))
 pam <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/npc_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/npc_ma_km.rda")
 km <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/npc_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/npc_ma_hc.rda")
 hc <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen1/npc.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen4/npc.RData")
 ppmx <- PPMXCUT
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -164,13 +164,13 @@ npc1 <- ggplot(df, aes(x=method, y=npc, fill=method)) +
   theme(legend.position="none") +
   scale_fill_brewer(palette="Accent") 
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/npc_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/npc_ma_pam.rda"))
 pam <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/npc_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/npc_ma_km.rda")
 km <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/npc_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/npc_ma_hc.rda")
 hc <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen2/npc.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen5/npc.RData")
 ppmx <- PPMXCUT
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -186,13 +186,13 @@ npc2 <- ggplot(df, aes(x=method, y=npc, fill=method)) +
   theme(legend.position="none") +
   scale_fill_brewer(palette="Accent") 
 
-load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/npc_ma_pam.rda"))
+load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/npc_ma_pam.rda"))
 pam <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/npc_ma_km.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/npc_ma_km.rda")
 km <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/npc_ma_hc.rda")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/npc_ma_hc.rda")
 hc <- HCppCUT
-load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen3/npc.RData")
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/npc.RData")
 ppmx <- PPMXCUT
 
 df <- tibble(pam = pam, km = km, hc = hc, ppmx = ppmx)
@@ -210,4 +210,4 @@ npc3 <- ggplot(df, aes(x=method, y=npc, fill=method)) +
 
 p <- gridExtra::grid.arrange(mot1, mot2, mot3, mtug1, mtug2, mtug3, npc1, npc2, npc3, nrow = 3)
 
-ggsave(p, filename = "figs/bp_sim_scen_13.png",  bg = "transparent")
+ggsave(p, filename = "figs/bp_sim_scen_46.png",  bg = "transparent")
