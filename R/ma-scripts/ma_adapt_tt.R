@@ -4,9 +4,9 @@
 
 #############################################################################################
 rm(list=ls())
-set.seed(101027)
+set.seed(121)
 
-load("data/scenario1.rda")
+load("data/scenalt1.RData")
 
 library(ConsensusClusterPlus); 
 library("mvtnorm");
@@ -32,18 +32,21 @@ mymultt<-function(Xtrain,X.pred){
   return2<-dmvt(x=X.pred,sigma=(kappan+1)*lambdn/(kappan*(nun-myd+1)),df=nun-myd+1,log=FALSE);
 }
 
-con.cluster<-function(cons){ 
-  mycons1<-cons;
-  utpred1<-matrix(1,nrow=select.sub.n,ncol=12);  ### ut1,ut2,trt
+con.cluster<-function(cons, ymat = s_train_ymat,  yvec = s_train_yord, 
+                      prog = s_train_prog, 
+                      trt = s_train_trt){ 
+  ni <- dim(cons)[1]
+  utpred1 <- matrix(1, nrow = ni, ncol=12);  ### ut1,ut2,trt
   
-  for (myloop in 1:select.sub.n){
-    totut<-myy*mycons1[myloop,];               ### utility 
-    totpre<-totut[-myloop,];  trtpre<-trt[-myloop];
+  for (i in 1:ni){
+    totut <- ymat*cons[i,]# myy*mycons1[myloop,];               ### utility 
+    totpre<-totut[-i,];  trtpre<-trt[-i];
     
-    myRappLp<-myRapp[-myloop,]
-    myoutcom<-outcom[-myloop];
+    #myRappLp<-myRapp[-i,]
+    l_train_prog <- prog[-i,]
+    l_yvec <- yvec[-i];
     #################################################################################
-    mytempt<-cbind(totpre,trtpre,myoutcom,myRappLp);
+    mytempt<-cbind(totpre, trtpre, l_yvec, l_train_prog);
     
     ## for genes
     trt1g<-subset(mytempt[,1:3],mytempt[,4]==0);
@@ -53,7 +56,7 @@ con.cluster<-function(cons){
     
     #################################################################################
     #################################################################################
-    mycovX<-myRapp[myloop,];                  ## observed covariates 
+    mycovX <- prog[i,];                  ## observed covariates 
     
     trtc<-subset(mytempt[,-(1:4)]);
     
@@ -68,10 +71,10 @@ con.cluster<-function(cons){
     
     ## calculate the utility
     ut1pre<-probpre1%*%wk; ut2pre<-probpre2%*%wk;
-    utpred1[myloop,1]<-ut1pre;  utpred1[myloop,2]<-ut2pre;
-    if (ut2pre>ut1pre){utpred1[myloop,3]=2};
-    utpred1[myloop,4:6]<-probpre1;utpred1[myloop,7:9]<-probpre2;
-    utpred1[myloop,10:12]<-trtpfy/(sum(trtpfy))
+    utpred1[i,1]<-ut1pre;  utpred1[i,2]<-ut2pre;
+    if (ut2pre>ut1pre){utpred1[i,3]=2};
+    utpred1[i,4:6]<-probpre1;utpred1[i,7:9]<-probpre2;
+    utpred1[i,10:12]<-trtpfy/(sum(trtpfy))
     ut1pre<-ut2pre<-totut<-totpre<-mytempt<-trt1g<-trt2g<-alphatrt1<-alphatrt2<-NULL;
   }
   return<-utpred1;
@@ -82,7 +85,7 @@ PreUt<-function(mth){
   ####trt equal 1 nontargeted; 2 targeted#################################################
   ########################################################################################
   mth<-mth;
-  myresults<-cbind(mth,trt+1,out.response,SUB.ID)
+  myresults<-cbind(mth,s_train_trt+1,out.response,SUB.ID)
   pred1<-subset( myresults,myresults[,3]==1);
   table1<-table(pred1[,14],pred1[,13]);
   pred2<-subset( myresults,myresults[,3]==2);
@@ -109,13 +112,14 @@ prior1 <- c(1/3,1/3,1/3)
 prior2 <- c(1/3,1/3,1/3)
 kappa0 <- 1
 mu0 <- c(0,0)
-gene.normAPT <- t(mydata)
-gene.normAPT <- gene.normAPT[,1:100]
-Rapp<-t(rbind(myz2,myz3))
-Rapp <- Rapp[1:100,]
-trtAPT <- as.numeric(trtsgn)-1
-trtAPT[1:100]
-n <- length(trtAPT)
+#gene.normAPT <- t(mydata)
+#gene.normAPT <- gene.normAPT[,1:100]
+
+#Rapp<-t(rbind(myz2,myz3))
+#Rapp <- Rapp[1:100,]
+#trtAPT <- as.numeric(trtsgn)-1
+#trtAPT[1:100]
+n <- 124#length(trtAPT)
 nrep <- 2#30
 
 HC.sum.all<-array(0,dim=c(n,14,nrep))
@@ -123,65 +127,74 @@ HC.sum.all<-array(0,dim=c(n,14,nrep))
 ## define a function that could be used 
 ###################################################################################
 
-for(foldNumber in 1:nrep){
-  myrep<-foldNumber;
-  myseed<-123*myrep;       set.seed(myseed);
-  outcomAPT<-as.numeric(myoutot[,foldNumber])-1;
-  HC.sum<-matrix(0,nrow=100,ncol=14);
+for(rep in 1:nrep){
   
-  #for (mysub in 1:n){
-    gene.norm<-gene.normAPT[,1:100];
-    trt<-trtAPT[1:100];
-    outcom<-outcomAPT[1:100];
-    select.sub.n<-length(outcom);
-    myRapp<-Rapp[1:100,];
+  train_pred <- scenalt1$pred[[rep]][1:124,]
+  train_prog <- scenalt1$prog[[rep]][1:124,]
+  train_yord <- scenalt1$yord[[rep]][1:124]-1
+  train_ymat <- scenalt1$ymat[[rep]][1:124,]
+  train_trt <- scenalt1$trtsgn[[rep]][1:124]-1
+  
+  HC.sum<-matrix(0,nrow=n,ncol=14);
+  
+  for (mysub in 1:n){
+    s_train_pred <- train_pred[-mysub,]
+    s_train_prog <- train_prog[-mysub,]
+    s_train_yord <- train_yord[-mysub]
+    s_train_ymat <- train_ymat[-mysub,]
+    s_train_trt <- train_trt[-mysub]
+    
+    #gene.norm<-gene.normAPT[,1:100];
+    #trt<-trtAPT[1:100];
+    #outcom<-outcomAPT[1:100];
+    #select.sub.n<-length(outcom);
+    #myRapp<-Rapp[1:100,];
     
     #################################################################################        
     ### clustering using CONSENSUS MATRIX method ###################################
-    d=gene.norm;
-    rst.hc<-ConsensusClusterPlus(d,maxK=15,reps=500,pItem=0.90,pFeature=1,
+    #d=gene.norm;
+    con_clu <- ConsensusClusterPlus(t(s_train_pred),maxK=15,reps=500,pItem=0.90,pFeature=1,
                                  clusterAlg="hc",distance="pearson", 
                                  #clusterAlg="km",distance="euclidean", 
                                  #clusterAlg="pam",distance="manhattan",
                                  seed=126);
     
-    myy<-matrix(0,nrow=select.sub.n,ncol=3);
-    for (j in 1:select.sub.n){myy[j,outcom[j]+1]=1}
+    #myy<-matrix(0,nrow=select.sub.n,ncol=3);
+    #for (j in 1:select.sub.n){myy[j,outcom[j]+1]=1}
     
     #################################################################################
     #################################################################################
+    hc2<-con.cluster(con_clu[[2]][["consensusMatrix"]]); 
+    hc3<-con.cluster(con_clu[[3]][["consensusMatrix"]]); 
+    hc4<-con.cluster(con_clu[[4]][["consensusMatrix"]]); 
+    hc5<-con.cluster(con_clu[[5]][["consensusMatrix"]]); 
+    hc6<-con.cluster(con_clu[[6]][["consensusMatrix"]]); 
+    hc7<-con.cluster(con_clu[[7]][["consensusMatrix"]]); 
+    hc8<-con.cluster(con_clu[[8]][["consensusMatrix"]]); 
+    hc9<-con.cluster(con_clu[[9]][["consensusMatrix"]]); 
+    hc10<-con.cluster(con_clu[[10]][["consensusMatrix"]]);
+    hc11<-con.cluster(con_clu[[11]][["consensusMatrix"]]);
+    hc12<-con.cluster(con_clu[[12]][["consensusMatrix"]]); 
+    hc13<-con.cluster(con_clu[[13]][["consensusMatrix"]]); 
+    hc14<-con.cluster(con_clu[[14]][["consensusMatrix"]]); 
+    hc15<-con.cluster(con_clu[[15]][["consensusMatrix"]]); 
     
-    hc2<-con.cluster(rst.hc[[2]][["consensusMatrix"]]); 
-    hc3<-con.cluster(rst.hc[[3]][["consensusMatrix"]]); 
-    hc4<-con.cluster(rst.hc[[4]][["consensusMatrix"]]); 
-    hc5<-con.cluster(rst.hc[[5]][["consensusMatrix"]]); 
-    hc6<-con.cluster(rst.hc[[6]][["consensusMatrix"]]); 
-    hc7<-con.cluster(rst.hc[[7]][["consensusMatrix"]]); 
-    hc8<-con.cluster(rst.hc[[8]][["consensusMatrix"]]); 
-    hc9<-con.cluster(rst.hc[[9]][["consensusMatrix"]]); 
-    hc10<-con.cluster(rst.hc[[10]][["consensusMatrix"]]);
-    hc11<-con.cluster(rst.hc[[11]][["consensusMatrix"]]);
-    hc12<-con.cluster(rst.hc[[12]][["consensusMatrix"]]); 
-    hc13<-con.cluster(rst.hc[[13]][["consensusMatrix"]]); 
-    hc14<-con.cluster(rst.hc[[14]][["consensusMatrix"]]); 
-    hc15<-con.cluster(rst.hc[[15]][["consensusMatrix"]]); 
-    
-    out.response<-as.numeric(outcom>1);
-    SUB.ID<-c(1:select.sub.n)
+    out.response<-as.numeric(s_train_yord>1);
+    SUB.ID<-c(1:(n-1))
     ########################################################################################
-    HC.sum<-c(PreUt(hc2),PreUt(hc3),PreUt(hc4),PreUt(hc5),PreUt(hc6),
+    HC.sum[mysub,]<-c(PreUt(hc2),PreUt(hc3),PreUt(hc4),PreUt(hc5),PreUt(hc6),
                       PreUt(hc7),PreUt(hc8),PreUt(hc9),PreUt(hc10),PreUt(hc11),PreUt(hc12),
                       PreUt(hc13),PreUt(hc14),PreUt(hc15));
     
-  #}
+  }
   ########################################################################################
   myresult2<- HC.sum;
   
   # Send a results message back to the master
   
-  results <- list(myresult2=myresult2,foldNumber=foldNumber)
+  results <- list(myresult2=myresult2,rep=rep)
   
-  HC.sum.all[,,foldNumber] <- HC.sum
+  HC.sum.all[,,rep] <- HC.sum
 }
 
 save(HC.sum.all, file="R/ma-scripts/test.RData")

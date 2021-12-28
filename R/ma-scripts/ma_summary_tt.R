@@ -8,10 +8,10 @@ rm(list=ls()); set.seed(123456);
 library("gtools");  library("xtable"); library("mvtnorm");
 library("glmnetcr");library(ConsensusClusterPlus);
 
-load("data/scenario1.rda");     
+load("data/scenalt1.RData");     
 load("R/ma-scripts/test.RData");  
 
-source("src/countUT.R");  
+source("src/countUTtt.R");  
 
 #################################################################################
 #### function for covariates## for calculation of the density;
@@ -38,21 +38,24 @@ prior1 <- c(1/3,1/3,1/3)
 prior2<-c(1/3,1/3,1/3)
 kappa0<-1
 mu0<-c(0,0)
-gene.normAPT<-t(mydata)
-gene.normAPT <- gene.normAPT[,101:152]
-Rapp<-t(rbind(myz2,myz3))
-Rapp <- Rapp[101:152,]
-trtAPT<-as.numeric(trtsgn)-1
-trtAPT <- trtAPT[101:152]
-n<-length(trtAPT);
-trtsgn <- trtsgn[101:152]
+#gene.normAPT<-t(mydata)
+#gene.normAPT <- gene.normAPT[,101:152]
+#Rapp<-t(rbind(myz2,myz3))
+#Rapp <- Rapp[101:152,]
+#trtAPT<-as.numeric(trtsgn)-1
+#trtAPT <- trtAPT[101:152]
+#n<-length(trtAPT);
+#trtsgn <- trtsgn[101:152]
+
+d <- scenalt1$pred[[1]]
+n <- 28#dim(d)[1]
 nrep<-2#30;
 
 utpred1APT.all<-array(0,dim=c(n,19,nrep))
 
 ### clustering using CONSENSUS MATRIX method ###################################
 
-rst.hc<-ConsensusClusterPlus(gene.normAPT,maxK=15,reps=500,pItem=0.90,pFeature=1,
+rst.hc<-ConsensusClusterPlus(t(d),maxK=15,reps=500,pItem=0.90,pFeature=1,
                              clusterAlg="hc",distance="pearson", 
                              #clusterAlg="km",distance="euclidean", 
                              #clusterAlg="pam",distance="manhattan", 
@@ -61,23 +64,26 @@ rst.hc<-ConsensusClusterPlus(gene.normAPT,maxK=15,reps=500,pItem=0.90,pFeature=1
 ############Analyze the 100 replications ####################################;
 
 for(myrep in 1:nrep)   {  
-  myseed<-123*myrep;    set.seed(myseed);
+  #myseed<-123*myrep;    set.seed(myseed);
   
-  trtAPT<-as.numeric(trtsgn)-1;
-  trtAPT <- trtAPT[101:152]
-  outcomAPT<-as.numeric(myoutot[,myrep])-1;
-  outcomAPT <- outcomAPT[101:152]
+  trtAPT <- scenalt1$trtsgn[[myrep]][125:152]-1
+  Rapp <- scenalt1$prog[[myrep]][125:152,]
+  #trtAPT <- trtAPT[101:152]
+  outcomAPT <- scenalt1$yord[[myrep]][125:152]-1
+  #outcomAPT <- outcomAPT[101:152]
+  trtsgn <- scenalt1$trtsgn[[myrep]][125:152]
+  myoutot <- scenalt1$ymat[[myrep]][125:152,]
   utpred1APT<-matrix(1,nrow= n,ncol=19);  ### ut1,ut2,trt,cluster
   ######################## Measure similarities ###################################
   ### pick the rank with the largest summary measure
   max.clus<-apply(HC.sum.all[,,myrep],1,which.max)+1;
   max.clus <- median(max.clus)
   ##################################################################################### 
-  #for (mysub in 1:n){
-    trt<-trtAPT#[-mysub];
-    outcom<-outcomAPT#[-mysub];
+  for (mysub in 1:n){
+    trt<-trtAPT[-mysub];
+    outcom<-outcomAPT[-mysub];
     select.sub.n<-length(outcom);
-    myRapp<-Rapp#[-mysub,];
+    myRapp<-Rapp[-mysub,];
 
     #################################################################################
     myyAPT<-matrix(0,nrow=n,ncol=3);
@@ -87,7 +93,7 @@ for(myrep in 1:nrep)   {
     
     ### calculate the predicted probability using the model with largest sum measure
     ## calculate the density/probablility from the prognostic features
-    for(mysub in 1: n){
+    #for(mysub in 1: n){
     mycovXSub<-Rapp[mysub,];                 ## observed covariates 
     trtcSub<- cbind(outcom,myRapp);
     
@@ -103,10 +109,10 @@ for(myrep in 1:nrep)   {
     myyAPT<-matrix(0,nrow=n,ncol=3);
     for (m in 1:n){myyAPT[m,outcomAPT[m]+1]=1};
     
-    mycons1APT<-rst.hc[[max.clus]][["consensusMatrix"]];
+    #mycons1APT<-rst.hc[[max.clus]][["consensusMatrix"]];
     
     
-    totutAPT<-myyAPT*mycons1APT[mysub,];               ### utility 
+    totutAPT<-myyAPT*mycons1APT[mysub,][125:152];               ### utility 
     totpreAPT<-totutAPT[-mysub,];  trtpreAPT<-trtAPT[-mysub];
     mytemptAPT<-cbind(totpreAPT,trtpreAPT);
     
@@ -140,34 +146,40 @@ for(myrep in 1:nrep)   {
 
 case2HCppUT<-utpred1APT.all;
 my.pick<-1:nrep;
+MOT <- MTUg <- NPC <- c()
+for(my.pick in 1:nrep){
 wk<-c(0,40,100);
+myprob <- scenalt1$prob[[my.pick]]
+
 mywk1<-myprob[[1]]%*%wk;  
-mywk1 <- mywk1[101:152]
+mywk1 <- mywk1[125:152]
 mywk2<-myprob[[2]]%*%wk;
-mywk2 <- mywk2[101:152]
+mywk2 <- mywk2[125:152]
 optrt<-as.numeric( mywk2> mywk1)+1; 
 #optrt <- optrt#[101:152]
 ut.sum<-sum(abs(mywk2-mywk1));ut.diff<- abs(as.numeric(mywk2- mywk1));
-HCppcont<- apply(abs((case2HCppUT[,3, my.pick]-optrt)),1,sum);
+HCppcont<- sum(abs((case2HCppUT[,3, my.pick]-optrt)));
 #MOT
-HCppCT<-  apply(abs((case2HCppUT[,3, my.pick]-optrt)),2,sum) 
-MOT <- c(round(mean(HCppCT), 4), round(sd(HCppCT), 1))
+HCppCT<-  sum(abs((case2HCppUT[,3, my.pick]-optrt))) 
+MOT[my.pick] <- HCppCT
 
 #MTUg
 #MTUg<-cbind(MTU=round(apply(my.result,2,mean)/ut.sum,4),
 #SD=round(sqrt(apply(my.result/ut.sum,2,var)),2));
-HCpp<-  -(2*apply(abs((case2HCppUT[,3, my.pick]-optrt))*ut.diff,2,sum)-ut.sum);
-MTUg <- c(round(mean(HCpp/ut.sum), 4), round(sd(HCpp/ut.sum), 4))
+HCpp<-  -(2*sum(abs((case2HCppUT[,3, my.pick]-optrt))*ut.diff)-ut.sum);
+MTUg[my.pick] <- HCpp/ut.sum#c(round(mean(HCpp/ut.sum), 4), round(sd(HCpp/ut.sum), 4))
 #NPC
-HCppCUT<-as.vector(countUT(case2HCppUT));
+outcomAPT <- scenalt1$yord[[my.pick]][125:152]-1
+HCppCUT<-as.vector(countUT(case2HCppUT, outcomAPT));
 #myoutot troppo lungo
 #tutta la roba che importo dovrà essere ridimensionata o comunque divisa in test e validation
-NPC <- c(round(mean(HCppCUT), 4), round(sd(HCppCUT), 4))
-resHCpp <- rbind(MOT, MTUg,NPC)
+NPC[my.pick] <- HCppCUT
+}
+#resHCpp <- rbind(MOT, MTUg,NPC)
 
-colnames(resHCpp) <- c("mean", "sd")
+#colnames(resHCpp) <- c("mean", "sd")
 
-mtug <- HCpp/ut.sum
+#mtug <- HCpp/ut.sum
 #save(resHCpp, file="output/simulation-scenarios/scen4/res_ma_hc.rda")
 #save(HCppCT, file="output/simulation-scenarios/scen4/mot_ma_hc.rda")
 #save(mtug, file="output/simulation-scenarios/scen4/mtug_ma_hc.rda")
