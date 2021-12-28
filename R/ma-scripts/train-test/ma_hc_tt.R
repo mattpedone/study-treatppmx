@@ -80,8 +80,7 @@ con.cluster <- function(cons, ymat = s_train_ymat,  yvec = s_train_yord,
   return <- utpred1;
 }
 
-PreUt<-function(mth, s_train_trt = s_train_trt, out.response = out.response, 
-                SUB.ID = SUB.ID){
+PreUt<-function(mth){
   #mth<-mth;
   myresults <- cbind(mth, s_train_trt+1, out.response, SUB.ID)
   pred1 <- subset(myresults, myresults[,3] == 1)
@@ -118,7 +117,7 @@ prior2 <- c(1/3,1/3,1/3)
 kappa0 <- 1
 mu0 <- c(0,0)
 n <- 124
-nrep <- 30
+nrep <- 2#30
 
 HC.sum.all <- array(0, dim = c(n, 14, nrep))
 
