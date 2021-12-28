@@ -28,3 +28,7 @@ treatppmx::genmech(npred = 10, progscen = 2, predscen = 2, nnoise = 40,
 # Scenario 6
 treatppmx::genmech(npred = 20, progscen = 2, predscen = 2, nnoise = 80, 
                    nset = 30, save = T, filename = "scenario6")
+
+# Scenario 1-alt
+scenalt1 <- treatppmx::genmech_alt(npred = 10, nset = 30)
+save(scenalt1, file = "data/scenalt1.RData")
