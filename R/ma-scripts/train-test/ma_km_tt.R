@@ -80,8 +80,7 @@ con.cluster <- function(cons, ymat = s_train_ymat,  yvec = s_train_yord,
   return <- utpred1;
 }
 
-PreUt<-function(mth, s_train_trt = s_train_trt, out.response = out.response, 
-                SUB.ID = SUB.ID){
+PreUt<-function(mth){
   #mth<-mth;
   myresults <- cbind(mth, s_train_trt+1, out.response, SUB.ID)
   pred1 <- subset(myresults, myresults[,3] == 1)
