@@ -36,13 +36,13 @@ gendata <- function(n = 1000, pro = c(0.2,0.5,0.3), dim = 3){
   return (data)
 }
 
-X <- gendata(n = nobs, dim = 25)
+X <- gendata(n = nobs, dim = 5)
 
 #X <- data.frame(simupats)
-#X <- X[,c(1:25)]
-nobs <- nrow(X)
+#X <- X[1:50,c(1:25)]
+#nobs <- nrow(X)
 
-#X <- data.frame(scale(matchRTComp[,16:38]))
+#X <- data.frame(scale(matchRTComp[1:50,16:38]))
 #nobs <- nrow(X)
 
 vec_par <- c(0.0, 2.0, .5, 1.0, 2.0, 2.0, 0.1)
@@ -69,7 +69,7 @@ res_121 <- foreach(sub = 1:K, .combine = rbind) %dopar%
 
 res_221 <- foreach(sub = 1:K, .combine = rbind) %dopar%
   {
-    out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 1, alpha = beta, #*sigma,
+    out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 1, alpha = theta, #*sigma,
                                  sigma = sigma, similarity = 2, consim = 2,
                                  similparam = vec_par, calibration = 2,
                                  coardegree = 2, iter = iterations, burn = burnin,
@@ -121,7 +121,7 @@ dfres <- newres %>%
   mutate(sd = as.numeric(sd))
 
 ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
-  geom_errorbar(aes(ymin=freq-sd, ymax=freq+sd), width=.1) +
+  #geom_errorbar(aes(ymin=freq-sd, ymax=freq+sd), width=.1) +
   geom_line() +
   geom_point()+
   scale_color_brewer(palette="Paired")+
@@ -131,7 +131,22 @@ ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
   labs(x = expression(c), y = expression(P(C[n] == c)), 
        color = expression(' '))
 
-#ggsave("output/prior-ppmx/plot_.pdf")
+
+#ggsave("figs/prior-ppmx/plot_a5.pdf")
 
 #save(res, file = "output/prior-ppmx/results_.RData")
 
+#tentativi grafico su scala di grigi invece che colorato
+#ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
+#  #geom_errorbar(aes(ymin=freq-sd, ymax=freq+sd), width=.1) +
+#  geom_line(aes(linetype=similarity)) +
+#  #geom_point()+
+#  #scale_color_brewer(palette="Paired")+
+#  #scale_linetype() +
+#  theme_minimal() +
+#  #scale_colour_grey() +
+#  scale_color_manual(c("darkgrey", "darkgrey", "darkgrey", "darkgrey", "darkgrey")) +
+#  #xlab(expression(c)) +
+#  #ylab(expression(P(C[n] == c)))
+#  labs(x = expression(c), y = expression(P(C[n] == c)), 
+#       color = expression(' '))
