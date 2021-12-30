@@ -1,6 +1,6 @@
 # info-data
 
-## Scenarios
+## Scenarios - LOOCV
 1. 2 prognostic (with power trasformation) and 10 predictive markers. 
 It is stored in `scenario1.rda`
 
@@ -18,6 +18,28 @@ It is stored in `scenario5.rda`
 
 6. 2 prognostic (with power trasformation) and 100 predictive markers. Among the predictive markers 20 are employed to generate the response and 80 are noise.
 It is stored in `scenario6.rda`
+
+## Scenarios - Train-Test 
+### overlap = 0.5
+1. 2 prognostic (with power trasformation) and 10 predictive markers. 
+It is stored in `scenalt1.RData`
+
+1. 2 prognostic (with power trasformation) and 50 predictive markers. 
+It is stored in `scenalt2.RData`
+
+### overlap = 0.8
+1. 2 prognostic (with power trasformation) and 10 predictive markers. 
+It is stored in `scenalt3.RData`
+
+1. 2 prognostic (with power trasformation) and 50 predictive markers. 
+It is stored in `scenalt4.RData`
+
+### overlap = 1.0
+1. 2 prognostic (with power trasformation) and 10 predictive markers. 
+It is stored in `scenalt5.RData`
+
+1. 2 prognostic (with power trasformation) and 50 predictive markers. 
+It is stored in `scenalt6.RData`
 
 ## Lower Grade Glioma
 
