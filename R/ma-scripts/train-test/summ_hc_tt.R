@@ -13,20 +13,20 @@ load("output/simulation-scenarios/train-test/scen-alt-2/ma_hc_tt.RData");
 
 ################################ Functions ########################################
 mymultt <- function(Xtrain, X.pred){
-  myln <- length(Xtrain[,1])
+  myln <- tryCatch(expr = length(Xtrain[,1]), error = function(e){return(1)})
   myls <- Xtrain
-  mylmu <- apply(myls, 2, mean)
+  mylmu <- tryCatch(expr = apply(myls, 2, mean), error = function(e){return(myls)})
   mymun <- myln/(myln+kappa0)*mylmu
-  myS <- cov(myls)*(myln-1)
+  myS <- tryCatch(expr = cov(myls), error = function(e){return(0)})*(myln-1)
   
   ## for the covariates
-  myd <- length(Xtrain[1,])       ## numer of covariates
-  nu0 <- length(Xtrain[1,])+1       ## numer of covariates +1;
+  myd <- tryCatch(expr = length(Xtrain[1,]), error = function(e){return(length(Xtrain))})       ## numer of covariates
+  nu0 <- myd+1       ## numer of covariates +1;
   lambda0 <- diag(myd)                ## identity matrix
   
   kappan <- kappa0 + myln
   nun <- nu0 + myln
-  lambdn <- lambda0 + myS + kappa0*myln/(kappa0 + myln)*(mylmu - mu0)%*%t(mylmu - mu0)
+  lambdn <- tryCatch(expr = lambda0 + myS + kappa0*myln/(kappa0 + myln)*(mylmu - mu0)%*%t(mylmu - mu0), error = function(e){return(diag(1, 2, 2))})
   return2 <- dmvt(x = X.pred, sigma=(kappan + 1)*lambdn/(kappan*(nun - myd + 1)), df = nun - myd + 1, log = FALSE)
 }
 

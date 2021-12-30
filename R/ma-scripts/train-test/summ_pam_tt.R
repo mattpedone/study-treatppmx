@@ -8,25 +8,25 @@ library("mvtnorm")
 library("glmnetcr")
 library(ConsensusClusterPlus)
 
-load("data/scenalt1.RData")    
-load("output/simulation-scenarios/train-test/scen-alt-1/ma_pam_tt.RData");  
+load("data/scenalt2.RData")    
+load("output/simulation-scenarios/train-test/scen-alt-2/ma_pam_tt.RData");  
 
 ################################ Functions ########################################
 mymultt <- function(Xtrain, X.pred){
-  myln <- length(Xtrain[,1])
+  myln <- tryCatch(expr = length(Xtrain[,1]), error = function(e){return(1)})
   myls <- Xtrain
-  mylmu <- apply(myls, 2, mean)
+  mylmu <- tryCatch(expr = apply(myls, 2, mean), error = function(e){return(myls)})
   mymun <- myln/(myln+kappa0)*mylmu
-  myS <- cov(myls)*(myln-1)
+  myS <- tryCatch(expr = cov(myls), error = function(e){return(0)})*(myln-1)
   
   ## for the covariates
-  myd <- length(Xtrain[1,])       ## numer of covariates
-  nu0 <- length(Xtrain[1,])+1       ## numer of covariates +1;
+  myd <- tryCatch(expr = length(Xtrain[1,]), error = function(e){return(length(Xtrain))})       ## numer of covariates
+  nu0 <- myd+1       ## numer of covariates +1;
   lambda0 <- diag(myd)                ## identity matrix
   
   kappan <- kappa0 + myln
   nun <- nu0 + myln
-  lambdn <- lambda0 + myS + kappa0*myln/(kappa0 + myln)*(mylmu - mu0)%*%t(mylmu - mu0)
+  lambdn <- tryCatch(expr = lambda0 + myS + kappa0*myln/(kappa0 + myln)*(mylmu - mu0)%*%t(mylmu - mu0), error = function(e){return(diag(1, 2, 2))})
   return2 <- dmvt(x = X.pred, sigma=(kappan + 1)*lambdn/(kappan*(nun - myd + 1)), df = nun - myd + 1, log = FALSE)
 }
 
@@ -59,7 +59,7 @@ wk <- c(0,40,100)
 prior1 <- prior2 <- c(1/3,1/3,1/3)
 kappa0 <- 1
 mu0 <- c(0, 0)
-d <- scenalt1$pred[[1]]
+d <- scenalt2$pred[[1]]
 n <- 28#dim(d)[1]
 nrep <- 30
 
@@ -75,11 +75,11 @@ rst.hc<-ConsensusClusterPlus(t(d),maxK=15,reps=500,pItem=0.90,pFeature=1,
 
 
 for(myrep in 1:nrep){  
-  trtAPT <- scenalt1$trtsgn[[myrep]][125:152]-1
-  Rapp <- scenalt1$prog[[myrep]][125:152,]
-  outcomAPT <- scenalt1$yord[[myrep]][125:152]-1
-  trtsgn <- scenalt1$trtsgn[[myrep]][125:152]
-  myoutot <- scenalt1$ymat[[myrep]][125:152,]
+  trtAPT <- scenalt2$trtsgn[[myrep]][125:152]-1
+  Rapp <- scenalt2$prog[[myrep]][125:152,]
+  outcomAPT <- scenalt2$yord[[myrep]][125:152]-1
+  trtsgn <- scenalt2$trtsgn[[myrep]][125:152]
+  myoutot <- scenalt2$ymat[[myrep]][125:152,]
   utpred1APT<-matrix(1,nrow= n,ncol=19)  ### ut1,ut2,trt,cluster
   
   ### pick the median rank with the largest summary measure
@@ -153,7 +153,7 @@ case2HCppUT <- utpred1APT.all
 MOT <- MTUg <- NPC <- c()
 for(my.pick in 1:nrep){
   wk<-c(0,40,100)
-  myprob <- scenalt1$prob[[my.pick]]
+  myprob <- scenalt2$prob[[my.pick]]
   
   mywk1 <- myprob[[1]]%*%wk
   mywk1 <- mywk1[125:152]
@@ -167,13 +167,13 @@ for(my.pick in 1:nrep){
   
   MOT[my.pick] <- sum(abs((case2HCppUT[,3, my.pick]-optrt))) 
   MTUg[my.pick] <- (-(2*sum(abs((case2HCppUT[,3, my.pick]-optrt))*ut.diff)-ut.sum))/ut.sum
-  outcomAPT <- scenalt1$yord[[my.pick]][125:152] - 1
+  outcomAPT <- scenalt2$yord[[my.pick]][125:152] - 1
   HCppCUT <- as.vector(countUT(case2HCppUT, outcomAPT))
   NPC[my.pick] <- HCppCUT
 }
 
-save(MOT, file="output/simulation-scenarios/train-test/scen-alt-1/mot_pam.RData")
-save(MTUg, file="output/simulation-scenarios/train-test/scen-alt-1/mtug_pam.RData")
-save(NPC, file="output/simulation-scenarios/train-test/scen-alt-1/npc_pam.RData")
+save(MOT, file="output/simulation-scenarios/train-test/scen-alt-2/mot_pam.RData")
+save(MTUg, file="output/simulation-scenarios/train-test/scen-alt-2/mtug_pam.RData")
+save(NPC, file="output/simulation-scenarios/train-test/scen-alt-2/npc_pam.RData")
 
 

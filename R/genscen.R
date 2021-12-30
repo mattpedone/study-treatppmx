@@ -36,3 +36,11 @@ save(scenalt1, file = "data/scenalt1.RData")
 # Scenario 2-alt
 scenalt2 <- treatppmx::genmech_alt(npred = 50, nset = 30)
 save(scenalt2, file = "data/scenalt2.RData")
+
+# Scenario 1-alt-bis
+scenalt1b <- treatppmx::genmech_alt(npred = 10, nset = 30)
+save(scenalt1b, file = "data/scenalt1b.RData")
+
+# Scenario 2-alt-bis
+scenalt2b <- treatppmx::genmech_alt(npred = 50, nset = 30)
+save(scenalt2b, file = "data/scenalt2b.RData")
