@@ -1,6 +1,7 @@
 rm(list=ls())
 set.seed(121)
 load("data/scenalt5.RData")
+
 library(treatppmx)
 #library(parallel)
 #library(doParallel)
@@ -58,7 +59,7 @@ for(k in 1:K){
   
   trtsgn_train <- scenalt5$trtsgn[[k]][1:124]
   trtsgn_test <- scenalt5$trtsgn[[k]][125:152]
-  
+
   modelpriors <- list()
   modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(10, ncol(Y_train))
   modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(1.0, ncol(Y_train))
@@ -124,6 +125,7 @@ for(k in 1:K){
 }
 
 myprob <- scenalt5$prob[[k]]
+
 mywk1 <- myprob[[1]][125:152,]%*%wk
 mywk2 <- myprob[[2]][125:152,]%*%wk
 optrt <- as.numeric(mywk2 > mywk1) + 1
@@ -186,3 +188,4 @@ save(cluPPMX, file="output/simulation-scenarios/train-test/scen-alt-5/clu.RData"
 save(PPMXCT, file="output/simulation-scenarios/train-test/scen-alt-5/mot.RData")
 save(PPMXpp, file="output/simulation-scenarios/train-test/scen-alt-5/mtug.RData")
 save(PPMXCUT, file="output/simulation-scenarios/train-test/scen-alt-5/npc.RData")
+
