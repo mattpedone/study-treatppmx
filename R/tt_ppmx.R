@@ -1,6 +1,7 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenalt2.RData")
+load("data/scenalt5.RData")
+
 library(treatppmx)
 #library(parallel)
 #library(doParallel)
@@ -48,17 +49,17 @@ for(k in 1:K){
   #registerDoParallel(cores = cor_all)
   
   #X <- data.frame(t(mydata))[, -c(11:92)]#data.frame(mydata)#
-  X_train <- data.frame(scenalt1$pred[[k]][1:124,])
-  Z_train <- data.frame(scenalt1$prog[[k]][1:124,])
-  Y_train <- data.frame(scenalt1$ymat[[k]][1:124,])
+  X_train <- data.frame(scenalt5$pred[[k]][1:124,])
+  Z_train <- data.frame(scenalt5$prog[[k]][1:124,])
+  Y_train <- data.frame(scenalt5$ymat[[k]][1:124,])
   
-  X_test <- data.frame(scenalt1$pred[[k]][125:152,])
-  Z_test <- data.frame(scenalt1$prog[[k]][125:152,])
-  Y_test <- data.frame(scenalt1$ymat[[k]][125:152,])
+  X_test <- data.frame(scenalt5$pred[[k]][125:152,])
+  Z_test <- data.frame(scenalt5$prog[[k]][125:152,])
+  Y_test <- data.frame(scenalt5$ymat[[k]][125:152,])
   
-  trtsgn_train <- scenalt1$trtsgn[[k]][1:124]
-  trtsgn_test <- scenalt1$trtsgn[[k]][125:152]
-  
+  trtsgn_train <- scenalt5$trtsgn[[k]][1:124]
+  trtsgn_test <- scenalt5$trtsgn[[k]][125:152]
+
   modelpriors <- list()
   modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(10, ncol(Y_train))
   modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(1.0, ncol(Y_train))
@@ -123,7 +124,8 @@ for(k in 1:K){
   #sellines_all[[k]] <- sellines
 }
 
-myprob <- scenalt1$prob[[k]]
+myprob <- scenalt5$prob[[k]]
+
 mywk1 <- myprob[[1]][125:152,]%*%wk
 mywk2 <- myprob[[2]][125:152,]%*%wk
 optrt <- as.numeric(mywk2 > mywk1) + 1
@@ -154,7 +156,7 @@ for(k in 1:K){
   #subset <- sellines_all[[k]]
   temp <- array(0, dim = c(28, 6, 1))
   temp[,,1] <- predAPT_all[, 4:9,k]
-  myoutot <- scenalt1$yord[[k]][125:152,]
+  myoutot <- scenalt5$yord[[k]][125:152,]
   PPMXCUT[k] <- npc2(temp, trtsgn_test, myoutot)
 }
 PPMXCUT <- as.vector(npc(predAPT_all[, 4:9,], trtsgn, myoutot));
@@ -181,8 +183,9 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file="output/simulation-scenarios/train-test/scen-alt-2/res.RData")
-save(cluPPMX, file="output/simulation-scenarios/train-test/scen-alt-2/clu.RData")
-save(PPMXCT, file="output/simulation-scenarios/train-test/scen-alt-2/mot.RData")
-save(PPMXpp, file="output/simulation-scenarios/train-test/scen-alt-2/mtug.RData")
-save(PPMXCUT, file="output/simulation-scenarios/train-test/scen-alt-2/npc.RData")
+save(resPPMX, file="output/simulation-scenarios/train-test/scen-alt-5/res.RData")
+save(cluPPMX, file="output/simulation-scenarios/train-test/scen-alt-5/clu.RData")
+save(PPMXCT, file="output/simulation-scenarios/train-test/scen-alt-5/mot.RData")
+save(PPMXpp, file="output/simulation-scenarios/train-test/scen-alt-5/mtug.RData")
+save(PPMXCUT, file="output/simulation-scenarios/train-test/scen-alt-5/npc.RData")
+
