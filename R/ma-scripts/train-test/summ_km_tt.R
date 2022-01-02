@@ -8,8 +8,8 @@ library("mvtnorm")
 library("glmnetcr")
 library(ConsensusClusterPlus)
 
-load("data/scenalt5.RData")    
-load("output/simulation-scenarios/train-test/scen-alt-5/ma_km_tt.RData");  
+load("data/scenalt6.RData")    
+load("output/simulation-scenarios/train-test/scen-alt-6/ma_km_tt.RData");  
 
 ################################ Functions ########################################
 mymultt <- function(Xtrain, X.pred){
@@ -59,7 +59,7 @@ wk <- c(0,40,100)
 prior1 <- prior2 <- c(1/3,1/3,1/3)
 kappa0 <- 1
 mu0 <- c(0, 0)
-d <- scenalt5$pred[[1]]
+d <- scenalt6$pred[[1]]
 n <- 28#dim(d)[1]
 nrep <- 30
 
@@ -75,11 +75,11 @@ rst.hc<-ConsensusClusterPlus(t(d),maxK=15,reps=500,pItem=0.90,pFeature=1,
 
 
 for(myrep in 1:nrep){  
-  trtAPT <- scenalt5$trtsgn[[myrep]][125:152]-1
-  Rapp <- scenalt5$prog[[myrep]][125:152,]
-  outcomAPT <- scenalt5$yord[[myrep]][125:152]-1
-  trtsgn <- scenalt5$trtsgn[[myrep]][125:152]
-  myoutot <- scenalt5$ymat[[myrep]][125:152,]
+  trtAPT <- scenalt6$trtsgn[[myrep]][125:152]-1
+  Rapp <- scenalt6$prog[[myrep]][125:152,]
+  outcomAPT <- scenalt6$yord[[myrep]][125:152]-1
+  trtsgn <- scenalt6$trtsgn[[myrep]][125:152]
+  myoutot <- scenalt6$ymat[[myrep]][125:152,]
   utpred1APT<-matrix(1,nrow= n,ncol=19)  ### ut1,ut2,trt,cluster
   
   ### pick the median rank with the largest summary measure
@@ -153,7 +153,7 @@ case2HCppUT <- utpred1APT.all
 MOT <- MTUg <- NPC <- c()
 for(my.pick in 1:nrep){
   wk<-c(0,40,100)
-  myprob <- scenalt5$prob[[my.pick]]
+  myprob <- scenalt6$prob[[my.pick]]
   
   mywk1 <- myprob[[1]]%*%wk
   mywk1 <- mywk1[125:152]
@@ -167,13 +167,13 @@ for(my.pick in 1:nrep){
   
   MOT[my.pick] <- sum(abs((case2HCppUT[,3, my.pick]-optrt))) 
   MTUg[my.pick] <- (-(2*sum(abs((case2HCppUT[,3, my.pick]-optrt))*ut.diff)-ut.sum))/ut.sum
-  outcomAPT <- scenalt5$yord[[my.pick]][125:152] - 1
+  outcomAPT <- scenalt6$yord[[my.pick]][125:152] - 1
   HCppCUT <- as.vector(countUT(case2HCppUT, outcomAPT))
   NPC[my.pick] <- HCppCUT
 }
 
-save(MOT, file="output/simulation-scenarios/train-test/scen-alt-5/mot_km.RData")
-save(MTUg, file="output/simulation-scenarios/train-test/scen-alt-5/mtug_km.RData")
-save(NPC, file="output/simulation-scenarios/train-test/scen-alt-5/npc_km.RData")
+save(MOT, file="output/simulation-scenarios/train-test/scen-alt-6/mot_km.RData")
+save(MTUg, file="output/simulation-scenarios/train-test/scen-alt-6/mtug_km.RData")
+save(NPC, file="output/simulation-scenarios/train-test/scen-alt-6/npc_km.RData")
 
 
