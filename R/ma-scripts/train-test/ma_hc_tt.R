@@ -2,8 +2,7 @@
 rm(list=ls())
 set.seed(121)
 
-<<<<<<< HEAD
-load("data/scenalt5.RData")
+load("data/scenalt6.RData")
 
 library(ConsensusClusterPlus); 
 library("mvtnorm");
@@ -125,11 +124,11 @@ HC.sum.all <- array(0, dim = c(n, 14, nrep))
 
 for(rep in 1:nrep){
 
-  train_pred <- scenalt5$pred[[rep]][1:124,]
-  train_prog <- scenalt5$prog[[rep]][1:124,]
-  train_yord <- scenalt5$yord[[rep]][1:124]-1
-  train_ymat <- scenalt5$ymat[[rep]][1:124,]
-  train_trt <- scenalt5$trtsgn[[rep]][1:124]-1
+  train_pred <- scenalt6$pred[[rep]][1:124,]
+  train_prog <- scenalt6$prog[[rep]][1:124,]
+  train_yord <- scenalt6$yord[[rep]][1:124]-1
+  train_ymat <- scenalt6$ymat[[rep]][1:124,]
+  train_trt <- scenalt6$trtsgn[[rep]][1:124]-1
 
   HC.sum<-matrix(0,nrow=n,ncol=14)
   
@@ -178,6 +177,6 @@ for(rep in 1:nrep){
   HC.sum.all[,,rep] <- HC.sum
 }
 
-save(HC.sum.all, file = "output/simulation-scenarios/train-test/scen-alt-5/ma_hc_tt.RData")
+save(HC.sum.all, file = "output/simulation-scenarios/train-test/scen-alt-6/ma_hc_tt.RData")
 
 
