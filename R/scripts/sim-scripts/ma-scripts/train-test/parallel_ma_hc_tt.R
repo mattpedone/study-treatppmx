@@ -12,9 +12,9 @@ loadRData <- function(fileName){
   load(fileName)
   get(ls()[ls() != "fileName"])
 }
-
-simdata <- loadRData("data/scenalt1.RData")
-mypath <- c("output/simulation-scenarios/train-test/scen-alt-1")
+for(sc in 3:9){
+  simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
+  mypath <- c(paste0("output/simulation-scenarios/train-test/scen-alt-", sc))
 ################################ Functions ########################################
 mymultt <- function(Xtrain, X.pred){
   myln <- length(Xtrain[,1])
@@ -374,3 +374,4 @@ NPC <- c(mean(NPC), sd(NPC))
 save(MOT, file=paste0(mypath, "/mot_hc.RData"))
 save(MTUg, file=paste0(mypath, "/mtug_hc.RData"))
 save(NPC, file=paste0(mypath, "/npc_hc.RData"))
+}

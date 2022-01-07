@@ -12,9 +12,9 @@ loadRData <- function(fileName){
   load(fileName)
   get(ls()[ls() != "fileName"])
 }
-
-simdata <- loadRData("data/scenalt1.RData")
-mypath <- c("output/simulation-scenarios/train-test/scen-alt-1")
+for(sc in 3:9){
+  simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
+  mypath <- c(paste0("output/simulation-scenarios/train-test/scen-alt-", sc))
 
 npc2 <- function(output, trtsgn, myoutot){
   K <- dim(output)[3]
@@ -189,5 +189,5 @@ save(cluPPMX, file=paste0(mypath, "/clu.RData"))
 save(PPMXCT, file=paste0(mypath, "/mot.RData"))
 save(PPMXpp, file=paste0(mypath, "/mtug.RData"))
 save(PPMXCUT, file=paste0(mypath, "/npc.RData"))
-
+}
 
