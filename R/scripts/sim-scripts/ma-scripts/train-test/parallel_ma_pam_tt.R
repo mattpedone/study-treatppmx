@@ -4,6 +4,8 @@ set.seed(121)
 
 library(ConsensusClusterPlus)
 library("mvtnorm")
+library(parallel)
+library(doParallel)
 
 loadRData <- function(fileName){
   #loads an RData file, and returns it
@@ -124,6 +126,9 @@ kappa0 <- 1
 mu0 <- c(0,0)
 n <- 124
 K <- 30
+
+cor_all <- parallel::detectCores()-1#cores to be allocated
+registerDoParallel(cores = cor_all)
 
 HC.sum.all <- foreach(k = 1:K) %dopar%
   {
