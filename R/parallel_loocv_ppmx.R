@@ -51,7 +51,8 @@ for(k in 1:K){
                               calibration = 2, coardegree = 2, modelpriors, 
                               update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
-                              mhtunepar = c(0.05, 0.05), CC = 5, reuse = 1, nclu_init = 10), error = function(e){FALSE})
+                              mhtunepar = c(0.05, 0.05), CC = 5, reuse = 1, 
+                              nclu_init = 10), error = function(e){FALSE})
     
     #number of a cluster, mean, binder &varinf ----
     mc <- apply(out_ppmx$nclu, 1, mean)

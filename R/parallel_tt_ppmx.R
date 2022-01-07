@@ -1,12 +1,20 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenalt4.RData")
 
 library(treatppmx)
-#library(parallel)
-#library(doParallel)
+library(parallel)
+library(doParallel)
 library(mcclust)
 library(mcclust.ext)
+
+loadRData <- function(fileName){
+  #loads an RData file, and returns it
+  load(fileName)
+  get(ls()[ls() != "fileName"])
+}
+
+simdata <- loadRData("data/scenalt1.RData")
+mypath <- c("output/simulation-scenarios/train-test/scen-alt-1")
 
 npc2 <- function(output, trtsgn, myoutot){
   K <- dim(output)[3]
@@ -33,32 +41,30 @@ npc2 <- function(output, trtsgn, myoutot){
   return(res)
 }
 
-K <- 2#30#repliche
+K <- 30#repliche
 npat_pred <- 28
 
 predAPT_all <- array(0, dim = c(npat_pred, 9, K))
 nclust_all <- matrix(0, nrow = K, ncol = 6)
 gof_all <- matrix(0, nrow = K, ncol = 2)
-myres0 <- vector(mode = "list", length = K)
 
 wk <- c(0, 40, 100)
 
-for(k in 1:K){
-  #predAPT<-matrix(1,nrow= npat,ncol=10);  ### ut1,ut2,trt,cluster
-  #cor_all <- parallel::detectCores()-1#cores to be allocated
-  #registerDoParallel(cores = cor_all)
+cor_all <- parallel::detectCores()-1#cores to be allocated
+registerDoParallel(cores = cor_all)
   
-  #X <- data.frame(t(mydata))[, -c(11:92)]#data.frame(mydata)#
-  X_train <- data.frame(scenalt4$pred[[k]][1:124,])
-  Z_train <- data.frame(scenalt4$prog[[k]][1:124,])
-  Y_train <- data.frame(scenalt4$ymat[[k]][1:124,])
+myres0 <- foreach(k = 1:K) %dopar%
+  {
+  X_train <- data.frame(simdata$pred[[k]][1:124,])
+  Z_train <- data.frame(simdata$prog[[k]][1:124,])
+  Y_train <- data.frame(simdata$ymat[[k]][1:124,])
   
-  X_test <- data.frame(scenalt4$pred[[k]][125:152,])
-  Z_test <- data.frame(scenalt4$prog[[k]][125:152,])
-  Y_test <- data.frame(scenalt4$ymat[[k]][125:152,])
+  X_test <- data.frame(simdata$pred[[k]][125:152,])
+  Z_test <- data.frame(simdata$prog[[k]][125:152,])
+  Y_test <- data.frame(simdata$ymat[[k]][125:152,])
   
-  trtsgn_train <- scenalt4$trtsgn[[k]][1:124]
-  trtsgn_test <- scenalt4$trtsgn[[k]][125:152]
+  trtsgn_train <- simdata$trtsgn[[k]][1:124]
+  trtsgn_test <- simdata$trtsgn[[k]][125:152]
 
   modelpriors <- list()
   modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(10, ncol(Y_train))
@@ -74,7 +80,7 @@ for(k in 1:K){
   nout <- (iterations-burnin)/thinning
   predAPT <- c()
   
-  res0 <- ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
+  res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
                               Xpred = data.frame(X_test), Z = data.frame(Z_train), 
                               Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
                               PPMx = 1, cohesion = 2, alpha = 10, sigma = 0.25,
@@ -82,35 +88,34 @@ for(k in 1:K){
                               calibration = 2, coardegree = 2, modelpriors, 
                               update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
-                              mhtunepar = c(0.05, 0.05), CC = 5, reuse = 1, nclu_init = 10)
+                              mhtunepar = c(0.05, 0.05), CC = 5, reuse = 1, 
+                              nclu_init = 10), error = function(e){FALSE})
+  return(res0)
+  }
     
-    #number of a cluster, mean, binder &varinf ----
-    mc <- apply(res0$nclu, 1, mean)
-    trt <- trtsgn_train
-    num_treat <- table(trt)
-    
-    cls1 <- t(as.matrix(res0$label[[1]]))[,c(1:num_treat[1])]
-    psm1 <- comp.psm(cls1)
-    mc_b1 <- minbinder.ext(psm1)
-    mc_vi1 <- minVI(psm1)
-    
-    cls2 <- t(as.matrix(res0$label[[2]]))[,c(1:num_treat[2])]
-    psm2 <- comp.psm(cls2)
-    mc_b2 <- minbinder.ext(psm2)
-    mc_vi2 <- minVI(psm2)
-    
-    mc_b <- c(max(mc_b1$cl), max(mc_b2$cl))
-    mc_vi <- c(max(mc_vi1$cl), max(mc_vi2$cl))
-    
-  ##treatment prediction with utility function ----
-  #cat("errori: ", which(rowSums(myres) == 0), "\n")
-  myres0[[k]] <- res0
+for(k in 1:K){
+  res0 <- myres0[[k]]
+  #number of a cluster, mean, binder &varinf ----
+  mc <- apply(res0$nclu, 1, mean)
+  trt <- simdata$trtsgn[[k]][1:124]
+  num_treat <- table(trt)
+  
+  cls1 <- t(as.matrix(res0$label[[1]]))[,c(1:num_treat[1])]
+  psm1 <- comp.psm(cls1)
+  mc_b1 <- minbinder.ext(psm1)
+  mc_vi1 <- minVI(psm1)
+  
+  cls2 <- t(as.matrix(res0$label[[2]]))[,c(1:num_treat[2])]
+  psm2 <- comp.psm(cls2)
+  mc_b2 <- minbinder.ext(psm2)
+  mc_vi2 <- minVI(psm2)
+  
+  mc_b <- c(max(mc_b1$cl), max(mc_b2$cl))
+  mc_vi <- c(max(mc_vi1$cl), max(mc_vi2$cl))
+  
   myres <- apply(res0$pipred, c(1,2,3), median, na.rm=TRUE)
   myclu <- rbind(mc, mc_b, mc_vi)
   myfit <- c(res0$WAIC, res0$lpml)
-  #myres <- myres[complete.cases(myres),]
-  #sellines <- as.vector(which(rowSums(myres) != 0))
-  #sellines <- 1:npat
   A1 <- myres[,, 1]%*%wk 
   A2 <- myres[,, 2]%*%wk
   predAPT_all[, 1, k] <- A1
@@ -121,10 +126,9 @@ for(k in 1:K){
   
   nclust_all[k,] <- c(t(myclu))
   gof_all[k,] <- myfit
-  #sellines_all[[k]] <- sellines
+  
+  myprob <- simdata$prob[[k]]
 }
-
-myprob <- scenalt4$prob[[k]]
 
 mywk1 <- myprob[[1]][125:152,]%*%wk
 mywk2 <- myprob[[2]][125:152,]%*%wk
@@ -135,7 +139,6 @@ utdiff <- abs(as.numeric(mywk2 - mywk1))
 #MOT
 PPMXCT <- c()
 for(k in 1:K){
-  #subset <- sellines_all[[k]]
   PPMXCT[k] <-  sum(abs(predAPT_all[, 3, k] - optrt))
 }
 
@@ -144,7 +147,6 @@ MOT <- c(round(mean(PPMXCT), 4), round(sd(PPMXCT), 4))
 #MTUg
 PPMXpp <- c()
 for(k in 1:K){
-  #subset <- sellines_all[[k]]
   PPMXpp[k] <- -(2*sum(abs((predAPT_all[, 3, k] - optrt)) * utdiff) - utsum);
 }
 
@@ -153,13 +155,12 @@ MTUg <- c(round(mean(PPMXpp/utsum), 4), round(sd(PPMXpp/utsum), 4))
 #NPC
 PPMXCUT <- c()
 for(k in 1:K){
-  #subset <- sellines_all[[k]]
+  trtsgn_test <- simdata$trtsgn[[k]][125:152]
   temp <- array(0, dim = c(28, 6, 1))
   temp[,,1] <- predAPT_all[, 4:9,k]
-  myoutot <- scenalt4$yord[[k]][125:152,]
+  myoutot <- simdata$yord[[k]][125:152,]
   PPMXCUT[k] <- npc2(temp, trtsgn_test, myoutot)
 }
-#PPMXCUT <- as.vector(npc(predAPT_all[, 4:9,], trtsgn_test, myoutot));
 NPC <- c(round(mean(PPMXCUT), 4), round(sd(PPMXCUT), 4))
 
 #NCLU
@@ -183,10 +184,10 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-#save(resPPMX, file="output/simulation-scenarios/train-test/scen-alt-6/res.RData")
-#save(cluPPMX, file="output/simulation-scenarios/train-test/scen-alt-6/clu.RData")
-#save(PPMXCT, file="output/simulation-scenarios/train-test/scen-alt-6/mot.RData")
-#save(PPMXpp, file="output/simulation-scenarios/train-test/scen-alt-6/mtug.RData")
-#save(PPMXCUT, file="output/simulation-scenarios/train-test/scen-alt-6/npc.RData")
+save(resPPMX, file=paste0(mypath, "/res.RData"))
+save(cluPPMX, file=paste0(mypath, "/clu.RData"))
+save(PPMXCT, file=paste0(mypath, "/mot.RData"))
+save(PPMXpp, file=paste0(mypath, "/mtug.RData"))
+save(PPMXCUT, file=paste0(mypath, "/npc.RData"))
 
 
