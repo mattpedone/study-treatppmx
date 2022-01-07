@@ -20,19 +20,35 @@ It is stored in `scenario5.rda`
 It is stored in `scenario6.rda`
 
 ## Scenarios - Train-Test 
-### overlap = 0.8
-1. 2 prognostic (with power trasformation) and 25 predictive markers. 
+### overlap = 1.0
+1. 2 prognostic (with power trasformation) and 10 predictive markers. 
 It is stored in `scenalt1.RData`
 
-2. 2 prognostic (with power trasformation) and 50 predictive markers. 
+2. 2 prognostic (with power trasformation) and 25 predictive markers. 
 It is stored in `scenalt2.RData`
 
-### overlap = 0.9
-3. 2 prognostic (with power trasformation) and 25 predictive markers. 
+3. 2 prognostic (with power trasformation) and 50 predictive markers. 
 It is stored in `scenalt3.RData`
 
-4. 2 prognostic (with power trasformation) and 50 predictive markers. 
+### overlap = 0.9
+4. 2 prognostic (with power trasformation) and 10 predictive markers. 
 It is stored in `scenalt4.RData`
+
+5. 2 prognostic (with power trasformation) and 25 predictive markers. 
+It is stored in `scenalt5.RData`
+
+6. 2 prognostic (with power trasformation) and 50 predictive markers. 
+It is stored in `scenalt6.RData`
+
+### overlap = 0.8
+7. 2 prognostic (with power trasformation) and 10 predictive markers. 
+It is stored in `scenalt7.RData`
+
+8. 2 prognostic (with power trasformation) and 25 predictive markers. 
+It is stored in `scenalt8.RData`
+
+9. 2 prognostic (with power trasformation) and 50 predictive markers. 
+It is stored in `scenalt9.RData`
 
 ## Lower Grade Glioma
 
