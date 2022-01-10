@@ -1,6 +1,6 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenario1.rda")
+load("data/scenario4a.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
@@ -153,8 +153,8 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file="output/simulation-scenarios/scen1/res.RData")
-save(cluPPMX, file="output/simulation-scenarios/scen1/clu.RData")
-save(PPMXCT, file="output/simulation-scenarios/scen1/mot.RData")
-save(PPMXpp, file="output/simulation-scenarios/scen1/mtug.RData")
-save(PPMXCUT, file="output/simulation-scenarios/scen1/npc.RData")
+save(resPPMX, file="output/simulation-scenarios/scen4a/res.RData")
+save(cluPPMX, file="output/simulation-scenarios/scen4a/clu.RData")
+save(PPMXCT, file="output/simulation-scenarios/scen4a/mot.RData")
+save(PPMXpp, file="output/simulation-scenarios/scen4a/mtug.RData")
+save(PPMXCUT, file="output/simulation-scenarios/scen4a/npc.RData")
