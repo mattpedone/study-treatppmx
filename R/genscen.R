@@ -69,5 +69,17 @@ save(scenalt8, file = "data/scenalt8.RData")
 scenalt9 <- treatppmx::genmech_alt(npred = 50, nset = 30, overlap = .8)
 save(scenalt9, file = "data/scenalt9.RData")
 
+# Scenario 10-alt
+scenalt10 <- treatppmx::genmech_alt(npred = 10, nset = 30, overlap = .7)
+save(scenalt10, file = "data/scenalt10.RData")
+
+# Scenario 11-alt
+scenalt11 <- treatppmx::genmech_alt(npred = 25, nset = 30, overlap = .7)
+save(scenalt11, file = "data/scenalt11.RData")
+
+# Scenario 12-alt
+scenalt12 <- treatppmx::genmech_alt(npred = 50, nset = 30, overlap = .7)
+save(scenalt12, file = "data/scenalt12.RData")
+
 
 
