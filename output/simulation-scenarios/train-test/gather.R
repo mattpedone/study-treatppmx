@@ -331,3 +331,114 @@ load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-
 ppmx <- t(resPPMX[1:3,])
 
 scenalt9 <- rbind(pam, km, hc, ppmx)
+
+##Scenario 10
+#hc
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/mot_hc.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/mtug_hc.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/npc_hc.RData")
+npc <- NPC
+hc <- t(rbind(mot, mtug, npc))
+rownames(hc) <- c("mean", "sd")
+
+#km
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/mot_km.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/mtug_km.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/npc_km.RData")
+npc <- NPC
+km <- t(rbind(mot, mtug, npc))
+rownames(km) <- c("mean", "sd")
+
+#pam
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/mot_pam.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/mtug_pam.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/npc_pam.RData")
+npc <- NPC
+pam <- t(rbind(mot, mtug, npc))
+rownames(pam) <- c("mean", "sd")
+
+#ppmx
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-10/res.RData")
+ppmx <- t(resPPMX[1:3,])
+
+scenalt10 <- rbind(pam, km, hc, ppmx)
+
+##Scenario 11
+#hc
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/mot_hc.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/mtug_hc.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/npc_hc.RData")
+npc <- NPC
+hc <- t(rbind(mot, mtug, npc))
+rownames(hc) <- c("mean", "sd")
+
+#km
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/mot_km.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/mtug_km.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/npc_km.RData")
+npc <- NPC
+km <- t(rbind(mot, mtug, npc))
+rownames(km) <- c("mean", "sd")
+
+#pam
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/mot_pam.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/mtug_pam.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/npc_pam.RData")
+npc <- NPC
+pam <- t(rbind(mot, mtug, npc))
+rownames(pam) <- c("mean", "sd")
+
+#ppmx
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-11/res.RData")
+ppmx <- t(resPPMX[1:3,])
+
+scenalt11 <- rbind(pam, km, hc, ppmx)
+
+##Scenario 12
+#hc
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/mot_hc.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/mtug_hc.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/npc_hc.RData")
+npc <- NPC
+hc <- t(rbind(mot, mtug, npc))
+rownames(hc) <- c("mean", "sd")
+
+#km
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/mot_km.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/mtug_km.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/npc_km.RData")
+npc <- NPC
+km <- t(rbind(mot, mtug, npc))
+rownames(km) <- c("mean", "sd")
+
+#pam
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/mot_pam.RData")
+mot <- MOT
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/mtug_pam.RData")
+mtug <- MTUg
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/npc_pam.RData")
+npc <- NPC
+pam <- t(rbind(mot, mtug, npc))
+rownames(pam) <- c("mean", "sd")
+
+#ppmx
+load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/train-test/scen-alt-12/res.RData")
+ppmx <- t(resPPMX[1:3,])
+
+scenalt12 <- rbind(pam, km, hc, ppmx)
