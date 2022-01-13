@@ -12,9 +12,9 @@ loadRData <- function(fileName){
   load(fileName)
   get(ls()[ls() != "fileName"])
 }
-for(sc in 10:12){
+for(sc in 1:9){
   simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
-  mypath <- c(paste0("output/simulation-scenarios/train-test/scen-alt-", sc))
+  mypath <- c(paste0("output/simulation-scenarios/train-test-prior/lambda0-1/scen-alt-", sc))
 
 npc2 <- function(output, trtsgn, myoutot){
   K <- dim(output)[3]
@@ -67,15 +67,15 @@ myres0 <- foreach(k = 1:K) %dopar%
   trtsgn_test <- simdata$trtsgn[[k]][125:152]
 
   modelpriors <- list()
-  modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(10, ncol(Y_train))
+  modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(1, ncol(Y_train))
   modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(1.0, ncol(Y_train))
   
   #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
   vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
   #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-  iterations <- 50000#0
-  burnin <- 10000#0
-  thinning <- 10
+  iterations <- 12000#0#0
+  burnin <- 2000#0#0
+  thinning <- 5
   
   nout <- (iterations-burnin)/thinning
   predAPT <- c()
