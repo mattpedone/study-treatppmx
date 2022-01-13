@@ -51,7 +51,7 @@ iterations <- 1000; burnin <- 0; thinning <- 1
 
 #beta <- 4.4185; sigma <- .25; theta <- 19.233
 beta <- 48.4185; sigma <- .25; theta <- 19.233
-#beta <- 1.0; sigma <- .7553; theta <- 19.233
+beta <- 1.0; sigma <- .7553; theta <- 19.233
 
 nout <- (iterations-burnin)/thinning
 
@@ -69,7 +69,7 @@ res_121 <- foreach(sub = 1:K, .combine = rbind) %dopar%
 
 res_221 <- foreach(sub = 1:K, .combine = rbind) %dopar%
   {
-    out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 1, alpha = theta, #*sigma,
+    out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 1, alpha = theta, #1, #2,
                                  sigma = sigma, similarity = 2, consim = 2,
                                  similparam = vec_par, calibration = 2,
                                  coardegree = 2, iter = iterations, burn = burnin,
