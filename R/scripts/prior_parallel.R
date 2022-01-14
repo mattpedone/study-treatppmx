@@ -58,6 +58,7 @@ nout <- (iterations-burnin)/thinning
 cor_all <- parallel::detectCores()-1#cores to be allocated
 registerDoParallel(cores = cor_all)
 
+####---- Number of Clusters ----#####
 res_121 <- foreach(sub = 1:K, .combine = rbind) %dopar%
   {
     out_ppmx_prior <- prior_ppmx(X = X, PPMx = 1, cohesion = 2, alpha = beta, #*sigma,
@@ -65,6 +66,7 @@ res_121 <- foreach(sub = 1:K, .combine = rbind) %dopar%
                                  similparam = vec_par, calibration = 0,
                                  coardegree = 1, iter = iterations, burn = burnin,
                                  thin = thinning, nclu_init = 30)
+    out <- out_ppmx_prior$nclu
   }
 
 res_221 <- foreach(sub = 1:K, .combine = rbind) %dopar%
@@ -74,6 +76,7 @@ res_221 <- foreach(sub = 1:K, .combine = rbind) %dopar%
                                  similparam = vec_par, calibration = 2,
                                  coardegree = 2, iter = iterations, burn = burnin,
                                  thin = thinning, nclu_init = 30)
+    out <- out_ppmx_prior$nclu
   }
 
 res_222 <- foreach(sub = 1:K, .combine = rbind) %dopar%
@@ -83,6 +86,7 @@ res_222 <- foreach(sub = 1:K, .combine = rbind) %dopar%
                                  similparam = vec_par, calibration = 2,
                                  coardegree = 2, iter = iterations, burn = burnin,
                                  thin = thinning, nclu_init = 30)
+    out <- out_ppmx_prior$nclu
   }
 
 res_0 <- foreach(sub = 1:K, .combine = rbind) %dopar%
@@ -92,6 +96,7 @@ res_0 <- foreach(sub = 1:K, .combine = rbind) %dopar%
                                  similparam = vec_par, calibration = 0,
                                  coardegree = 1, iter = iterations, burn = burnin,
                                  thin = thinning, nclu_init = 30)
+    out <- out_ppmx_prior$nclu
   }
 
 res <- t(rbind(apply(res_121/nout, 2, mean), #apply(res_122/nout, 2, mean), 
@@ -150,3 +155,85 @@ ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
 #  #ylab(expression(P(C[n] == c)))
 #  labs(x = expression(c), y = expression(P(C[n] == c)), 
 #       color = expression(' '))
+
+####---- Cardinalities ----#####
+ngg_nocal <- prior_ppmx(X = X, PPMx = 1, cohesion = 2, alpha = beta, #*sigma,
+                                 sigma = sigma, similarity = 2, consim = 2,
+                                 similparam = vec_par, calibration = 0,
+                                 coardegree = 1, iter = iterations, burn = burnin,
+                                 thin = thinning, nclu_init = 30)
+
+tab <- apply(ngg_nocal$nj, 2, sort, decreasing = T)
+tab[which(tab == 0)] <- NA
+tab2 <- tab
+tab2[which(tab2 != 0)] <- 1
+avg_ngg_nocal <- mean(apply(tab2, 2, sum, na.rm = T))
+tab[which(tab != 1)] <- 0
+ps_ngg_nocal <- mean(apply(tab, 2, mean, na.rm = T))
+
+dp_coa <- prior_ppmx(X = X, PPMx = 1, cohesion = 1, alpha = theta, #1, #2,
+                                 sigma = sigma, similarity = 2, consim = 2,
+                                 similparam = vec_par, calibration = 2,
+                                 coardegree = 2, iter = iterations, burn = burnin,
+                                 thin = thinning, nclu_init = 30)
+
+tab <- apply(dp_coa$nj, 2, sort, decreasing = T)
+tab[which(tab == 0)] <- NA
+tab2 <- tab
+tab2[which(tab2 != 0)] <- 1
+avg_dp_coa <- mean(apply(tab2, 2, sum, na.rm = T))
+tab[which(tab != 1)] <- 0
+ps_dp_coa <- mean(apply(tab, 2, mean, na.rm = T))
+
+ngg_coa <- prior_ppmx(X = X, PPMx = 1, cohesion = 2, alpha = beta, #*sigma,
+                                 sigma = sigma, similarity = 2, consim = 2,
+                                 similparam = vec_par, calibration = 2,
+                                 coardegree = 2, iter = iterations, burn = burnin,
+                                 thin = thinning, nclu_init = 30)
+
+tab <- apply(ngg_coa$nj, 2, sort, decreasing = T)
+tab[which(tab == 0)] <- NA
+tab2 <- tab
+tab2[which(tab2 != 0)] <- 1
+avg_ngg_coa <- mean(apply(tab2, 2, sum, na.rm = T))
+tab[which(tab != 1)] <- 0
+ps_ngg_coa <- mean(apply(tab, 2, mean, na.rm = T))
+
+dp <- prior_ppmx(X = X, PPMx = 0, cohesion = 1, alpha = theta, #1, #2,
+                     sigma = sigma, similarity = 2, consim = 2,
+                     similparam = vec_par, calibration = 2,
+                     coardegree = 2, iter = iterations, burn = burnin,
+                     thin = thinning, nclu_init = 30)
+
+tab <- apply(dp$nj, 2, sort, decreasing = T)
+tab[which(tab == 0)] <- NA
+tab2 <- tab
+tab2[which(tab2 != 0)] <- 1
+avg_dp <- mean(apply(tab2, 2, sum, na.rm = T))
+tab[which(tab != 1)] <- 0
+ps_dp <- mean(apply(tab, 2, mean, na.rm = T))
+
+ngg <- prior_ppmx(X = X, PPMx = 0, cohesion = 2, alpha = beta, #*sigma,
+                      sigma = sigma, similarity = 2, consim = 2,
+                      similparam = vec_par, calibration = 2,
+                      coardegree = 2, iter = iterations, burn = burnin,
+                      thin = thinning, nclu_init = 30)
+
+tab <- apply(ngg$nj, 2, sort, decreasing = T)
+tab[which(tab == 0)] <- NA
+cs_ngg <- cumsum(vweights::computepnclu(nobs, sigma, beta*sigma))
+avg_ngg <- 26+(1-(cs_ngg[27]-.5)/(cs_ngg[27]-cs_ngg[26]))
+tab[which(tab != 1)] <- 0
+ps_ngg <- mean(apply(tab, 2, mean, na.rm = T))
+
+ps_ngg_nocal
+ps_ngg_coa
+ps_dp_coa
+ps_dp
+ps_ngg
+
+avg_ngg_nocal
+avg_ngg_coa
+avg_dp_coa
+avg_dp
+avg_ngg
