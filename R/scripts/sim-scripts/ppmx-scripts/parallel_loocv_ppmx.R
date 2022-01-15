@@ -1,6 +1,6 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenario4a.rda")
+load("data/scenario1.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
@@ -34,9 +34,9 @@ for(k in 1:K){
   #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
   vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
   #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-  iterations <- 50000 
-  burnin <- 20000
-  thinning <- 10
+  iterations <- 12000#0#0
+  burnin <- 2000#0#0
+  thinning <- 5
   
   nout <- (iterations-burnin)/thinning
   predAPT <- c()
@@ -46,7 +46,7 @@ for(k in 1:K){
     out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                              PPMx = 1, cohesion = 2, alpha = 10, sigma = 0.25,
+                              PPMx = 1, cohesion = 2, alpha = 10, sigma = 0.01,
                               similarity = 2, consim = 2, similparam = vec_par, 
                               calibration = 2, coardegree = 2, modelpriors, 
                               update_hierarchy = T,
@@ -153,8 +153,8 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file="output/simulation-scenarios/scen4a/res.RData")
-save(cluPPMX, file="output/simulation-scenarios/scen4a/clu.RData")
-save(PPMXCT, file="output/simulation-scenarios/scen4a/mot.RData")
-save(PPMXpp, file="output/simulation-scenarios/scen4a/mtug.RData")
-save(PPMXCUT, file="output/simulation-scenarios/scen4a/npc.RData")
+save(resPPMX, file="output/simulation-scenarios/scen1/res.RData")
+save(cluPPMX, file="output/simulation-scenarios/scen1/clu.RData")
+save(PPMXCT, file="output/simulation-scenarios/scen1/mot.RData")
+save(PPMXpp, file="output/simulation-scenarios/scen1/mtug.RData")
+save(PPMXCUT, file="output/simulation-scenarios/scen1/npc.RData")
