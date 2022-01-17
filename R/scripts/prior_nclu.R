@@ -107,9 +107,7 @@ ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
   labs(x = expression(c), y = expression(P(C[50] == c)), 
        color = expression(' '))
 
-ggsave("figs/plot_pnc.pdf")
-
-#save(res, file = "output/prior-ppmx/results_.RData")
+#ggsave("figs/plot_pnc.pdf")
 
 ##tentativi grafico su scala di grigi invece che colorato
 #ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity, linetype=similarity)) +
@@ -174,14 +172,9 @@ avg_ngg <- 26+(1-(cs_ngg[27]-.5)/(cs_ngg[27]-cs_ngg[26]))
 tab[which(tab != 1)] <- 0
 ps_ngg <- mean(apply(tab, 2, mean, na.rm = T))
 
-ps_ngg_nocal
-ps_ngg_coa
-ps_dp_coa
-ps_dp
-ps_ngg
-
-avg_ngg_nocal
-avg_ngg_coa
-avg_dp_coa
-avg_dp
-avg_ngg
+avgs <- c(avg_dp, avg_dp_coa, avg_ngg, avg_ngg_nocal, avg_ngg_coa)
+pss <- c(ps_dp, ps_dp_coa, ps_ngg, ps_ngg_nocal, ps_ngg_coa)
+tab <- rbind(avgs, pss)
+colnames(tab) <- c("DP", "DP-sim", "NGG", "NGG-nocal", "NGG-sim")
+rownames(tab) <- c("Average number of clusters", "Proportion of singletons")
+tab
