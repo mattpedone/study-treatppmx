@@ -1,46 +1,16 @@
 # info_simulation_sensitivity
 
-These are the results of the simulation studies for evaluating sensitivity with respect to hyper parameter choice. 
+These are the results of the simulation studies for evaluating sensitivity with respect to hyper parameter choice.
 
-The simulation study is designed to evaluate different configurations of parameters $(\kappa, \sigma)$, $(\Sigma, S_0)$ and $\sigma^{2}_{0}$, under two simulation scenarios (1, 2) and with respect to LGG data, comparing two different Similarity functions (DDNN, DDNNIG).
+The simulation study is designed to evaluate different configurations of parameters $(\kappa, \sigma)$, $(\Sigma, S_0)$ and $\sigma^{2}_{0}$.
 
-Data are generated using the file `R/genscen.R` and saved in `data/`. Fore details on scenarios see `data/info-data.md`. Also LGG data are stored in `data/` folder.
+Data are generated using the file `R/genscen.R` and saved in `data/`. Fore details on scenarios see `data/info-data.md`.
 
-The structure of this folder is the following:
+***
 
-```
-├── DDNN
-│   ├── scen1
-│   │   ├── kappasigma.RData
-│   │   ├── SigmaS0.RData
-│   │   ├── sigma20.RData
-│   ├── scen2
-│   │   ├── kappasigma.RData
-│   │   ├── SigmaS0.RData
-│   │   ├── sigma20.RData
-│   ├── LGG
-│   │   ├── kappasigma.RData
-│   │   ├── SigmaS0.RData
-│   │   ├── sigma20.RData
-└──DDNNIG
-    ├── scen1
-    │   ├── kappasigma.RData
-    │   ├── SigmaS0.RData
-    │   ├── sigma20.RData
-    ├── scen2
-    │   ├── kappasigma.RData
-    │   ├── SigmaS0.RData
-    │   ├── sigma20.RData
-    └── LGG
-        ├── kappasigma.RData
-        ├── SigmaS0.RData
-        └── sigma20.RData
-```
-
-*** 
-Considering that the parameters of the NGG measure are $NGG(\beta\sigma, \sigma)$, where $\kappa = \beta\times\sigma$, for a better understanding of the behavior of NGG for varying parameters, we will consider the parameter $\beta$. 
-The parameters are set at the following default values: $\beta = 40$, $\sigma = 0.25$, $\Sigma = 10\mathbf{1}$, $S_0 = 0.1\mathbf{1}$, $\sigma^{2}_{0} = 1$, where $\mathbf{1}$ is $3\times 3$ identity matrix. 
-Keeping all other parameters fixed, the pairs $(\beta, \sigma)$ and $(\Sigma, S_0)$ and the scalar $\sigma^{2}_{0}$ are evaluated over the following grids: 
+Considering that the parameters of the NGG measure are $NGG(\beta\sigma, \sigma)$, where $\kappa = \beta\times\sigma$, for a better understanding of the behavior of NGG for varying parameters, we will consider the parameter $\beta$.
+The parameters are set at the following default values: $\beta = 40$, $\sigma = 0.25$, $\Sigma = 10\mathbf{1}$, $S_0 = 0.1\mathbf{1}$, $\sigma^{2}_{0} = 1$, where $\mathbf{1}$ is $3\times 3$ identity matrix.
+Keeping all other parameters fixed, the pairs $(\beta, \sigma)$ and $(\Sigma, S_0)$ and the scalar $\sigma^{2}_{0}$ are evaluated over the following grids:
 
 * $\beta=\{1, 10, 40\}$
 
@@ -80,4 +50,3 @@ For each scenario the sensitivity of the parameters has been evluated replicatin
 ***
 
 sessioninfo()
-
