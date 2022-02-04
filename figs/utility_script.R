@@ -23,7 +23,7 @@ Y <- mytot[,,k]
 #print(idx)
 wk <- c(0, 40, 100)
 df <- data.frame(sort(myprob[[2]]%*%(wk)-myprob[[1]]%*%(wk)))
-myorder <- c(sample(1:117, 117, FALSE), sample(118:152, 35, FALSE))
+myorder <- c(sample(1:110, 110, FALSE), sample(111:152, 42, FALSE))
 df2 <- data.frame(df[myorder,])
 colnames(df2) <- c("Difference in utility")
 
@@ -36,7 +36,7 @@ Y <- mytot[,,k]
 #print(idx)
 wk <- c(0, 40, 100)
 df <- data.frame(sort(myprob[[2]]%*%(wk)-myprob[[1]]%*%(wk)))
-myorder <- c(sample(1:117, 117, FALSE), sample(118:152, 35, FALSE))
+myorder <- c(sample(1:109, 109, FALSE), sample(110:152, 43, FALSE))
 df3 <- data.frame(df[myorder,])
 colnames(df3) <- c("Difference in utility")
 
@@ -58,7 +58,7 @@ p <- ggplot2::ggplot(df) +
   scale_x_continuous(breaks = round(seq(min(df[1]), max(df[1]), by = 10),0)) +
   scale_y_continuous(breaks = round(seq(min(df[2]), max(df[2]), by = 12),1)) +
   #scale_colour_manual(values = c(4, RColorBrewer::brewer.pal(9, "Greys")[c(4, 6, 9)]))
-  scale_color_manual(values = c("#F8766D","#000000", "#00BA38", "#619CFF"))
+  scale_color_manual(values = c("#F8766D","#E69F00", "#56B4E9", "#009E73"))
 p <- p + theme(legend.title = element_blank())
 p
 

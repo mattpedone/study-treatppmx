@@ -1,4 +1,5 @@
 rm(list=ls())
+#directory sbagliate
 load(("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/res_ma_pam.rda"))
 pam <- resHCpp
 load("~/Dropbox/PHD/study-treatppmx/output/simulation-scenarios/scen6/res_ma_km.rda")
