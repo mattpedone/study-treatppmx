@@ -1,97 +1,134 @@
 rm(list = ls())
 # Load packages
+## pckgs for proteins & clinical covariates
 library("TCGAbiolinks")
 library("SummarizedExperiment")
 
+## pckgs for data wrangling
+library(dplyr)
+library(tidyverse)
+library(data.table)
+library(tibble)
+library(tidyfst)
+library(stringr)
+
+# Available data for Lower Grade Glioma
 TCGAbiolinks:::getProjectSummary("TCGA-LGG")
 
+# Proteins Tibble
 query_lgg = GDCquery(
   project = "TCGA-LGG",
   data.category = "Proteome Profiling",
-  #data.type = "miRNA Expression Quantification",
   #sample.type = "Primary Tumor", 
-  #experimental.strategy = "miRNA-Seq",
-  #workflow.type = "BCGSC miRNA Profiling",
-  #platform = "RPPA",
+  data.format = "BCR Biotab",
   legacy = FALSE)
 
-lgg_res = getResults(query_lgg) 
-colnames(lgg_res) 
-
-# Commento Query
-### ---- 
-# Non sono sicuro della query fatta. data category è corretto? Sono indeciso tra
-# Transcriptome Profiling e Proteome Profiling.
-# Se scelgo Proteome Profiling l'unica experimental.strategy è Reverse Phase Protein Array,
-# ma non riesco a specificare un workflow.type valido
-
-# Se metto 
-#data.category = c("Transcriptome Profiling"),
-# ci vuole circa 10 min.
-# Sulla base di quanto segue credo non sia corretto
-# > table(lgg_res$type)
-# 
-# gene_expression mirna_expression 
-# 1587             1060 
-# > table(lgg_res$data_type)
-# 
-# Gene Expression Quantification Isoform Expression Quantification 
-# 1587                               530 
-# miRNA Expression Quantification 
-# 530 
-# > table(lgg_res$experimental_strategy)
-# 
-# miRNA-Seq   RNA-Seq 
-# 1060      1587 
-# > table(lgg_res$analysis_workflow_type)
-# 
-# BCGSC miRNA Profiling        HTSeq - Counts          HTSeq - FPKM 
-# 1060                   529                   529 
-# HTSeq - FPKM-UQ 
-# 529 
-### ---- 
-# Fine commento query
-
-table(lgg_res$sample_type)
-# Maybe we need to ignore the class of Recurrent Tumors. The query would be:
-#query_TCGA = GDCquery(
-#  project = "TCGA-LGG",
-#  data.category = c("Proteome Profiling"),
-#  sample.type = c("Primary Tumor"))
-
-# Download the files from the query. 
-# Check that you set your current working directory correctly
-getwd()
 GDCdownload(query = query_lgg)
-
-# Load the data into R.
-query_lgg
 lgg_data = GDCprepare(query_lgg, summarizedExperiment = T)
 
-dim(lgg_data)
+# Clinical Tibble
+query_lgg_clin = GDCquery(
+  project = "TCGA-LGG",
+  data.category = "Clinical",
+  data.type = "Clinical Supplement",
+#  sample.type = "Primary Tumor", 
+  data.format = "BCR Biotab")
 
-#https://www.bioconductor.org/packages/devel/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#anatomy-of-a-summarizedexperiment
-colnames(colData(lgg_data))
+GDCdownload(query = query_lgg_clin)
+lgg_data_clin = GDCprepare(query_lgg_clin)
 
-#The table() function (in this context) produces a small summary with the sum of each of the factors present in a given column.
-table(tcga_data@colData$vital_status)
-table(tcga_data@colData$prior_treatment)
-#table(tcga_data@colData$treatment_type)
-table(tcga_data@colData$tumor_grade) #not reported...
-table(tcga_data@colData$definition)
-table(tcga_data@colData$tissue_or_organ_of_origin)
-table(tcga_data@colData$gender)
-table(tcga_data@colData$race)
+# Reshape proteins data (samples x (1+protein); first column id)
+protein <- as_tibble(cbind(barcode = names(lgg_data)[-c(1:4)], 
+                           t(lgg_data[,-c(1:4)])))
+protein <- protein %>%
+  janitor::row_to_names(1) %>% 
+  mutate_at(2:nrow(protein), as.numeric) %>% 
+  mutate_at(1, as.character) %>%
+  mutate_at(1, str_replace, "-01A", "")
 
-dim(assay(tcga_data))     # gene expression matrices.
-head(assay(tcga_data)[,1:10]) # expression of first 6 genes and first 10 samples
+colnames(protein)[1] <- "barcode"
 
-head(rowData(tcga_data))     # ensembl id and gene id of the first 6 genes.
+# Reshape clinical data 
+clinical_drug <- lgg_data_clin$clinical_drug_lgg[-c(1:2),] %>%
+  select(bcr_patient_barcode, bcr_drug_barcode, form_completion_date, 
+         treatment_best_response, pharmaceutical_therapy_type) #%>%
+  #filter(treatment_best_response != "[Not Available]") %>%
+  #filter(treatment_best_response != "[Not Applicable]") %>%
+  #filter(treatment_best_response != "[Unknown]")
 
-## Save the data as a file, if you need it later, you can just load this file
-## instead of having to run the whole pipeline again
-#saveRDS(object = tcga_data,
-#        file = "data/tcga_data.RDS",
-#        compress = FALSE)
-#
-#tcga_data <- readRDS("~/Dropbox/PHD/study-treatppmx/data/tcga_data.RDS")
+
+clinical_drug <- clinical_drug %>%
+  select(bcr_patient_barcode, treatment_best_response, pharmaceutical_therapy_type)#, treatment)
+
+#clinical_drug <- clinical_drug[as.logical(1-duplicated(clinical_drug$bcr_patient_barcode)),]
+
+clinical_patient <- lgg_data_clin$clinical_patient_lgg[-c(1:2),] %>%
+  select(bcr_patient_barcode, treatment_outcome_first_course, gender, birth_days_to, race, #ethnicity,
+         radiation_treatment_adjuvant)
+
+clinical <- full_join(clinical_drug, clinical_patient, by = "bcr_patient_barcode")
+
+#clinical <- clinical %>% 
+#  filter(treatment_best_response != "[Not Available]") %>% 
+#  filter(treatment_best_response != "[Not Applicable]") %>% 
+#  filter(treatment_best_response != "[Unknown]")
+
+colnames(clinical)[1] <- "barcode"
+
+dat <- inner_join(clinical, protein, by = "barcode")
+#dat <- full_join(clinical, protein, by = "barcode")
+
+dat <- dat %>%
+  filter(pharmaceutical_therapy_type != "[Not Available]") %>%
+  filter(treatment_best_response != "[Not Available]") #%>%
+  #filter(treatment_outcome_first_course != "[Not Available]") %>%
+
+table(dat$treatment, dat$radiation_treatment_adjuvant)
+table(dat$treatment)
+for(i in 1:nrow(dat)){
+  if((dat$radiation_treatment_adjuvant[i] == "YES") & (dat$treatment[i] == "Chemiotherapy")){
+    dat$treatment[i] <- "Advanced"
+  }
+}
+table(dat$treatment)
+
+dat$treatment <- dat$treatment %>%
+  replace(.=="Chemioterapy", "Standard") %>%
+  replace(.=="Targeted Molecular therapy", "Advanced")
+
+dat$treatment[67] <- "Advanced"#dat$radiation_treatment_adjuvant[67]
+
+#samples_metadata <- TCGAbiolinks:::colDataPrepare(colnames(lgg_data[,-c(1:5)]))
+
+#for(i in 1:435){
+#  print(samples_metadata$treatments[[i]]$treatment_type)
+#}
+
+# se i trattamenti sono somminisrtati tutti lo stesso giorno e sono strategie 
+# diverse (eg Targeted Molecular therapy and Chemotherapy) lo considero come 
+# Targeted Molecular therapy
+
+n <- length(unique(clinical_drug$bcr_patient_barcode))
+therapy <- matrix(nrow=n, ncol=2)
+for(i in 1:n){
+  pat <- unique(clinical_drug$bcr_patient_barcode)[i]
+  wt <- clinical_drug %>%
+    filter(bcr_patient_barcode == pat)
+  if(nrow(wt) > 1){
+    if(length(unique(wt$pharmaceutical_therapy_type)) > 1){
+      therapy[i,] <- c(pat, "Targeted Molecular therapy")
+    } else {
+      therapy[i,] <- c(pat, unique(wt$pharmaceutical_therapy_type))
+    }
+  } else {
+    therapy[i,] <- c(pat, wt$pharmaceutical_therapy_type)
+  }
+}
+
+therapy <- as_tibble(therapy)
+colnames(therapy) <- c("bcr_patient_barcode", "treatment")
+# ho rimosso i duplicati considerando solo quello "di sintesi"
+clinical_drug <- clinical_drug[as.logical(1-duplicated(clinical_drug$bcr_patient_barcode)),]
+
+clinical_drug <- full_join(clinical_drug, therapy, by = "bcr_patient_barcode")
+
