@@ -7,7 +7,7 @@ library(doParallel)
 library(mcclust)
 library(mcclust.ext)
 
-K <- 30 #repliche
+K <- 100 #repliche
 npat <- length(trtsgn)
 
 predAPT_all <- array(0, dim = c(npat, 9, K))
@@ -46,9 +46,9 @@ for(k in 1:K){
     out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                              PPMx = 1, cohesion = 2, alpha = 10, sigma = 0.01,
-                              similarity = 2, consim = 2, similparam = vec_par, 
-                              calibration = 2, coardegree = 2, modelpriors, 
+                              PPMx = 1, cohesion = 1, kappa = 1, sigma = 0.01,
+                              similarity = 1, consim = 1, similparam = vec_par, 
+                              calibration = 2, coardegree = 1, modelpriors, 
                               update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
                               mhtunepar = c(0.05, 0.05), CC = 5, reuse = 1, 
@@ -153,8 +153,8 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file="output/simulation-scenarios/scen1/res.RData")
-save(cluPPMX, file="output/simulation-scenarios/scen1/clu.RData")
-save(PPMXCT, file="output/simulation-scenarios/scen1/mot.RData")
-save(PPMXpp, file="output/simulation-scenarios/scen1/mtug.RData")
-save(PPMXCUT, file="output/simulation-scenarios/scen1/npc.RData")
+save(resPPMX, file="output/BaYSM/res.RData")
+save(cluPPMX, file="output/BaYSM/clu.RData")
+save(PPMXCT, file="output/BaYSM/mot.RData")
+save(PPMXpp, file="output/BaYSM/mtug.RData")
+save(PPMXCUT, file="output/BaYSM/npc.RData")
