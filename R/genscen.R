@@ -9,6 +9,10 @@ set.seed(121)
 treatppmx::genmech(npred = 10, progscen = 2, predscen = 1, nset = 30, save = T, 
                    filename = "scenario1")
 
+# Scenario 1 BaYSM
+treatppmx::genmech(npred = 10, progscen = 2, predscen = 1, nset = 100, save = T, 
+                   filename = "scenario1b")
+
 # Scenario 2
 treatppmx::genmech(npred = 25, progscen = 2, predscen = 1, nset = 30, save = T, 
                    filename = "scenario2")
