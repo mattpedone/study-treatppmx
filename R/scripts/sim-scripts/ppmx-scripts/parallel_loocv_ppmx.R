@@ -1,6 +1,6 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenario1.rda")
+load("data/scenario1b.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
@@ -30,11 +30,11 @@ for(k in 1:K){
   Y <- mytot[,,k]
   
   modelpriors <- list()
-  modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(10, ncol(Y))
-  modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(1.0, ncol(Y))
+  modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(1, ncol(Y))
+  modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(.10, ncol(Y))
   
   #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
-  vec_par <- c(0.0, 10.0, .5, 1.0, 2.0, 2.0, 0.1)
+  vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
   #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
   iterations <- 12000#0#0
   burnin <- 2000#0#0
