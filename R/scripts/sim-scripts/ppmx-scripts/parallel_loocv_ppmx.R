@@ -159,3 +159,4 @@ save(cluPPMX, file="output/BaYSM/cannig/clu.RData")
 save(PPMXCT, file="output/BaYSM/cannig/mot.RData")
 save(PPMXpp, file="output/BaYSM/cannig/mtug.RData")
 save(PPMXCUT, file="output/BaYSM/cannig/npc.RData")
+
