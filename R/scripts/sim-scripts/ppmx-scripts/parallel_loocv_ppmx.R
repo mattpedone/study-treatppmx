@@ -4,6 +4,7 @@ load("data/scenario1.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
+library(foreach)
 library(mcclust)
 library(mcclust.ext)
 
@@ -18,6 +19,7 @@ myres0 <- sellines_all <- vector(mode = "list", length = K)
 wk <- c(0, 40, 100)
 
 for(k in 1:K){
+  print(k)
   #predAPT<-matrix(1,nrow= npat,ncol=10);  ### ut1,ut2,trt,cluster
   cor_all <- parallel::detectCores()-1#cores to be allocated
   registerDoParallel(cores = cor_all)
@@ -32,7 +34,7 @@ for(k in 1:K){
   modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(1.0, ncol(Y))
   
   #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
-  vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
+  vec_par <- c(0.0, 10.0, .5, 1.0, 2.0, 2.0, 0.1)
   #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
   iterations <- 12000#0#0
   burnin <- 2000#0#0
@@ -48,7 +50,7 @@ for(k in 1:K){
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
                               PPMx = 1, cohesion = 1, kappa = 1, sigma = 0.01,
                               similarity = 1, consim = 1, similparam = vec_par, 
-                              calibration = 2, coardegree = 1, modelpriors, 
+                              calibration = 2, coardegree = 2, modelpriors, 
                               update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
                               mhtunepar = c(0.05, 0.05), CC = 5, reuse = 1, 
@@ -153,8 +155,8 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file="output/BaYSM/res.RData")
-save(cluPPMX, file="output/BaYSM/clu.RData")
-save(PPMXCT, file="output/BaYSM/mot.RData")
-save(PPMXpp, file="output/BaYSM/mtug.RData")
-save(PPMXCUT, file="output/BaYSM/npc.RData")
+save(resPPMX, file="output/BaYSM/scann/res.RData")
+save(cluPPMX, file="output/BaYSM/scann/clu.RData")
+save(PPMXCT, file="output/BaYSM/scann/mot.RData")
+save(PPMXpp, file="output/BaYSM/scann/mtug.RData")
+save(PPMXCUT, file="output/BaYSM/scann/npc.RData")
