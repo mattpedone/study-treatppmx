@@ -1,6 +1,6 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenario1.rda")
+load("data/scenario1b.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
@@ -18,6 +18,7 @@ myres0 <- sellines_all <- vector(mode = "list", length = K)
 wk <- c(0, 40, 100)
 
 for(k in 1:K){
+  print(k)
   #predAPT<-matrix(1,nrow= npat,ncol=10);  ### ut1,ut2,trt,cluster
   cor_all <- parallel::detectCores()-1#cores to be allocated
   registerDoParallel(cores = cor_all)
@@ -153,8 +154,8 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file="output/BaYSM/res.RData")
-save(cluPPMX, file="output/BaYSM/clu.RData")
-save(PPMXCT, file="output/BaYSM/mot.RData")
-save(PPMXpp, file="output/BaYSM/mtug.RData")
-save(PPMXCUT, file="output/BaYSM/npc.RData")
+save(resPPMX, file="output/BaYSM/cann/res.RData")
+save(cluPPMX, file="output/BaYSM/cann/clu.RData")
+save(PPMXCT, file="output/BaYSM/cann/mot.RData")
+save(PPMXpp, file="output/BaYSM/cann/mtug.RData")
+save(PPMXCUT, file="output/BaYSM/cann/npc.RData")
