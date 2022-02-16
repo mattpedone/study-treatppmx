@@ -1,6 +1,6 @@
 rm(list=ls())
 set.seed(121)
-load("data/scenario1.rda")
+load("data/scenario1b.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
@@ -18,6 +18,7 @@ myres0 <- sellines_all <- vector(mode = "list", length = K)
 wk <- c(0, 40, 100)
 
 for(k in 1:K){
+  print(k)
   #predAPT<-matrix(1,nrow= npat,ncol=10);  ### ut1,ut2,trt,cluster
   cor_all <- parallel::detectCores()-1#cores to be allocated
   registerDoParallel(cores = cor_all)
@@ -47,7 +48,7 @@ for(k in 1:K){
                               Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                               Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
                               PPMx = 1, cohesion = 1, kappa = 1, sigma = 0.01,
-                              similarity = 1, consim = 1, similparam = vec_par, 
+                              similarity = 1, consim = 2, similparam = vec_par, 
                               calibration = 2, coardegree = 1, modelpriors, 
                               update_hierarchy = T,
                               hsp = T, iter = iterations, burn = burnin, thin = thinning, 
@@ -153,8 +154,8 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file="output/BaYSM/res.RData")
-save(cluPPMX, file="output/BaYSM/clu.RData")
-save(PPMXCT, file="output/BaYSM/mot.RData")
-save(PPMXpp, file="output/BaYSM/mtug.RData")
-save(PPMXCUT, file="output/BaYSM/npc.RData")
+save(resPPMX, file="output/BaYSM/cannig/res.RData")
+save(cluPPMX, file="output/BaYSM/cannig/clu.RData")
+save(PPMXCT, file="output/BaYSM/cannig/mot.RData")
+save(PPMXpp, file="output/BaYSM/cannig/mtug.RData")
+save(PPMXCUT, file="output/BaYSM/cannig/npc.RData")
