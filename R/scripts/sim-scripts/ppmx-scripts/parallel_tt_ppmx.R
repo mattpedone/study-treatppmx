@@ -12,8 +12,10 @@ loadRData <- function(fileName){
   load(fileName)
   get(ls()[ls() != "fileName"])
 }
+
 #for(sc in 1:9){
 sc <- 9
+
   simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
   mypath <- c(paste0("output/journal/pilot/scen-alt-", sc))
   
