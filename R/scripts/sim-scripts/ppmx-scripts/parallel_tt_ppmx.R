@@ -12,6 +12,7 @@ loadRData <- function(fileName){
   load(fileName)
   get(ls()[ls() != "fileName"])
 }
+
 #for(sc in 1:9){
 sc <- 8
 
