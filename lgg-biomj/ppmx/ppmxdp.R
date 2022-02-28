@@ -44,8 +44,9 @@ thinning <- 1
 nout <- (iterations-burnin)/thinning
 predAPT <- c()
 
-myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
-  {
+#myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
+#  {
+sub <- 1
     out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                                        Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                                        Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
@@ -78,7 +79,7 @@ myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
     #posterior predictive probabilities ----
     A0 <- c(apply(out_ppmx$pipred, c(1,2,3), median, na.rm=TRUE), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)}#A0
     ifelse(is.logical(out_ppmx), return(rep(0, 14)), return(A0))
-  }
+#  }
 
 ##treatment prediction with utility function ----
 #cat("errori: ", which(rowSums(myres) == 0), "\n")

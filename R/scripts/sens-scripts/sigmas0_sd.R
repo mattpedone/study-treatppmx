@@ -46,8 +46,8 @@ for(idx1 in 1:length(vecsigma)){
       #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
       vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
       #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-      iterations <- 50000 
-      burnin <- 20000
+      iterations <- 12000 
+      burnin <- 2000
       thinning <- 10
       
       nout <- (iterations-burnin)/thinning
@@ -58,7 +58,7 @@ for(idx1 in 1:length(vecsigma)){
           out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                                              Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                                              Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                                             PPMx = 1, cohesion = 2, alpha = 40, sigma = .25,
+                                             PPMx = 1, cohesion = 2,  kappa = c(1, 5, 10, 1), sigma = c(0.005, .5, 20),
                                              similarity = 2, consim = 1, similparam = vec_par, 
                                              calibration = 2, coardegree = 2, modelpriors, 
                                              update_hierarchy = T,
