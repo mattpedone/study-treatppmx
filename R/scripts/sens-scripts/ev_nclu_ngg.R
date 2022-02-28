@@ -3,10 +3,11 @@ library(vweights)
 library(treatppmx)
 set.seed(121)
 
-nobs <- 75
+nobs <- 150
 #beta <- 10
-sigma <- .0
-kappa <- 1
+sigma <- .1
+
+kappa <- 5
 
 w <- c(round(vweights::computepnclu(nobs, sigma, kappa), 5))
 v <- 1:length(w)

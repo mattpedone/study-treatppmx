@@ -13,9 +13,9 @@ loadRData <- function(fileName){
   get(ls()[ls() != "fileName"])
 }
 #for(sc in 1:9){
-sc <- 1
+sc <- 9
   simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
-  mypath <- c(paste0("output/simulation-scenarios/train-test-prior/lambda0-1/scen-alt-", sc))
+  mypath <- c(paste0("output/journal/pilot/scen-alt-", sc))
   
   npc2 <- function(output, trtsgn, myoutot){
     K <- dim(output)[3]
@@ -74,8 +74,8 @@ sc <- 1
       #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
       vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
       #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-      iterations <- 12000#0#0
-      burnin <- 2000#0#0
+      iterations <- 12000#0
+      burnin <- 2000#0
       thinning <- 5
       
       nout <- (iterations-burnin)/thinning
@@ -84,7 +84,7 @@ sc <- 1
       res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
                                      Xpred = data.frame(X_test), Z = data.frame(Z_train), 
                                      Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
-                                     PPMx = 1, cohesion = 2, alpha = 10, sigma = 0.01,
+                                     PPMx = 1, cohesion = 2, kappa = c(1, 5, 10, 1), sigma = c(0.005, .5, 20),
                                      similarity = 2, consim = 2, similparam = vec_par, 
                                      calibration = 2, coardegree = 2, modelpriors, 
                                      update_hierarchy = T,
