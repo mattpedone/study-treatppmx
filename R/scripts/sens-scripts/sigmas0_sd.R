@@ -35,8 +35,8 @@ for(k in 1:K){
   Y <- mytot[,,k]
   
   
-  a <- vecsigma[idx1]
-  b <- vecs0[idx2]
+  #a <- vecsigma[idx1]
+  #b <- vecs0[idx2]
   modelpriors <- list()
   modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(1.0, ncol(Y))
   modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(0.1, ncol(Y))

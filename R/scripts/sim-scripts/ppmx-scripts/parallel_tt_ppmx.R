@@ -14,10 +14,14 @@ loadRData <- function(fileName){
 }
 
 #for(sc in 1:9){
-sc <- 9
+sc <- 2
+
+#vecsigma <- c(1, 10, 50)
+#vecs0 <- c(0.1, 1, 10)
 
   simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
-  mypath <- c(paste0("output/journal/pilot/scen-alt-", sc))
+  mypath <- "output/journal/sensitivity/"
+  name <- c("sigma1s01")
   
   npc2 <- function(output, trtsgn, myoutot){
     K <- dim(output)[3]
@@ -86,7 +90,7 @@ sc <- 9
       res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
                                      Xpred = data.frame(X_test), Z = data.frame(Z_train), 
                                      Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
-                                     PPMx = 1, cohesion = 2, kappa = c(1, 5, 10, 1), sigma = c(0.005, .5, 20),
+                                     PPMx = 1, cohesion = 2, kappa = c(1, 10, 5, 1), sigma = c(0.005, .995, 5),
                                      similarity = 2, consim = 2, similparam = vec_par, 
                                      calibration = 2, coardegree = 2, modelpriors, 
                                      update_hierarchy = T,
@@ -187,10 +191,10 @@ sc <- 9
   
   PPMXpp <- PPMXpp/utsum
   
-  save(resPPMX, file=paste0(mypath, "/res.RData"))
-  save(cluPPMX, file=paste0(mypath, "/clu.RData"))
-  save(PPMXCT, file=paste0(mypath, "/mot.RData"))
-  save(PPMXpp, file=paste0(mypath, "/mtug.RData"))
-  save(PPMXCUT, file=paste0(mypath, "/npc.RData"))
+  save(resPPMX, file=paste0(mypath, name, "res.RData"))
+  save(cluPPMX, file=paste0(mypath, name, "clu.RData"))
+  save(PPMXCT, file=paste0(mypath, name, "mot.RData"))
+  save(PPMXpp, file=paste0(mypath, name, "mtug.RData"))
+  save(PPMXCUT, file=paste0(mypath, name, "npc.RData"))
 #}
 
