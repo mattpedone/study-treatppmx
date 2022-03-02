@@ -28,7 +28,6 @@ Y <- matrix(0, nrow = nrow(X), ncol = max(as.numeric(matchRTComp[,9])))
 for(i in 1:nrow(Y)){
   Y[i, as.numeric(matchRTComp[i,9])] <- 1
 }
-Y
 
 modelpriors <- list()
 modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(1, ncol(Y))
@@ -44,13 +43,13 @@ thinning <- 1
 nout <- (iterations-burnin)/thinning
 predAPT <- c()
 
-#myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
-#  {
+myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
+  {
 sub <- 1
     out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                                        Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                                        Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                                       PPMx = 1, cohesion = 2, kappa = c(1, 5, 10, 1), sigma = c(0.005, .5, 20),
+                                       PPMx = 0, cohesion = 1, kappa = c(1, 10, 5, 1), sigma = c(0.005, .995, 5),
                                        similarity = 2, consim = 2, similparam = vec_par, 
                                        calibration = 2, coardegree = 2, modelpriors, 
                                        update_hierarchy = T,
@@ -79,8 +78,7 @@ sub <- 1
     #posterior predictive probabilities ----
     A0 <- c(apply(out_ppmx$pipred, c(1,2,3), median, na.rm=TRUE), mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)}#A0
     ifelse(is.logical(out_ppmx), return(rep(0, 14)), return(A0))
-#  }
-
+  }
 ##treatment prediction with utility function ----
 #cat("errori: ", which(rowSums(myres) == 0), "\n")
 #myres0[[k]] <- myres
@@ -131,12 +129,12 @@ NPC
 myy <- c()
 my <- Y[sellines,]
 for (j in 1:nrow(my)) {
-  myy[j] <- match(1, my[j,])
+  myy[j] <- match(1, my[j,])#-1
 }
 
 #ho definito come respondent anche i partial responent
 #mytab <- cbind(myass = predAPT_all[sellines,3], rndass = trtsgn[sellines], resp = as.numeric(Y[sellines,1]!=1))
-mytab <- cbind(myass = predAPT_all[sellines,3], rndass = trtsgn[sellines], resp = as.numeric(myy>=2))
+mytab <- cbind(myass = predAPT_all[sellines,3], rndass = trtsgn[sellines], resp = as.numeric(myy>2))
 pred1 <- subset(mytab, mytab[,1]==1)
 table1 <- table(pred1[,3],pred1[,2])
 pred2 <- subset(mytab, mytab[,1]==2)
@@ -158,7 +156,7 @@ if(length(table2) < 4){
 }
 
 ### summary meaures
-esm <- crt1*p1 + crt2*p2 - sum(as.numeric(Y[sellines,1] != 1))/nrow(Y[sellines,])
+esm <- crt1*p1 + crt2*p2 - sum(as.numeric(Y[sellines,3] == 1))/nrow(Y[sellines,])
 esm
 
 #NCLU
