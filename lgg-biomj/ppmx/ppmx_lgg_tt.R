@@ -146,7 +146,7 @@ PPMXRG <- c()
 #ESM
 #ho definito come respondent anche i partial responent
 for(k in 1:K){
-  mytab <- cbind(myass = predAPT_all[,3,k], rndass = trtsgn[131:158], resp = as.numeric(myoutot>2))
+  mytab <- cbind(myass = predAPT_all[,3,k], rndass = trtsgn[131:158], resp = as.numeric(myoutot>=2))
   pred1 <- subset(mytab, mytab[,1]==1)
   table1 <- table(pred1[,3],pred1[,2])
   pred2 <- subset(mytab, mytab[,1]==2)
@@ -168,7 +168,7 @@ for(k in 1:K){
   }
 
   ### summary meaures
-  PPMXRG[k] <- crt1*p1 + crt2*p2 - sum(as.numeric(Y[131:158,3] == 1))/nrow(Y[131:158,])
+  PPMXRG[k] <- crt1*p1 + crt2*p2 - sum(as.numeric(myoutot>=2))/npat_pred
 }
 
 ESM <- c(round(mean(PPMXRG), 4), round(sd(PPMXRG), 4))
