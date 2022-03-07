@@ -186,8 +186,9 @@ cluPPMX <- nclust_all[,-c(3,4)]
 clu <- apply(cluPPMX, 2, mean)
 clu <- rbind(clu, apply(cluPPMX, 2, sd))
 colnames(clu) <- c("avg # trt 1", "avg # trt 2", "VI trt 1", "VI trt 2")
-clu
+#clu
 
+NPC; ESM; PPMXCUT[1]; PPMXRG[1]
 #save(resPPMX, file=paste0(mypath, sc, "res.RData"))
 #save(cluPPMX, file=paste0(mypath, sc, "clu.RData"))
 #save(PPMXCT, file=paste0(mypath, sc, "mot.RData"))
