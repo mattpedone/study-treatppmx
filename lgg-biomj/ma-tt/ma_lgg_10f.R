@@ -153,10 +153,9 @@ mymultt <- function(Xtrain, X.pred){
 
 # calculate the NPC
 countUT <- function(resultsum, myoutot){
-  myctut <- array(0, dim = c(3, 3, 100))
+  myctut <- matrix(0, nrow = 3, ncol = 3)
   myctutSum <- NULL
-  for(i in 1:length(my.pick)){
-    mycurdata <- resultsum[,,i]
+    mycurdata <- resultsum
     mypre <- NULL
     pretrt1 <- apply(mycurdata[,4:6], 1, which.max)
     pretrt2 <- apply(mycurdata[,7:9], 1, which.max)
@@ -169,9 +168,9 @@ countUT <- function(resultsum, myoutot){
     str1 <- matrix(0, nrow = 3, ncol = 3)
     str1[mysdls,] <- sts
     
-    myctut[,,i] <- str1*diag(3)
-    myctutSum[i] <- sum(str1*diag(3))
-  }
+    myctut <- str1*diag(3)
+    myctutSum <- sum(str1*diag(3))
+  
   return <- cbind(myctutSum)
 } 
 
@@ -182,7 +181,7 @@ prior1 <- c(1/3,1/3,1/3)
 prior2 <- c(1/3,1/3,1/3)
 kappa0 <- 1
 mu0 <- c(0,0)
-nrep <- K <- 3
+K <- 10
 
 registerDoParallel(cores = K)
 
@@ -274,13 +273,11 @@ for(k in 1:K){
   max_clus_vec[k] <- median(apply(temp,1,which.max)+1)
 }
 
-d <- data$pred
-
-utpred1APT.all <- array(0, dim = c(n, 19, K))
+utpred1APT.all <- matrix(0, nrow = 158, ncol = 19)
 
 ### clustering using CONSENSUS MATRIX method ###################################
 
-rst.hc<-ConsensusClusterPlus(t(d),maxK=15,reps=500,pItem=0.90,pFeature=1,
+rst.hc<-ConsensusClusterPlus(t(data$pred),maxK=15,reps=500,pItem=0.90,pFeature=1,
                              clusterAlg="hc",distance="pearson", 
                              #clusterAlg="km",distance="euclidean", 
                              #clusterAlg="pam",distance="manhattan", 
@@ -360,7 +357,7 @@ for(myrep in 1:K){
     utpred1APT[mysub, 19] <- max.clus#[mysub]
   }
   
-  utpred1APT.all[currfold,,myrep] <- utpred1APT
+  utpred1APT.all[currfold,] <- utpred1APT
   
 }                        
 
@@ -373,7 +370,7 @@ for(k in 1:K){
   wk<-c(0,40,100)
   currfold <- (vectf[k]:(vectf[k+1]-1))
   outcomAPT <- data$yord[currfold]
-  HCppCUT <- as.vector(countUT(case2HCppUT, outcomAPT))
+  HCppCUT <- as.vector(countUT(case2HCppUT[currfold,], outcomAPT))
   NPC[k] <- HCppCUT
 }
 
@@ -381,8 +378,10 @@ for(k in 1:K){
 NPC
 
 
-mth<-utpred1APT
-myresults<-cbind(mth,trtAPT+1,as.numeric(outcomAPT>=2))
+mth<-utpred1APT.all
+trtsgn <- as.numeric(paste(matchRTComp[,10]))
+myoutot <- as.numeric(matchRTComp[,9])
+myresults<-cbind(mth,as.numeric(trtsgn),as.numeric(myoutot>=2))
 pred1<-subset( myresults,myresults[,3]==1);
 table1<-table(pred1[,21],pred1[,20]);
 pred2<-subset( myresults,myresults[,3]==2);
@@ -400,5 +399,5 @@ if(length(crt1) == 0) {crt1<-0}
 if (length(table2)==4){  crt2<-table2[2,2]/sum(table2[,2])};
 if (length(table2)<4) {  crt2<-as.numeric(row.names(table2))};
 ### summary meaures
-return<-crt1*p1+crt2*p2-sum(as.numeric(outcomAPT>=2))/158
+return<-crt1*p1+crt2*p2-sum(as.numeric(myoutot>=2))/158
 return
