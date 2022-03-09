@@ -160,10 +160,10 @@ countUT <- function(resultsum, myoutot){
     pretrt1 <- apply(mycurdata[,4:6], 1, which.max)
     pretrt2 <- apply(mycurdata[,7:9], 1, which.max)
     mypreTall <- cbind(pretrt1, pretrt2)
-    for(j in 1:length(trtsgn)){
+    for(j in 1:(dim(resultsum)[1])){
       mypre[j] <- mypreTall[j, trtsgn[j]+1]
     }
-    sts <- table(mypre, myoutot)
+    sts <- table(mypre, factor(myoutot, levels = c(0:2)))
     mysdls <- as.numeric(rownames(sts))
     str1 <- matrix(0, nrow = 3, ncol = 3)
     str1[mysdls,] <- sts
@@ -197,8 +197,8 @@ for(k in 1:K){
     
     n <- dim(train_pred)[1]
     
-    #HC.sum<-matrix(0,nrow=n,ncol=14)
-    HC.sum<-matrix(0,nrow=n,ncol=4)
+    HC.sum<-matrix(0,nrow=n,ncol=14)
+    #HC.sum<-matrix(0,nrow=n,ncol=4)
     
     for (mysub in 1:n){
       s_train_pred <- train_pred[-mysub,]
@@ -324,7 +324,7 @@ for(myrep in 1:K){
     
     mycons1APT <- rst.hc[[max.clus]][["consensusMatrix"]]
     
-    totutAPT <- myyAPT*mycons1APT[vectf[myrep] + mysub, c(currfold)]               ### utility 
+    totutAPT <- myyAPT*mycons1APT[vectf[myrep] + mysub - 1, c(currfold)]               ### utility 
     totpreAPT <- totutAPT[-mysub,]
     trtpreAPT <- trtAPT[-mysub]
     mytemptAPT <- cbind(totpreAPT, trtpreAPT)
