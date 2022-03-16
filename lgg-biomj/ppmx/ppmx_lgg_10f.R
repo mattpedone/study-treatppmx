@@ -39,7 +39,7 @@ myres0 <- foreach(k = 1:K) %dopar%
     Y_train <- data.frame(Y[-currfold,])
     
     X_test <- data.frame(scale(matchRTComp[currfold,16:38]))
-    Z_test <- data.frame(scale(matchRTComp[currfold,11,13]))
+    Z_test <- data.frame(scale(matchRTComp[currfold,c(11,13)]))
     Y_test <- data.frame(Y[currfold,])
     
     trtsgn_train <- trtsgn[-currfold]
@@ -62,7 +62,7 @@ myres0 <- foreach(k = 1:K) %dopar%
     res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
                                    Xpred = data.frame(X_test), Z = data.frame(Z_train), 
                                    Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
-                                   PPMx = 1, cohesion = 2, kappa = c(.01, 20, 5, 1), sigma = c(0.005, 1.0, 5),
+                                   PPMx = 1, cohesion = 2, kappa = c(.1, 20, 5, 1), sigma = c(0.005, .995, 5),
                                    similarity = 2, consim = 2, similparam = vec_par, 
                                    calibration = 2, coardegree = 2, modelpriors, 
                                    update_hierarchy = T,
