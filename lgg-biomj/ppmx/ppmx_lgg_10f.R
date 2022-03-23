@@ -54,8 +54,8 @@ myres0 <- foreach(k = 1:K) %dopar%
     #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
     vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
     #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-    iterations <- 52000
-    burnin <- 12000
+    iterations <- 152000
+    burnin <- 52000
     thinning <- 10
     
     nout <- (iterations-burnin)/thinning
@@ -64,7 +64,7 @@ myres0 <- foreach(k = 1:K) %dopar%
     res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
                                    Xpred = data.frame(X_test), Z = data.frame(Z_train), 
                                    Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
-                                   PPMx = 1, cohesion = 2, kappa = c(.1, 5, 5, 1), sigma = c(0.005, .995, 5),
+                                   PPMx = 1, cohesion = 2, kappa = c(.1, 10, 5, 1), sigma = c(0.1, .495, 5),
                                    similarity = 2, consim = 2, similparam = vec_par, 
                                    calibration = 2, coardegree = 2, modelpriors, 
                                    update_hierarchy = T,
