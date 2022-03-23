@@ -14,7 +14,7 @@ loadRData <- function(fileName){
 }
 
 #for(sc in 1:9){
-sc <- 2
+sc <- 3
 
 #vecsigma <- c(1, 10, 50)
 #vecs0 <- c(0.1, 1, 10)

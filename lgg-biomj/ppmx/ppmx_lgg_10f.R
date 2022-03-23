@@ -6,6 +6,8 @@ library(parallel)
 library(doParallel)
 library(mcclust)
 library(mcclust.ext)
+library(ggplot2)
+library(reshape2)
 
 load("data/LGGdata.rda")
 #name <- c("v01")
@@ -52,9 +54,9 @@ myres0 <- foreach(k = 1:K) %dopar%
     #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
     vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
     #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-    iterations <- 12000
-    burnin <- 2000
-    thinning <- 5
+    iterations <- 52000
+    burnin <- 12000
+    thinning <- 10
     
     nout <- (iterations-burnin)/thinning
     predAPT <- c()
@@ -62,7 +64,7 @@ myres0 <- foreach(k = 1:K) %dopar%
     res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
                                    Xpred = data.frame(X_test), Z = data.frame(Z_train), 
                                    Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
-                                   PPMx = 1, cohesion = 2, kappa = c(.1, 20, 5, 1), sigma = c(0.005, .995, 5),
+                                   PPMx = 1, cohesion = 2, kappa = c(.1, 5, 5, 1), sigma = c(0.005, .995, 5),
                                    similarity = 2, consim = 2, similparam = vec_par, 
                                    calibration = 2, coardegree = 2, modelpriors, 
                                    update_hierarchy = T,
@@ -237,4 +239,116 @@ clu <- apply(cluPPMX, 2, mean)
 clu <- rbind(clu, apply(cluPPMX, 2, sd))
 colnames(clu) <- c("avg # trt 1", "avg # trt 2", "VI trt 1", "VI trt 2")
 clu
+
+out_ppmx <- myres0[[4]]
+
+# Posterior clustering ----
+num_treat <- table(trt)
+cls <- t(as.matrix(out_ppmx$label[[1]]))[,c(1:num_treat[1])]
+psm <- comp.psm(cls)
+mc_b <- minbinder.ext(psm); max(mc_b$cl)
+mc_vi <- minVI(psm); max(mc_vi$cl)
+reord <- c()
+for(i in 1:max(mc_vi$cl)){
+  reord <- c(reord, which(mc_vi$cl == i))
+}
+
+cls2 <- t(as.matrix(out_ppmx$label[[2]]))[,c(1:num_treat[2])]
+psm2 <- comp.psm(cls2)
+mc_b2 <- minbinder.ext(psm2); max(mc_b2$cl)
+mc_vi2 <- minVI(psm2); max(mc_vi2$cl)
+reord2 <- c()
+for(i in 1:max(mc_vi2$cl)){
+  reord2 <- c(reord2, which(mc_vi2$cl == i))
+}
+
+# Co-occurence plot ----
+data <- t(out_ppmx$label[[1]])
+data <- data[,reord]
+coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
+ggplot(melt(coincidences), aes(Var1,Var2, fill=value)) + geom_raster() +
+  scale_fill_continuous(type = "viridis")
+
+data <- t(out_ppmx$label[[2]])
+data <- data[,reord2]
+coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
+ggplot(melt(coincidences), aes(Var1,Var2, fill=value)) + geom_raster() +
+  scale_fill_continuous(type = "viridis")
+
+# Traceplot for the number of clusters ----
+df <- data.frame(t(out_ppmx$nclu))
+colnames(df) <- c("t1", "t2")
+df <- cbind(Index = as.numeric(row.names(df)), df)
+df <- reshape2::melt(df, id.vars="Index")
+ggplot2::ggplot(df, aes(x = Index, y = value, col = variable)) + geom_line() + theme_classic()
+
+# Posterior frequency for (\kappa, \sigma) ----
+
+par(mfrow=c(2,1))
+hist(out_ppmx$sigmangg[1,], breaks = 10)
+hist(out_ppmx$sigmangg[2,], breaks = 10)
+plot(out_ppmx$sigmangg[1,], type ="l")
+plot(out_ppmx$sigmangg[2,], type ="l")
+table(out_ppmx$sigmangg[1,])
+table(out_ppmx$sigmangg[2,])
+
+hist(out_ppmx$kappangg[1,], breaks = 10)
+hist(out_ppmx$kappangg[2,], breaks = 10)
+plot(out_ppmx$kappangg[1,], type ="l")
+plot(out_ppmx$kappangg[2,], type ="l")
+table(out_ppmx$kappangg[1,])
+table(out_ppmx$kappangg[2,])
+
+P <- table(out_ppmx$sigmangg[1,], out_ppmx$kappangg[1,])
+Pm <- reshape::melt(P)
+ggplot2::ggplot(Pm, aes(Var.1, Var.2, fill=value)) + geom_tile() +
+  ggplot2::geom_text(aes(label=value),colour="white")
+
+P <- table(out_ppmx$sigmangg[2,], out_ppmx$kappangg[2,])
+Pm <- reshape::melt(P)
+ggplot2::ggplot(Pm, aes(Var.1, Var.2, fill=value)) + geom_tile() +
+  ggplot2::geom_text(aes(label=value),colour="white")
+
+# A posteriori mean of prognostic covariates and some traceplots ----
+#apply(out_ppmx$beta, c(1, 2), mean)
+df <- data.frame(out_ppmx$beta[1,1,])
+colnames(df) <- c("b11")
+df <- cbind(Iteration = as.numeric(row.names(df)), df)
+ggplot2::ggplot(df, aes(x = Iteration, y = b11)) + geom_line() + theme_classic()
+df <- data.frame(out_ppmx$beta[2,3,])
+colnames(df) <- c("b23")
+df <- cbind(Iteration = as.numeric(row.names(df)), df)
+ggplot2::ggplot(df, aes(x = Iteration, y = b23)) + geom_line() + theme_classic()
+
+# In sample prediction (goodness-of-fit) ----
+# overall
+sum(apply(round(apply(out_ppmx$isypred, c(1,2), mean))==Y, 1, sum)==3)/nobs
+# by treatment
+sum(apply(round(apply(out_ppmx$isypred[which(trt == 1),,], c(1,2), mean))==Y[which(trt == 1),], 1, sum)==3)/sum((trt == 1))
+sum(apply(round(apply(out_ppmx$isypred[which(trt == 2),,], c(1,2), mean))==Y[which(trt == 2),], 1, sum)==3)/sum((trt == 2))
+
+#posterior predictive probabilities ----
+A0 <- apply(out_ppmx$ypred, c(1,2,3), mean, na.rm=TRUE);#A0
+A0 <- c(apply(out_ppmx$pipred, c(1,2,3), median, na.rm=TRUE))#, mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)
+
+#posterior distribution of predictive utility
+ns <- dim(out_ppmx$pipred)[4]
+pt <- 1
+dpu <- matrix(0, ns, 2)
+for(i in 1:ns){
+  dpu[i,] <- apply(out_ppmx$pipred[pt,,,i]*wk, 2, sum)
+}
+
+par(mfrow=c(2, 1))
+mymean <- apply(out_ppmx$pipred, c(1,2,3), mean, na.rm=TRUE); sum(mymean[pt,,1] * wk) - sum(mymean[pt,,2] * wk)
+mymedian <- apply(out_ppmx$pipred, c(1,2,3), median, na.rm=TRUE); sum(mymedian[pt,,1] * wk) - sum(mymedian[pt,,2] * wk)
+#plot(density(dpu[,1]), ylim = c(0, .055))
+hist(dpu[,1], breaks = 20)
+abline(v = mymean[pt, 1:3, 1]%*%wk, col = "red")
+abline(v = mymedian[pt, 1:3, 1]%*%wk, col = "blue")
+#plot(density(dpu[,2]), ylim = c(0, .055))
+hist(dpu[,2], breaks = 20)
+abline(v = mymean[pt, 1:3, 2]%*%wk, col = "red")
+abline(v = mymedian[pt, 1:3, 2]%*%wk, col = "blue")
+
 
