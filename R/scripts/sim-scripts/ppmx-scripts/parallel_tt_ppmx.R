@@ -14,7 +14,7 @@ loadRData <- function(fileName){
 }
 
 #for(sc in 1:9){
-sc <- 8
+sc <- 9
 
 #vecsigma <- c(1, 10, 50)
 #vecs0 <- c(0.1, 1, 10)
@@ -80,8 +80,8 @@ myres0 <- foreach(k = 1:K) %dopar%
     #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
     vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
     #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-    iterations <- 52000#0
-    burnin <- 12000#0
+    iterations <- 12000#0
+    burnin <- 2000#0
     thinning <- 5
     
     nout <- (iterations-burnin)/thinning
