@@ -8,6 +8,8 @@ library(mcclust)
 library(mcclust.ext)
 library(ggplot2)
 library(reshape2)
+library(plotly)
+library(dplyr)
 
 load("data/LGGdata.rda")
 #name <- c("v01")
@@ -54,9 +56,9 @@ myres0 <- foreach(k = 1:K) %dopar%
     #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
     vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
     #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-    iterations <- 152000
-    burnin <- 52000
-    thinning <- 10
+    iterations <- 110000
+    burnin <- 100000
+    thinning <- 2
     
     nout <- (iterations-burnin)/thinning
     predAPT <- c()
@@ -240,7 +242,8 @@ clu <- rbind(clu, apply(cluPPMX, 2, sd))
 colnames(clu) <- c("avg # trt 1", "avg # trt 2", "VI trt 1", "VI trt 2")
 clu
 
-out_ppmx <- myres0[[4]]
+save(myres0, file = "output/lgg_analysis_24mar.RData")
+out_ppmx <- myres0[[10]]
 
 # Posterior clustering ----
 num_treat <- table(trt)
@@ -300,14 +303,21 @@ table(out_ppmx$kappangg[1,])
 table(out_ppmx$kappangg[2,])
 
 P <- table(out_ppmx$sigmangg[1,], out_ppmx$kappangg[1,])
-Pm <- reshape::melt(P)
-ggplot2::ggplot(Pm, aes(Var.1, Var.2, fill=value)) + geom_tile() +
-  ggplot2::geom_text(aes(label=value),colour="white")
+Pm <- reshape::melt(P) %>%
+  `colnames<-`(c("sigma", "kappa", "freq"))
+ggplot2::ggplot(Pm, aes(sigma, kappa, fill=freq)) + geom_tile() +
+  ggplot2::geom_text(aes(label=freq),colour="white")
+mat <- tapply(Pm$freq, list(Pm$sigma, Pm$kappa), sum)
+plot_ly(z = ~ mat) %>% add_surface
 
 P <- table(out_ppmx$sigmangg[2,], out_ppmx$kappangg[2,])
-Pm <- reshape::melt(P)
-ggplot2::ggplot(Pm, aes(Var.1, Var.2, fill=value)) + geom_tile() +
-  ggplot2::geom_text(aes(label=value),colour="white")
+Pm <- reshape::melt(P) %>%
+  `colnames<-`(c("sigma", "kappa", "freq"))
+ggplot2::ggplot(Pm, aes(sigma, kappa, fill=freq)) + geom_tile() +
+  ggplot2::geom_text(aes(label=freq),colour="white")
+
+mat <- tapply(Pm$freq, list(Pm$sigma, Pm$kappa), sum)
+plot_ly(z = ~ mat) %>% add_surface
 
 # A posteriori mean of prognostic covariates and some traceplots ----
 #apply(out_ppmx$beta, c(1, 2), mean)
