@@ -35,6 +35,7 @@ for(i in 1:nrow(Y)){
 }
 
 vectf <- c(1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 159)
+load("/home/matt/Dropbox/PHD/study-treatppmx/output/lgg_analysis_24mar.RData")
 myres0 <- foreach(k = 1:K) %dopar%
   {
     currfold <- (vectf[k]:(vectf[k+1]-1))
@@ -242,7 +243,7 @@ clu <- rbind(clu, apply(cluPPMX, 2, sd))
 colnames(clu) <- c("avg # trt 1", "avg # trt 2", "VI trt 1", "VI trt 2")
 clu
 
-save(myres0, file = "output/lgg_analysis_24mar.RData")
+#save(myres0, file = "output/lgg_analysis_24mar.RData")
 out_ppmx <- myres0[[10]]
 
 # Posterior clustering ----
@@ -269,7 +270,8 @@ for(i in 1:max(mc_vi2$cl)){
 data <- t(out_ppmx$label[[1]])
 data <- data[,reord]
 coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
-ggplot(melt(coincidences), aes(Var1,Var2, fill=value)) + geom_raster() +
+mC <- melt(coincidences)
+ggplot(mC, aes(Var1,Var2, fill=value)) + geom_raster() +
   scale_fill_continuous(type = "viridis")
 
 data <- t(out_ppmx$label[[2]])
@@ -277,6 +279,8 @@ data <- data[,reord2]
 coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
 ggplot(melt(coincidences), aes(Var1,Var2, fill=value)) + geom_raster() +
   scale_fill_continuous(type = "viridis")
+
+
 
 # Traceplot for the number of clusters ----
 df <- data.frame(t(out_ppmx$nclu))
@@ -320,8 +324,8 @@ mat <- tapply(Pm$freq, list(Pm$sigma, Pm$kappa), sum)
 plot_ly(z = ~ mat) %>% add_surface
 
 # A posteriori mean of prognostic covariates and some traceplots ----
-#apply(out_ppmx$beta, c(1, 2), mean)
-df <- data.frame(out_ppmx$beta[1,1,])
+apply(out_ppmx$beta, c(1, 2), mean)
+df <- data.frame(out_ppmx$beta[2,1,])
 colnames(df) <- c("b11")
 df <- cbind(Iteration = as.numeric(row.names(df)), df)
 ggplot2::ggplot(df, aes(x = Iteration, y = b11)) + geom_line() + theme_classic()
@@ -343,7 +347,7 @@ A0 <- c(apply(out_ppmx$pipred, c(1,2,3), median, na.rm=TRUE))#, mc, mc_b, mc_vi,
 
 #posterior distribution of predictive utility
 ns <- dim(out_ppmx$pipred)[4]
-pt <- 1
+pt <- 3
 dpu <- matrix(0, ns, 2)
 for(i in 1:ns){
   dpu[i,] <- apply(out_ppmx$pipred[pt,,,i]*wk, 2, sum)

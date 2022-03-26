@@ -167,7 +167,7 @@ ngg <- prior_ppmx(X = X, PPMx = 0, cohesion = 2, alpha = beta, #*sigma,
 
 tab <- apply(ngg$nj, 2, sort, decreasing = T)
 tab[which(tab == 0)] <- NA
-cs_ngg <- cumsum(vweights::computepnclu(nobs, sigma, beta*sigma))
+cs_ngg <- cumsum(vweights::computepnclu(nobs, sigma, beta))
 avg_ngg <- 26+(1-(cs_ngg[27]-.5)/(cs_ngg[27]-cs_ngg[26]))
 tab[which(tab != 1)] <- 0
 ps_ngg <- mean(apply(tab, 2, mean, na.rm = T))
