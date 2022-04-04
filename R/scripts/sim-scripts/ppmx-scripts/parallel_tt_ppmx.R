@@ -48,7 +48,7 @@ npc2 <- function(output, trtsgn, myoutot){
   return(res)
 }
 
-K <- 30#repliche
+K <- 50#repliche
 npat_pred <- 28
 
 predAPT_all <- array(0, dim = c(npat_pred, 9, K))

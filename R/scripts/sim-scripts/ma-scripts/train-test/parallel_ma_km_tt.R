@@ -12,7 +12,8 @@ loadRData <- function(fileName){
   load(fileName)
   get(ls()[ls() != "fileName"])
 }
-for(sc in 10:12){
+#for(sc in 10:12){
+sc <- 2
   simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
   mypath <- c(paste0("output/simulation-scenarios/train-test/scen-alt-", sc))
 ################################ Functions ########################################
@@ -125,7 +126,7 @@ prior2 <- c(1/3,1/3,1/3)
 kappa0 <- 1
 mu0 <- c(0,0)
 n <- 124
-K <- 30
+K <- 50
 
 cor_all <- parallel::detectCores()-1#cores to be allocated
 registerDoParallel(cores = cor_all)
@@ -257,7 +258,7 @@ kappa0 <- 1
 mu0 <- c(0, 0)
 d <- simdata$pred[[1]]
 n <- 28#dim(d)[1]
-nrep <- 30
+nrep <- 50
 
 utpred1APT.all <- array(0, dim = c(n, 19, nrep))
 
@@ -374,4 +375,4 @@ NPC <- c(mean(NPC), sd(NPC))
 save(MOT, file=paste0(mypath, "/mot_km.RData"))
 save(MTUg, file=paste0(mypath, "/mtug_km.RData"))
 save(NPC, file=paste0(mypath, "/npc_km.RData"))
-}
+#}
