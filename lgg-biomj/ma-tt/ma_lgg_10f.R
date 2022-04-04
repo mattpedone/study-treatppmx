@@ -10,7 +10,7 @@ library(doParallel)
 
 
 load("data/LGGdata.rda")
-matchRTComp <- matchRTComp[sample(1:nrow(matchRTComp), size = nrow(matchRTComp), replace = F),]
+#matchRTComp <- matchRTComp[sample(1:nrow(matchRTComp), size = nrow(matchRTComp), replace = F),]
 #mypath <- c(paste0("output/simulation-scenarios/train-test/scen-alt-", sc))
 
 predcov <- scale(matchRTComp[,16:38])  ## Predictive features  
@@ -267,6 +267,7 @@ for(k in 1:K){
 
 ###capisci da qui!
 max_clus_vec <- c()
+#max_clus_vec <- rep(5, K)
 
 for(k in 1:K){
   temp <- HC.sum.all[[k]]
@@ -278,8 +279,8 @@ utpred1APT.all <- matrix(0, nrow = 158, ncol = 19)
 ### clustering using CONSENSUS MATRIX method ###################################
 
 rst.hc<-ConsensusClusterPlus(t(data$pred),maxK=15,reps=500,pItem=0.90,pFeature=1,
-                             clusterAlg="hc",distance="pearson", 
-                             #clusterAlg="km",distance="euclidean", 
+                             #clusterAlg="hc",distance="pearson", 
+                             clusterAlg="km",distance="euclidean", 
                              #clusterAlg="pam",distance="manhattan", 
                              seed=126);
 
