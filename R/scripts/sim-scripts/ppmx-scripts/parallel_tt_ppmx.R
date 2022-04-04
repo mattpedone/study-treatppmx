@@ -14,7 +14,7 @@ loadRData <- function(fileName){
 }
 
 #for(sc in 1:9){
-sc <- 6
+sc <- 2
 
 #vecsigma <- c(1, 10, 50)
 #vecs0 <- c(0.1, 1, 10)
@@ -75,13 +75,13 @@ myres0 <- foreach(k = 1:K) %dopar%
     
     modelpriors <- list()
     modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(10, ncol(Y_train))
-    modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(.1, ncol(Y_train))
+    modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(1, ncol(Y_train))
     
     #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
     vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
     #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-    iterations <- 12000#0
-    burnin <- 2000#0
+    iterations <- 52000#0
+    burnin <- 22000#0
     thinning <- 5
     
     nout <- (iterations-burnin)/thinning
@@ -90,7 +90,7 @@ myres0 <- foreach(k = 1:K) %dopar%
     res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
                                    Xpred = data.frame(X_test), Z = data.frame(Z_train), 
                                    Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
-                                   PPMx = 1, cohesion = 1, kappa = c(1, 10, 5, 1), sigma = c(0.005, .995, 5),
+                                   PPMx = 1, cohesion = 2, kappa = c(1, 10, 5, 1), sigma = c(0.01, .5, 6),
                                    similarity = 2, consim = 2, similparam = vec_par, 
                                    calibration = 2, coardegree = 2, modelpriors, 
                                    update_hierarchy = T,
@@ -191,11 +191,11 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file=paste0(mypath, sc, "dp_res.RData"))
-save(cluPPMX, file=paste0(mypath, sc, "dp_clu.RData"))
-save(PPMXCT, file=paste0(mypath, sc, "dp_mot.RData"))
-save(PPMXpp, file=paste0(mypath, sc, "dp_mtug.RData"))
-save(PPMXCUT, file=paste0(mypath, sc, "dp_npc.RData"))
+save(resPPMX, file=paste0(mypath, sc, "res.RData"))
+save(cluPPMX, file=paste0(mypath, sc, "clu.RData"))
+save(PPMXCT, file=paste0(mypath, sc, "mot.RData"))
+save(PPMXpp, file=paste0(mypath, sc, "mtug.RData"))
+save(PPMXCUT, file=paste0(mypath, sc, "npc.RData"))
 #}
 
 
