@@ -415,7 +415,7 @@ ta <- c(ta, c(as.numeric(c(A0[,,1]%*%wk)<c(A0[,,2]%*%wk))+1))
 ta
 #A0 <- c(apply(out_ppmx$pipred, c(1,2,3), median, na.rm=TRUE))#, mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)
 
-k <- 6
+k <- 9
 out_ppmx <- myres0[[k]]
 #posterior distribution of predictive utility
 ns <- dim(out_ppmx$pipred)[4]
