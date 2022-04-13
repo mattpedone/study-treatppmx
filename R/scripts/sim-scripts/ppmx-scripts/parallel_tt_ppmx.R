@@ -75,13 +75,13 @@ myres0 <- foreach(k = 1:K) %dopar%
     
     modelpriors <- list()
     modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(10, ncol(Y_train))
-    modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(.1, ncol(Y_train))
+    modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(1, ncol(Y_train))
     
     #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
     vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
     #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-    iterations <- 12000#0
-    burnin <- 2000#0
+    iterations <- 52000#0
+    burnin <- 22000#0
     thinning <- 5
     
     nout <- (iterations-burnin)/thinning
@@ -191,11 +191,11 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-#save(resPPMX, file=paste0(mypath, sc, "dp_res.RData"))
-#save(cluPPMX, file=paste0(mypath, sc, "dp_clu.RData"))
-#save(PPMXCT, file=paste0(mypath, sc, "dp_mot.RData"))
-#save(PPMXpp, file=paste0(mypath, sc, "dp_mtug.RData"))
-#save(PPMXCUT, file=paste0(mypath, sc, "dp_npc.RData"))
+save(resPPMX, file=paste0(mypath, sc, "res.RData"))
+save(cluPPMX, file=paste0(mypath, sc, "clu.RData"))
+save(PPMXCT, file=paste0(mypath, sc, "mot.RData"))
+save(PPMXpp, file=paste0(mypath, sc, "mtug.RData"))
+save(PPMXCUT, file=paste0(mypath, sc, "npc.RData"))
 #}
 
 
