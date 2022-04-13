@@ -14,7 +14,7 @@ loadRData <- function(fileName){
 }
 
 #for(sc in 1:9){
-sc <- 6
+sc <- 2
 
 #vecsigma <- c(1, 10, 50)
 #vecs0 <- c(0.1, 1, 10)
@@ -48,7 +48,7 @@ npc2 <- function(output, trtsgn, myoutot){
   return(res)
 }
 
-K <- 50#repliche
+K <- 30#repliche
 npat_pred <- 28
 
 predAPT_all <- array(0, dim = c(npat_pred, 9, K))
@@ -90,7 +90,7 @@ myres0 <- foreach(k = 1:K) %dopar%
     res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
                                    Xpred = data.frame(X_test), Z = data.frame(Z_train), 
                                    Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
-                                   PPMx = 1, cohesion = 1, kappa = c(1, 10, 5, 1), sigma = c(0.005, .995, 5),
+                                   PPMx = 1, cohesion = 2, kappa = c(1, 10, 5, 1), sigma = c(0.01, .5, 6),
                                    similarity = 2, consim = 2, similparam = vec_par, 
                                    calibration = 2, coardegree = 2, modelpriors, 
                                    update_hierarchy = T,
@@ -191,11 +191,11 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-save(resPPMX, file=paste0(mypath, sc, "dp_res.RData"))
-save(cluPPMX, file=paste0(mypath, sc, "dp_clu.RData"))
-save(PPMXCT, file=paste0(mypath, sc, "dp_mot.RData"))
-save(PPMXpp, file=paste0(mypath, sc, "dp_mtug.RData"))
-save(PPMXCUT, file=paste0(mypath, sc, "dp_npc.RData"))
+#save(resPPMX, file=paste0(mypath, sc, "dp_res.RData"))
+#save(cluPPMX, file=paste0(mypath, sc, "dp_clu.RData"))
+#save(PPMXCT, file=paste0(mypath, sc, "dp_mot.RData"))
+#save(PPMXpp, file=paste0(mypath, sc, "dp_mtug.RData"))
+#save(PPMXCUT, file=paste0(mypath, sc, "dp_npc.RData"))
 #}
 
 

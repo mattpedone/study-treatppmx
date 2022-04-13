@@ -1,5 +1,5 @@
 rm(list=ls())
-set.seed(24420)
+set.seed(121)
 
 library(treatppmx)
 library(parallel)
@@ -158,7 +158,7 @@ NPC <- npc_tf(temp, trtsgn, as.numeric(matchRTComp[,9]))
 #NPC <- c(round(mean(PPMXCUT), 4), round(sd(PPMXCUT), 4))
 
 #ESM
-#ho definito come respondent anche i partial responent
+# non ho definito come respondent anche i partial responent
 myoutot <- as.numeric(matchRTComp[,9])#simdata$yord[[k]][131:158,]
 mytab <- cbind(myass = predAPT_all[,3], rndass = trtsgn, resp = as.numeric(myoutot>=2))
 pred1 <- subset(mytab, mytab[,1]==1)
@@ -174,18 +174,12 @@ if(length(table1) == 4){
 if(length(table1) < 4){
   crt1 <- as.numeric(row.names(table1))
 }
-if(length(row.names(table1)) == 2){
-  crt1 <- table1[2,1]/sum(table1[,1])
-}
 
 if(length(table2) == 4){
   crt2 <- table2[2,2]/sum(table2[,2])
 }
 if(length(table2) < 4){
   crt2 <- as.numeric(row.names(table2))
-}
-if(length(row.names(table2)) == 2){
-  crt2 <- table2[2,1]/sum(table2[,1])
 }
 ESM <- c(crt1*p1 + crt2*p2 - sum(as.numeric(myoutot>=2))/npat)
 ### summary meaures
@@ -205,7 +199,7 @@ colnames(clu) <- c("avg # trt 1", "avg # trt 2", "VI trt 1", "VI trt 2")
 NPC; ESM; resPPMX; clu
 
 #save(myres0, file = "output/lgg_analysis_24mar.RData")
-k <- 10
+k <- 4
 out_ppmx <- myres0[[k]]
 
 currfold <- (vectf[k]:(vectf[k+1]-1))
@@ -250,21 +244,21 @@ coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
 mC <- melt(coincidences)
 c1 <- ggplot(mC, aes(Var1,Var2, fill=value/nout)) + geom_raster() +
   scale_fill_continuous(type = "viridis") + 
-  xlab("patients") + ylab("patients") + ggtitle("Treatment 1")
+  xlab("Patients") + ylab("Patients") + ggtitle("Treatment 1")
 
-cp1 <- c1 + labs(fill = "Correlation")
+cp1 <- c1 + labs(fill = "Probability")
 
 data <- t(out_ppmx$label[[2]])
 data <- data[,reord2]
 coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
 c2 <- ggplot(melt(coincidences), aes(Var1,Var2, fill=value/nout)) + geom_raster() +
   scale_fill_continuous(type = "viridis") + 
-  xlab("patients") + ylab("patients") + ggtitle("Treatment 2")
+  xlab("Patients") + ylab("Patients") + ggtitle("Treatment 2")
 
-cp2 <- c2 + labs(fill = "Correlation")
+cp2 <- c2 + labs(fill = "Probability")
 
-#corrp_vi <- ggpubr::ggarrange(cp1, cp2, nrow=1, ncol = 2, common.legend = TRUE, legend="bottom")#, panel.border = element_blank())
-#corrp_vi
+corrp_vi <- ggpubr::ggarrange(cp1, cp2, nrow=1, ncol = 2, common.legend = TRUE, legend="bottom")#, panel.border = element_blank())
+corrp_vi
 #ggsave(corrp, device = "pdf", path = "figs", filename = "corr_plot.pdf")
 
 data <- t(out_ppmx$label[[1]])
@@ -287,7 +281,8 @@ c2 <- ggplot(melt(coincidences), aes(Var1,Var2, fill=value/nout)) + geom_raster(
 cp2b <- c2 + labs(fill = "Correlation")
 
 #corrp_b <- ggpubr::ggarrange(cp1, cp2, nrow=1, ncol = 2, common.legend = TRUE, legend="bottom")#, panel.border = element_blank())
-corr <- ggpubr::ggarrange(cp1b, cp2b, cp1, cp2, nrow=2, ncol = 2, common.legend = TRUE, legend="bottom")#, panel.border = element_blank())
+#corr <- ggpubr::ggarrange(cp1b, cp2b, cp1, cp2, nrow=2, ncol = 2, common.legend = TRUE, legend="bottom")#, panel.border = element_blank())
+#corr <- ggpubr::ggarrange(cp1, cp2, nrow=1, ncol = 2, common.legend = TRUE, legend="bottom")#, panel.border = element_blank())
 
 # Hellinger ----
 #hell <- c()
@@ -317,25 +312,25 @@ df_sigma <- data.frame(table(out_ppmx$sigmangg[1,]))
 colnames(df_sigma) <- c("sigma", "frequency")
 ms1 <- ggplot(df_sigma, aes(x=sigma, y=frequency)) + 
   geom_segment(aes(x=sigma, xend=sigma, y=0, yend=frequency/nout)) + 
-  ylab("proportion")
+  ylab("proportion") + xlab(expression(sigma))
 df_sigma <- data.frame(table(out_ppmx$sigmangg[2,]))
 colnames(df_sigma) <- c("sigma", "frequency")
 ms2 <- ggplot(df_sigma, aes(x=sigma, y=frequency)) + 
   geom_segment(aes(x=sigma, xend=sigma, y=0, yend=frequency/nout))+ 
-  ylab("proportion")
+  ylab("proportion")+ xlab(expression(sigma))
 
 df_kappa <- data.frame(table(out_ppmx$kappangg[1,]))
 colnames(df_kappa) <- c("kappa", "frequency") 
 mk1 <- ggplot(df_kappa, aes(x=kappa, y=frequency)) + 
   geom_segment(aes(x=kappa, xend=kappa, y=0, yend=frequency/nout)) + 
-  ylab("proportion")
+  ylab("proportion")+ xlab(expression(kappa))
 df_kappa <- data.frame(table(out_ppmx$kappangg[2,]))
 colnames(df_kappa) <- c("kappa", "frequency")
 mk2 <- ggplot(df_kappa, aes(x=kappa, y=frequency)) + 
   geom_segment(aes(x=kappa, xend=kappa, y=0, yend=frequency/nout)) + 
-  ylab("proportion")
+  ylab("proportion")+ xlab(expression(kappa))
 
-ksp <- ggpubr::ggarrange(ms1, ms2, mk1, mk2, nrow=2, ncol = 2)
+ksp <- ggpubr::ggarrange(mk1, mk2, ms1, ms2, nrow=2, ncol = 2)
 
 #dev.print(pdf, "figs/marg_kappa.pdf") 
 
@@ -420,7 +415,7 @@ ta <- c(ta, c(as.numeric(c(A0[,,1]%*%wk)<c(A0[,,2]%*%wk))+1))
 ta
 #A0 <- c(apply(out_ppmx$pipred, c(1,2,3), median, na.rm=TRUE))#, mc, mc_b, mc_vi, out_ppmx$WAIC, out_ppmx$lpml)
 
-k <- 2
+k <- 6
 out_ppmx <- myres0[[k]]
 #posterior distribution of predictive utility
 ns <- dim(out_ppmx$pipred)[4]
@@ -437,7 +432,7 @@ df <- cbind(Index = as.numeric(row.names(df)), df)
 df <- reshape2::melt(df, id.vars="Index")
 colnames(df) <- c("Index", "Treatment", "value")
 pat <- ggplot2::ggplot(df, aes(x = value, col = Treatment)) + 
-  geom_histogram(alpha = 0.5, position = "identity", binwidth = 2) + theme_classic() + 
+  geom_histogram(alpha = 0.5, position = "identity", binwidth = 10) + theme_classic() + 
   xlab("Predicted Utility") + ylab("") + ggtitle(paste0("Patient", pt))
 assign(paste("pt", pt, sep=""),pat)
 }
@@ -445,7 +440,7 @@ assign(paste("pt", pt, sep=""),pat)
 ut <- ggpubr::ggarrange(pt1, pt2, pt3, pt4, pt5, pt6, pt7, pt8, pt9, pt10, pt11,
                         pt12, pt13, pt14, pt15, pt16, nrow=4, ncol = 4, 
                         common.legend = TRUE, legend="bottom")#, panel.border = element_blank())
-
+ut
 #ggsave(ut, device = "pdf", path = "figs", filename = "predut_plot.pdf")
 
 #par(mfrow=c(2, 1))
@@ -461,4 +456,6 @@ ut <- ggpubr::ggarrange(pt1, pt2, pt3, pt4, pt5, pt6, pt7, pt8, pt9, pt10, pt11,
 #abline(v = mymedian[pt, 1:3, 2]%*%wk, col = "blue")
 
 corr; clu_tp; ksp; progn; ut
+ggsave(corr, device = "pdf", path = "figs", filename = "corr_vi_plot.pdf")
+#ggsave(ksp, device = "pdf", path = "figs", filename = "ks_marg_plot.pdf")
 
