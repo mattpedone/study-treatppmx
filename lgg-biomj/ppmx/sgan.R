@@ -1,4 +1,6 @@
 rm(list=ls())
+library(ggplot2)
+library(reshape2)
 set.seed(121)
 load(file = "output/lgg12aprs121.RData")
 load("data/LGGdata.rda")
@@ -57,6 +59,43 @@ ccm[k,co] <- mc_vi2$cl
 }
 
 av_psm <- comp.psm(ccm+1)
+heatmap(av_psm)
+
+pipred_all <- c()
+for(k in 1:10){
+  res0 <- myres0[[k]]
+  pipred <- apply(res0$pipred, c(1, 2, 3), mean)
+  pipred <- cbind(pipred[,,1]%*%wk, pipred[,,2]%*%wk)
+  pipred_all <- rbind(pipred_all, pipred)
+}
+
+pipred_all2 <- pipred_all[which(trtsgn==2),]
+
+table(matchRTComp[,c(3, 10)])
+
+myc <- matchRTComp[, 2:10]
+pipred_all2[c(72, 62, 7),]
+g1 <- orp[c(72, 62, 7)]
+myc[as.character(g1),]
+
+pipred_all2[c(73, 10, 79, 44),]
+g2 <- orp[c(73, 10, 79, 44)]
+myc[as.character(g2),]
+
+pipred_all2[c(61, 20, 60, 24, 77, 78),]
+g3 <- orp[c(61, 20, 60, 24, 77, 78)]
+myc[as.character(g3),]
+
+orp[which(pipred_all2[,2]-pipred_all2[,1]>5)]
+myc[as.character(orp[which(pipred_all2[,2]-pipred_all2[,1]>0)]),]
+
+g1
+g2
+g3
+
+
+
+res0$pipred
 #minbinder.ext(av_psm)
 avclu <- minVI(av_psm)$cl
 
@@ -65,7 +104,6 @@ X2[avclu == 4,]
 head(X2)
 
 
-heatmap()
 #reord2 <- c()
 #for(i in 1:max(mc_vi2$cl)){
 #  reord2 <- c(reord2, which(mc_vi2$cl == i))
@@ -84,6 +122,8 @@ out_ppmx <- res0
 data <- t(out_ppmx$label[[2]])
 data <- data[,reord2]
 coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
+heatmap(coincidences)
+
 c2 <- ggplot(melt(coincidences), aes(Var1,Var2, fill=value/nout)) + geom_raster() +
   scale_fill_continuous(type = "viridis") + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) + 
@@ -92,4 +132,3 @@ c2 <- ggplot(melt(coincidences), aes(Var1,Var2, fill=value/nout)) + geom_raster(
 
 cp2 <- c2 + labs(fill = "Probability")
 cp2
-
