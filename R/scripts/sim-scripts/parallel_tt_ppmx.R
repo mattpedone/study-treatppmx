@@ -14,7 +14,7 @@ loadRData <- function(fileName){
   get(ls()[ls() != "fileName"])
 }
 
-simdata <- loadRData("data/scen2a.RData")
+simdata <- loadRData("data/scen1a.RData")
 mypath <- "output/journal/simulations/scen"
 
 npc2 <- function(output, trtsgn, myoutot){
@@ -184,10 +184,10 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-#save(resPPMX, file=paste0(mypath, "2a_res.RData"))
-#save(cluPPMX, file=paste0(mypath, "2a_clu.RData"))
-#save(PPMXCT, file=paste0(mypath, "2a_mot.RData"))
-#save(PPMXpp, file=paste0(mypath, "2a_mtug.RData"))
-#save(PPMXCUT, file=paste0(mypath, "2a_npc.RData"))
+#save(resPPMX, file=paste0(mypath, "1a_res.RData"))
+#save(cluPPMX, file=paste0(mypath, "1a_clu.RData"))
+#save(PPMXCT, file=paste0(mypath, "1a_mot.RData"))
+#save(PPMXpp, file=paste0(mypath, "1a_mtug.RData"))
+#save(PPMXCUT, file=paste0(mypath, "1a_npc.RData"))
 
 
