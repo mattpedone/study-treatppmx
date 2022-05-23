@@ -35,7 +35,7 @@ for(idx1 in 1:length(vecs0)){
     Y <- mytot[,,k]
     
     modelpriors <- list()
-    modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(10, ncol(Y))
+    modelpriors$hP0_m0 <- rep(0, ncol(Y)); modelpriors$hP0_L0 <- diag(1, ncol(Y))
     modelpriors$hP0_nu0 <- ncol(Y) + 2; modelpriors$hP0_V0 <- diag(.1, ncol(Y))
     
     #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8

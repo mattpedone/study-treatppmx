@@ -58,7 +58,7 @@ for(k in 1:K){
                                          Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                                          Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
                                          PPMx = 1, cohesion = 2,  kappa = c(1, 10, 5, 1), sigma = c(0.01, .5, 6),
-                                         similarity = 2, consim = 1, similparam = vec_par, 
+                                         similarity = 2, consim = 2, similparam = vec_par, 
                                          calibration = 2, coardegree = 2, modelpriors, 
                                          update_hierarchy = T,
                                          hsp = T, iter = iterations, burn = burnin, thin = thinning, 
