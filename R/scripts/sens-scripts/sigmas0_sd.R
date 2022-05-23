@@ -1,6 +1,6 @@
 rm(list=ls())
 set.seed(121, kind = "L'Ecuyer-CMRG")
-load("data/scenario2.rda")
+load("data/scenario1.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
@@ -14,7 +14,7 @@ name <- c("s1s01.RData")
 #clu <- vector("list", length = 9)
 #idx <- 1
 
-K <- 30 #repliche
+K <- 50 #repliche
 npat <- length(trtsgn)
 
 predAPT_all <- array(0, dim = c(npat, 9, K))

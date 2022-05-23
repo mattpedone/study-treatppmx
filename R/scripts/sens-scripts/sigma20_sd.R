@@ -14,7 +14,7 @@ clu <- vector("list", length = 3)
 idx <- 1
 
 for(idx1 in 1:length(vecs0)){
-  K <- 30 #repliche
+  K <- 50 #repliche
   npat <- length(trtsgn)
   
   predAPT_all <- array(0, dim = c(npat, 9, K))
