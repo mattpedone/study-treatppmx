@@ -42,7 +42,7 @@ scenalt1 <- treatppmx::genmech_alt(npred = 10, nset = 30, overlap = 1.0)
 save(scenalt1, file = "data/scenalt1.RData")
 
 # Scenario 2-alt
-scenalt2 <- treatppmx::genmech_alt(npred = 25, nset = 30, overlap = 1.0)
+scenalt2 <- treatppmx::genmech_alt(npred = 25, nset = 50, overlap = 1.0)
 save(scenalt2, file = "data/scenalt2.RData")
 
 # Scenario 3-alt
@@ -85,28 +85,5 @@ save(scenalt11, file = "data/scenalt11.RData")
 scenalt12 <- treatppmx::genmech_alt(npred = 50, nset = 30, overlap = .7)
 save(scenalt12, file = "data/scenalt12.RData")
 
-# Scenario 1-ext
-scenext1 <- genmech_alt(npred = 25, nset = 30, overlap = 1.0, dataset = "simupats_ext")
-save(scenext1, file = "data/scenext1.RData")
-
-# Scenario 2-ext
-scenext2 <- genmech_alt(npred = 50, nset = 30, overlap = 1.0, dataset = "simupats_ext")
-save(scenext2, file = "data/scenext2.RData")
-
-# Scenario 3-ext
-scenext3 <- genmech_alt(npred = 25, nset = 30, overlap = 0.9, dataset = "simupats_ext")
-save(scenext3, file = "data/scenext3.RData")
-
-# Scenario 4-ext
-scenext4 <- genmech_alt(npred = 50, nset = 30, overlap = 0.9, dataset = "simupats_ext")
-save(scenext4, file = "data/scenext4.RData")
-
-# Scenario 5-ext
-scenext5 <- genmech_alt(npred = 25, nset = 30, overlap = 0.8, dataset = "simupats_ext")
-save(scenext5, file = "data/scenext5.RData")
-
-# Scenario 6-ext
-scenext6 <- genmech_alt(npred = 50, nset = 30, overlap = 0.8, dataset = "simupats_ext")
-save(scenext6, file = "data/scenext6.RData")
 
 

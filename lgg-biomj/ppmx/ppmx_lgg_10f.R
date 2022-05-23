@@ -37,7 +37,7 @@ for(i in 1:nrow(Y)){
 
 table(matchRTComp[,9:10])
 vectf <- c(1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 159)
-#load("/home/matt/Dropbox/PHD/study-treatppmx/output/lgg_analysis_24mar.RData")
+load("/home/matt/Dropbox/PHD/study-treatppmx/output/lgg12aprs121.RData")
 nout <- 1600
 X <- scale(matchRTComp[,16:38])
 Z <- scale(matchRTComp[,c(11,13)])
