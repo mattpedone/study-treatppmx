@@ -52,7 +52,7 @@ for(k in 1:K){
   nout <- (iterations-burnin)/thinning
   predAPT <- c()
   
-  myres <- foreach(sub = 1:npat, .combine = rbind) %dopar%
+  myres <- foreach(sub = 1:npat, .combine = rbind) %dorng%
     {
       out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                                          Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
