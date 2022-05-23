@@ -4,6 +4,7 @@ load("data/scenario1.rda")
 library(treatppmx)
 library(parallel)
 library(doParallel)
+library(doRNG)
 library(mcclust)
 library(mcclust.ext)
 name <- c("s1s01.RData")
@@ -56,7 +57,7 @@ for(k in 1:K){
       out_ppmx <- tryCatch(expr = ppmxct(y = data.matrix(Y[-sub,]), X = data.frame(X[-sub,]), 
                                          Xpred = data.frame(X[sub,]), Z = data.frame(Z[-sub,]), 
                                          Zpred = data.frame(Z[sub,]), asstreat = trtsgn[-sub], #treatment,
-                                         PPMx = 1, cohesion = 2,  kappa = c(1, 10, 5, 1), sigma = c(0.005, .995, 5),
+                                         PPMx = 1, cohesion = 2,  kappa = c(1, 10, 5, 1), sigma = c(0.01, .5, 6),
                                          similarity = 2, consim = 1, similparam = vec_par, 
                                          calibration = 2, coardegree = 2, modelpriors, 
                                          update_hierarchy = T,
@@ -163,5 +164,5 @@ cluPPMX <- cluPPMX[, c(1, 3, 2, 4)]
 resPPMX
 cluPPMX
 
-save(resPPMX, file=paste0("output/journal/pilot/res_", name))
-save(cluPPMX, file=paste0("output/journal/pilot/clu_", name))
+#save(resPPMX, file=paste0("output/journal/pilot/res_", name))
+#save(cluPPMX, file=paste0("output/journal/pilot/clu_", name))
