@@ -6,84 +6,30 @@ set.seed(121)
 ###
 
 # Scenario 1
-treatppmx::genmech(npred = 10, progscen = 2, predscen = 1, nset = 30, save = T, 
+treatppmx::genmech(npred = 10, progscen = 2, predscen = 1, nset = 50, save = T, 
                    filename = "scenario1")
 
-# Scenario 1 BaYSM
-treatppmx::genmech(npred = 10, progscen = 2, predscen = 1, nset = 100, save = T, 
-                   filename = "scenario1b")
+# Simulation Study - paper
+# Scenario 1a
+scen1a <- treatppmx::genmech_het(npred = 25, nset = 50, overlap = 1.0)
+save(scen1a, file = "data/scen1a.RData")
 
-# Scenario 2
-treatppmx::genmech(npred = 25, progscen = 2, predscen = 1, nset = 30, save = T, 
-                   filename = "scenario2")
+# Scenario 1b
+scen1b <- treatppmx::genmech_het(npred = 50, nset = 50, overlap = 1.0)
+save(scen1b, file = "data/scen1b.RData")
 
-# Scenario 3
-treatppmx::genmech(npred = 50, progscen = 2, predscen = 1, nset = 30, save = T, 
-                   filename = "scenario3")
+# Scenario 2a
+scen2a <- treatppmx::genmech_het(npred = 25, nset = 50, overlap = .9)
+save(scen2a, file = "data/scen2a.RData")
 
-# Scenario 4a
-treatppmx::genmech(npred = 5, progscen = 2, predscen = 2, nnoise = 5, 
-                   nset = 30, save = T, filename = "scenario4a")
+# Scenario 2b
+scen2b <- treatppmx::genmech_het(npred = 50, nset = 50, overlap = .9)
+save(scen2b, file = "data/scen2b.RData")
 
-# Scenario 4
-treatppmx::genmech(npred = 10, progscen = 2, predscen = 2, nnoise = 15, 
-                   nset = 30, save = T, filename = "scenario4")
+# Scenario 3a
+scen3a <- treatppmx::genmech_het(npred = 25, nset = 50, overlap = .8)
+save(scen3a, file = "data/scen3a.RData")
 
-# Scenario 5
-treatppmx::genmech(npred = 10, progscen = 2, predscen = 2, nnoise = 40, 
-                   nset = 30, save = T, filename = "scenario5")
-
-# Scenario 6
-treatppmx::genmech(npred = 20, progscen = 2, predscen = 2, nnoise = 80, 
-                   nset = 30, save = T, filename = "scenario6")
-
-# Scenario 1-alt
-scenalt1 <- treatppmx::genmech_alt(npred = 10, nset = 30, overlap = 1.0)
-save(scenalt1, file = "data/scenalt1.RData")
-
-# Scenario 2-alt
-scenalt2 <- treatppmx::genmech_alt(npred = 25, nset = 50, overlap = 1.0)
-save(scenalt2, file = "data/scenalt2.RData")
-
-# Scenario 3-alt
-scenalt3 <- treatppmx::genmech_alt(npred = 50, nset = 30, overlap = 1.0)
-save(scenalt3, file = "data/scenalt3.RData")
-
-# Scenario 4-alt
-scenalt4 <- treatppmx::genmech_alt(npred = 10, nset = 30, overlap = .9)
-save(scenalt4, file = "data/scenalt4.RData")
-
-# Scenario 5-alt
-scenalt5 <- treatppmx::genmech_alt(npred = 25, nset = 30, overlap = .9)
-save(scenalt5, file = "data/scenalt5.RData")
-
-# Scenario 6-alt
-scenalt6 <- treatppmx::genmech_alt(npred = 50, nset = 30, overlap = .9)
-save(scenalt6, file = "data/scenalt6.RData")
-
-# Scenario 7-alt
-scenalt7 <- treatppmx::genmech_alt(npred = 10, nset = 30, overlap = .8)
-save(scenalt7, file = "data/scenalt7.RData")
-
-# Scenario 8-alt
-scenalt8 <- treatppmx::genmech_alt(npred = 25, nset = 30, overlap = .8)
-save(scenalt8, file = "data/scenalt8.RData")
-
-# Scenario 9-alt
-scenalt9 <- treatppmx::genmech_alt(npred = 50, nset = 30, overlap = .8)
-save(scenalt9, file = "data/scenalt9.RData")
-
-# Scenario 10-alt
-scenalt10 <- treatppmx::genmech_alt(npred = 10, nset = 30, overlap = .7)
-save(scenalt10, file = "data/scenalt10.RData")
-
-# Scenario 11-alt
-scenalt11 <- treatppmx::genmech_alt(npred = 25, nset = 30, overlap = .7)
-save(scenalt11, file = "data/scenalt11.RData")
-
-# Scenario 12-alt
-scenalt12 <- treatppmx::genmech_alt(npred = 50, nset = 30, overlap = .7)
-save(scenalt12, file = "data/scenalt12.RData")
-
-
-
+# Scenario 3b
+scen3b <- treatppmx::genmech_het(npred = 50, nset = 50, overlap = .8)
+save(scen3b, file = "data/scen3b.RData")

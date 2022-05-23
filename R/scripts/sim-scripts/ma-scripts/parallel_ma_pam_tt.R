@@ -6,6 +6,7 @@ library(ConsensusClusterPlus)
 library("mvtnorm")
 library(parallel)
 library(doParallel)
+library(doRNG)
 
 loadRData <- function(fileName){
   #loads an RData file, and returns it
@@ -13,9 +14,9 @@ loadRData <- function(fileName){
   get(ls()[ls() != "fileName"])
 }
 #for(sc in 10:12){
-sc <- 2
-simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
-mypath <- c(paste0("output/simulation-scenarios/train-test/scen-alt-", sc))
+#sc <- 2
+simdata <- loadRData(paste0("data/scenalt1a.RData"))
+mypath <- c("output/simulation-scenarios/train-test/scen-alt-1a")
 ################################ Functions ########################################
 mymultt <- function(Xtrain, X.pred){
   myln <- length(Xtrain[,1])
@@ -131,7 +132,7 @@ K <- 50
 cor_all <- parallel::detectCores()-1#cores to be allocated
 registerDoParallel(cores = cor_all)
 
-HC.sum.all <- foreach(k = 1:K) %dopar%
+HC.sum.all <- foreach(k = 1:K) %dorng%
   {
   train_pred <- simdata$pred[[k]][1:124,]
   train_prog <- simdata$prog[[k]][1:124,]

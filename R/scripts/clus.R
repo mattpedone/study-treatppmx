@@ -10,9 +10,7 @@ library(mcclust)
 library(mcclust.ext)
 library(doRNG)
 
-simdata <- treatppmx::genmech_clu()
-
-K <- 10#repliche
+K <- 50#repliche
 npat_pred <- 30
 
 predAPT_all <- array(0, dim = c(npat_pred, 9, K))
@@ -257,9 +255,7 @@ library(mcclust)
 library(mcclust.ext)
 library(doRNG)
 
-simdata <- treatppmx::genmech_clu()
-
-K <- 10#repliche
+K <- 50#repliche
 npat_pred <- 30
 
 predAPT_all <- array(0, dim = c(npat_pred, 9, K))
@@ -297,8 +293,8 @@ myres0 <- foreach(k = 1:K) %dorng%
     
     vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
     #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-    iterations <- 1200
-    burnin <- 200
+    iterations <- 12000
+    burnin <- 2000
     thinning <- 5
     
     nout <- (iterations - burnin) / thinning

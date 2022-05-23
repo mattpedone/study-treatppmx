@@ -4,6 +4,7 @@ set.seed(121)
 library(treatppmx)
 library(parallel)
 library(doParallel)
+library(doRNG)
 library(mcclust)
 library(mcclust.ext)
 
@@ -13,9 +14,7 @@ loadRData <- function(fileName){
   get(ls()[ls() != "fileName"])
 }
 
-sc <- 2
-
-simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
+simdata <- loadRData("data/scen2a.RData")
 mypath <- "output/journal/simulations/scen"
 
 npc2 <- function(output, trtsgn, myoutot){
@@ -43,7 +42,7 @@ npc2 <- function(output, trtsgn, myoutot){
   return(res)
 }
 
-K <- 30#repliche
+K <- 50#repliche
 npat_pred <- 28
 
 predAPT_all <- array(0, dim = c(npat_pred, 9, K))
@@ -55,7 +54,7 @@ wk <- c(0, 40, 100)
 cor_all <- parallel::detectCores()-1#cores to be allocated
 registerDoParallel(cores = cor_all)
 
-myres0 <- foreach(k = 1:K) %dopar%
+myres0 <- foreach(k = 1:K) %dorng%
   {
     X_train <- data.frame(simdata$pred[[k]][1:124,])
     Z_train <- data.frame(simdata$prog[[k]][1:124,])
@@ -185,10 +184,10 @@ cluPPMX
 
 PPMXpp <- PPMXpp/utsum
 
-#save(resPPMX, file=paste0(mypath, sc, "res.RData"))
-#save(cluPPMX, file=paste0(mypath, sc, "clu.RData"))
-#save(PPMXCT, file=paste0(mypath, sc, "mot.RData"))
-#save(PPMXpp, file=paste0(mypath, sc, "mtug.RData"))
-#save(PPMXCUT, file=paste0(mypath, sc, "npc.RData"))
+#save(resPPMX, file=paste0(mypath, "2a_res.RData"))
+#save(cluPPMX, file=paste0(mypath, "2a_clu.RData"))
+#save(PPMXCT, file=paste0(mypath, "2a_mot.RData"))
+#save(PPMXpp, file=paste0(mypath, "2a_mtug.RData"))
+#save(PPMXCUT, file=paste0(mypath, "2a_npc.RData"))
 
 

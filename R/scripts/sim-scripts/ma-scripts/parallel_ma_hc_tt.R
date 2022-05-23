@@ -2,10 +2,11 @@
 rm(list=ls())
 set.seed(121)
 
-library(ConsensusClusterPlus)
-library("mvtnorm")
+library(ConsensusClusterPlus); 
+library("mvtnorm");
 library(parallel)
 library(doParallel)
+library(doRNG)
 
 loadRData <- function(fileName){
   #loads an RData file, and returns it
@@ -13,9 +14,9 @@ loadRData <- function(fileName){
   get(ls()[ls() != "fileName"])
 }
 #for(sc in 10:12){
-sc <- 2
-  simdata <- loadRData(paste0("data/scenalt", sc, ".RData"))
-  mypath <- c(paste0("output/simulation-scenarios/train-test/scen-alt-", sc))
+#sc <- 2
+  simdata <- loadRData(paste0("data/scen1a.RData"))
+  mypath <- c("output/simulation-scenarios/train-test/scen-alt-1a")
 ################################ Functions ########################################
 mymultt <- function(Xtrain, X.pred){
   myln <- length(Xtrain[,1])
@@ -131,7 +132,7 @@ K <- 50
 cor_all <- parallel::detectCores()-1#cores to be allocated
 registerDoParallel(cores = cor_all)
 
-HC.sum.all <- foreach(k = 1:K) %dopar%
+HC.sum.all <- foreach(k = 1:K) %dorng%
   {
   train_pred <- simdata$pred[[k]][1:124,]
   train_prog <- simdata$prog[[k]][1:124,]
@@ -150,8 +151,8 @@ HC.sum.all <- foreach(k = 1:K) %dopar%
     
     ### clustering using CONSENSUS MATRIX method ###################################
     con_clu <- ConsensusClusterPlus(t(s_train_pred),maxK=15,reps=500,pItem=0.90,pFeature=1,
-                                    #clusterAlg="hc",distance="pearson", 
-                                    clusterAlg="km",distance="euclidean", 
+                                    clusterAlg="hc",distance="pearson", 
+                                    #clusterAlg="km",distance="euclidean", 
                                     #clusterAlg="pam",distance="manhattan",
                                     seed=126)
     
@@ -265,8 +266,8 @@ utpred1APT.all <- array(0, dim = c(n, 19, nrep))
 ### clustering using CONSENSUS MATRIX method ###################################
 
 rst.hc<-ConsensusClusterPlus(t(d),maxK=15,reps=500,pItem=0.90,pFeature=1,
-                             #clusterAlg="hc",distance="pearson", 
-                             clusterAlg="km",distance="euclidean", 
+                             clusterAlg="hc",distance="pearson", 
+                             #clusterAlg="km",distance="euclidean", 
                              #clusterAlg="pam",distance="manhattan", 
                              seed=126);
 
@@ -372,7 +373,7 @@ for(my.pick in 1:nrep){
 MOT <- c(mean(MOT), sd(MOT))
 MTUg <- c(mean(MTUg), sd(MTUg))
 NPC <- c(mean(NPC), sd(NPC))
-save(MOT, file=paste0(mypath, "/mot_km.RData"))
-save(MTUg, file=paste0(mypath, "/mtug_km.RData"))
-save(NPC, file=paste0(mypath, "/npc_km.RData"))
+save(MOT, file=paste0(mypath, "/mot_hc.RData"))
+save(MTUg, file=paste0(mypath, "/mtug_hc.RData"))
+save(NPC, file=paste0(mypath, "/npc_hc.RData"))
 #}
