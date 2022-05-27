@@ -1,6 +1,10 @@
 rm(list=ls())
+library(mcclust)
+library(mcclust.ext)
 library(ggplot2)
 library(reshape2)
+library(plotly)
+library(dplyr)
 set.seed(121)
 load(file = "output/lgg12aprs121.RData")
 load("data/LGGdata.rda")
@@ -60,19 +64,48 @@ for(i in 1: num_treat[2]){
 ccm[co,co] <- ccm[co,co] + psm2
 }
 
-ccm <- ccm/9
-heatmap(ccm)
+ccmf <- as.matrix(ccm/9)
+colnames(ccmf) <- rownames(ccmf) <- orp
+#hmccm <- heatmap(ccmf)
+#
+#hmccmc <- ccmf
+#hmccmc1 <- hmccmc[,hmccm$rowInd]
+#hmccmc2 <- hmccmc1[hmccm$colInd,]
+#
+#heatmap(hmccmc2, Colv = NA, labRow = NA, main = "Heatmap of averaged co-occurence matrix")
+#
+#hc <- hclust(dist(ccmf), method = "ave")
+##cutree(hc, h=1.5)
+#plot(hc, xlab = " ", main = "Heatmap dendogram")
+#abline(h=1.5, col = "red")
+#
+#g1 <- orp[which(cutree(hc, h=1.5)==2)]
+#g2 <- orp[which(cutree(hc, h=1.5)==3)]
+#g3 <- orp[which(cutree(hc, h=1.5)==4)]
+#g4 <- orp[which(cutree(hc, h=1.5)==5)]
 
-#av_psm <- comp.psm(ccm+1)
-##av_psm <- tibble(av_psm)
-##colnames(av_psm) <- rownames(av_psm) <- rownames(matchRTComp[matchRTComp$newTRT==1,])
-#heatmap(av_psm)
+labels <- minVI(ccmf)$cl
 
-g1 <- orp[c(72, 62, 7)]
-g2 <- orp[c(73, 10, 79, 44)]
-g3 <- orp[c(61, 20, 60, 24, 77, 78)]
-g4 <- orp[c(55, 5, 63, 46, 67, 74, 38, 40, 41, 17, 14, 16)]
-g5 <- orp[c(13, 21, 22)]
+g1 <- orp[which(labels==3)]
+g2 <- orp[which(labels==4)]
+g3 <- orp[which(labels==5)]
+g4 <- orp[which(labels==2)]
+
+reord <- c()
+for(i in 1:max(labels)){
+  reord <- c(reord, which(labels == i))
+}
+
+# Co-occurence plot ----
+data1 <- ccmf[,reord]
+data <- data1[reord,]
+colnames(data) <- rownames(data) <- NULL
+#coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
+mC <- melt(data)
+c1 <- ggplot(mC, aes(Var1,Var2, fill=value)) + geom_raster() +
+  scale_fill_continuous(type = "viridis") + 
+  xlab("Patients") + ylab("Patients") + ggtitle("Heatmap of averaged co-occurence matrix")
+c1
 
 #PREDITTIVE
 pred_cov <- matchRTComp[, c(16:38)]
@@ -80,37 +113,25 @@ pred_cov_g1 <- pred_cov[as.character(g1),]
 pred_cov_g2 <- pred_cov[as.character(g2),]
 pred_cov_g3 <- pred_cov[as.character(g3),]
 pred_cov_g4 <- pred_cov[as.character(g4),]
-pred_cov_g5 <- pred_cov[as.character(g5),]
+#pred_cov_g5 <- pred_cov[as.character(g5),]
+
+par(mfrow = c(3,4))
 
 for(ind in 16:38){
-plot(density(matchRTComp[matchRTComp$newTRT==1, ind]))
+plot(density(matchRTComp[matchRTComp$newTRT==1, ind]), 
+     xlab = colnames(matchRTComp)[ind],
+     main = " ")#paste0("Empirical dens ", colnames(matchRTComp)[ind]))
 rug(jitter(pred_cov_g1[,ind-15]),col="blue",lwd=2)
 rug(jitter(pred_cov_g2[,ind-15]),col="red",lwd=2)
 rug(jitter(pred_cov_g3[,ind-15]),col="green",lwd=2)
 rug(jitter(pred_cov_g4[,ind-15]),col="magenta",lwd=2)
-rug(jitter(pred_cov_g5[,ind-15]),col="orange",lwd=2)
+#rug(jitter(pred_cov_g5[,ind-15]),col="orange",lwd=2)
 }
 
-#matching variables
-myc <- matchRTComp[, 2:10]
-lab <- matchRTComp[, 3]
-lab <- data.frame(dplyr::recode(lab, "Stable Disease" = "PS", "Partial Remission/Response" = "PS", 
-              "Complete Remission/Response" = "CR", "Progressive Disease" = "PD"))
-rownames(lab) <- rownames(myc)
-rg1 <- as.character(myc[as.character(g1),2])
-lab_g1 <- as.character(lab[as.character(g1),])
 
-rg2 <- as.character(myc[as.character(g2),2])
-lab_g2 <- as.character(lab[as.character(g2),])
 
-rg3 <- as.character(myc[as.character(g3),2])
-lab_g3 <- as.character(lab[as.character(g3),])
-
-rg4 <- as.character(myc[as.character(g4),2])
-lab_g4 <- as.character(lab[as.character(g4),])
-
-rg5 <- as.character(myc[as.character(g5),2])
-lab_g5 <- as.character(lab[as.character(g5),])
+#rg5 <- as.character(myc[as.character(g5),2])
+#lab_g5 <- as.character(lab[as.character(g5),])
 
 #PROGNOSTICHE
 prog_cov <- matchRTComp[, c(11, 13)]
@@ -118,21 +139,26 @@ prog_cov_g1 <- prog_cov[as.character(g1),]
 prog_cov_g2 <- prog_cov[as.character(g2),]
 prog_cov_g3 <- prog_cov[as.character(g3),]
 prog_cov_g4 <- prog_cov[as.character(g4),]
-prog_cov_g5 <- prog_cov[as.character(g5),]
+#prog_cov_g5 <- prog_cov[as.character(g5),]
 
-plot(density(matchRTComp[matchRTComp$newTRT==1, c(11)]))
+par(mfrow = c(1, 2))
+plot(density(matchRTComp[matchRTComp$newTRT==1, c(11)]), 
+     xlab = colnames(matchRTComp)[11],
+     main = paste0("Empirical dens ", colnames(matchRTComp)[11]))
 rug(jitter(prog_cov_g1$`ACVRL1-R-C`),col="blue",lwd=2)
 rug(jitter(prog_cov_g2$`ACVRL1-R-C`),col="red",lwd=2)
 rug(jitter(prog_cov_g3$`ACVRL1-R-C`),col="green",lwd=2)
 rug(jitter(prog_cov_g4$`ACVRL1-R-C`),col="magenta",lwd=2)
-rug(jitter(prog_cov_g5$`ACVRL1-R-C`),col="orange",lwd=2)
+#rug(jitter(prog_cov_g5$`ACVRL1-R-C`),col="orange",lwd=2)
 
-plot(density(matchRTComp[matchRTComp$newTRT==1, c(13)]))
+plot(density(matchRTComp[matchRTComp$newTRT==1, c(13)]), 
+     xlab = colnames(matchRTComp)[13],
+     main = paste0("Empirical dens ", colnames(matchRTComp)[13]))
 rug(jitter(prog_cov_g1$`HSP70-R-C`),col="blue",lwd=2)
 rug(jitter(prog_cov_g2$`HSP70-R-C`),col="red",lwd=2)
 rug(jitter(prog_cov_g3$`HSP70-R-C`),col="green",lwd=2)
 rug(jitter(prog_cov_g4$`HSP70-R-C`),col="magenta",lwd=2)
-rug(jitter(prog_cov_g5$`HSP70-R-C`),col="orange",lwd=2)
+#rug(jitter(prog_cov_g5$`HSP70-R-C`),col="orange",lwd=2)
 
 #baseline probabilities & predicted probabilities
 beta <- array(0, dim=c(2, 3, 10))
@@ -147,13 +173,13 @@ prob_1 <- exp(as.matrix(prog_cov_g1)%*%beta)
 prob_2 <- exp(as.matrix(prog_cov_g2)%*%beta)
 prob_3 <- exp(as.matrix(prog_cov_g3)%*%beta)
 prob_4 <- exp(as.matrix(prog_cov_g4)%*%beta)
-prob_5 <- exp(as.matrix(prog_cov_g5)%*%beta)
+#prob_5 <- exp(as.matrix(prog_cov_g5)%*%beta)
 
 predproball <- c()
 for(k in 1:10){
   res0 <- myres0[[k]]
   restmp <- apply(res0$ypred, c(1, 2, 3), mean)
-  trttmp <- as.numeric(restmp[,,1]%*%wk<restmp[,,2]%*%wk+1)+1
+  trttmp <- as.numeric(restmp[,,1]%*%wk<restmp[,,2]%*%wk)+1
   predprob <- matrix(0, nrow(restmp), 3)
   for(i in 1:nrow(restmp)){
     predprob[i,] <- restmp[i, , trttmp[i]]
@@ -164,15 +190,33 @@ for(k in 1:10){
 predprob <- predproball[which(trtsgn == 2),]
 rownames(predprob) <- as.character(orp)
 
-#cbind(round(prob_1/rowSums(prob_1), 4), rg1, round(predprob[as.character(g1),], 4))
-#cbind(round(prob_2/rowSums(prob_2), 4), rg2, round(predprob[as.character(g2),], 4))
-#cbind(round(prob_3/rowSums(prob_3), 4), rg3, round(predprob[as.character(g3),], 4))
+#relabel response
+myc <- matchRTComp[, 2:10]
+lab <- matchRTComp[, 3]
+lab <- data.frame(dplyr::recode(lab, "Stable Disease" = "PS", "Partial Remission/Response" = "PS", 
+                                "Complete Remission/Response" = "CR", "Progressive Disease" = "PD"))
+rownames(lab) <- rownames(myc)
+lab_g1 <- as.character(lab[as.character(g1),])
+lab_g2 <- as.character(lab[as.character(g2),])
+lab_g3 <- as.character(lab[as.character(g3),])
+lab_g4 <- as.character(lab[as.character(g4),])
 
-cbind(round(prob_1/rowSums(prob_1), 4), lab_g1, round(predprob[as.character(g1),], 4))
-cbind(round(prob_2/rowSums(prob_2), 4), lab_g2, round(predprob[as.character(g2),], 4))
-cbind(round(prob_3/rowSums(prob_3), 4), lab_g3, round(predprob[as.character(g3),], 4))
-cbind(round(prob_4/rowSums(prob_4), 4), lab_g4, round(predprob[as.character(g4),], 4))
-cbind(round(prob_5/rowSums(prob_5), 4), lab_g5, round(predprob[as.character(g5),], 4))
+df1 <- data.frame(prob_p = round(prob_1/rowSums(prob_1), 4), 
+                  prob_pp = round(predprob[as.character(g1),], 4), response = lab_g1)
+df2 <- data.frame(prob_p = round(prob_2/rowSums(prob_2), 4), 
+                  prob_pp = round(predprob[as.character(g2),], 4), response = lab_g2)
+df3 <- data.frame(prob_p = round(prob_3/rowSums(prob_3), 4), 
+                  prob_pp = round(predprob[as.character(g3),], 4), response = lab_g3)
+df4 <- data.frame(prob_p = round(prob_4/rowSums(prob_4), 4), 
+                  prob_pp = round(predprob[as.character(g4),], 4), response = lab_g4)
+#gruppo 1 
+df1
+#gruppo 2 
+df2 
+#gruppo 3 
+df3
+#gruppo 4
+df4
 
 #SIMILARITY MATRIX
 sim_mat <- matrix(0, 79, 79)
@@ -203,11 +247,16 @@ d4 <- c(sim_mat[c(5, 14, 16, 17, 38, 40, 41, 46, 55, 63, 67), 74],
         sim_mat[c(5, 14, 16, 17, 38, 40), 41], 
         sim_mat[c(5, 14, 16, 17, 38), 40], sim_mat[c(5, 14, 16, 17), 38],  
         sim_mat[c(5, 14, 16), 17], sim_mat[c(5, 14), 16], sim_mat[5, 14])
-d5 <- c(sim_mat[c(13, 21), 22], sim_mat[13, 21])
-#plot(density(sim_mat[upper.tri(sim_mat, diag=FALSE)]))
-plot(ecdf(sim_mat[upper.tri(sim_mat, diag=FALSE)]), main = "ecdf similarity distances")
+plot(density(sim_mat[upper.tri(sim_mat, diag=FALSE)]), main = "emp dist")
+#plot(ecdf(sim_mat[upper.tri(sim_mat, diag=FALSE)]), main = "ecdf similarity distances")
+rug(jitter(d4),col="magenta",lwd=2)
 rug(jitter(d1),col="blue",lwd=2)
 rug(jitter(d2),col="red",lwd=2)
-rug(jitter(d4),col="magenta",lwd=2)
 rug(jitter(d3),col="green",lwd=2)
-rug(jitter(d5),col="orange",lwd=2)
+
+plot(ecdf(sim_mat[upper.tri(sim_mat, diag=FALSE)]), main = "ecdf similarity distances")
+rug(jitter(d4),col="magenta",lwd=2)
+rug(jitter(d1),col="blue",lwd=2)
+rug(jitter(d2),col="red",lwd=2)
+rug(jitter(d3),col="green",lwd=2)
+
