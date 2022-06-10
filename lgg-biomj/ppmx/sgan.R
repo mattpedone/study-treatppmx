@@ -3,6 +3,10 @@ library(mcclust)
 library(mcclust.ext)
 library(ggplot2)
 library(reshape2)
+library(ggridges)
+library(viridis)
+library(tidyverse)
+
 library(plotly)
 library(dplyr)
 set.seed(121)
@@ -11,6 +15,15 @@ load("data/LGGdata.rda")
 #name <- c("v01")
 
 matchRTComp <- matchRTComp[sample(1:nrow(matchRTComp), size = nrow(matchRTComp), replace = F),]
+mycn <- c(colnames(matchRTComp)[1:10], "ACVRL1", "Src", "HSP70", 
+          "HER2", "PAI-1", "Smad1", "FOXO3a", 
+          "PRAS40", "Cyclin", "SF2", "Bad" , 
+          "Lck", "Caspase-7_cleavedD198", "Paxillin", "MYH11", 
+          "14-3-3_epsilon", "Akt", "Caveolin-1", "Rab25", 
+          "YAP", "RBM15", "Claudin-7", "ER-alpha", 
+          "C-Raf", "CD31", "Ku80", "Bcl-2", "GSK3-alpha-beta")
+colnames(matchRTComp) <- mycn
+
 trtsgn <- c(matchRTComp[,10]) + 1
 wk <- c(0, 40, 100)
 vectf <- c(1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 159)
@@ -115,20 +128,32 @@ pred_cov_g3 <- pred_cov[as.character(g3),]
 pred_cov_g4 <- pred_cov[as.character(g4),]
 #pred_cov_g5 <- pred_cov[as.character(g5),]
 
-par(mfrow = c(3,4))
+#par(mfrow = c(2,2))
+#
+#for(ind in 16:38){
+#plot(density(matchRTComp[matchRTComp$newTRT==1, ind]), 
+#     xlab = colnames(matchRTComp)[ind],
+#     main = " ")#paste0("Empirical dens ", colnames(matchRTComp)[ind]))
+#rug(jitter(pred_cov_g1[,ind-15]),col="blue",lwd=2)
+#rug(jitter(pred_cov_g2[,ind-15]),col="red",lwd=2)
+#rug(jitter(pred_cov_g3[,ind-15]),col="green",lwd=2)
+#rug(jitter(pred_cov_g4[,ind-15]),col="magenta",lwd=2)
+##rug(jitter(pred_cov_g5[,ind-15]),col="orange",lwd=2)
+#}
+#
+#cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
+#          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-for(ind in 16:38){
-plot(density(matchRTComp[matchRTComp$newTRT==1, ind]), 
-     xlab = colnames(matchRTComp)[ind],
-     main = " ")#paste0("Empirical dens ", colnames(matchRTComp)[ind]))
-rug(jitter(pred_cov_g1[,ind-15]),col="blue",lwd=2)
-rug(jitter(pred_cov_g2[,ind-15]),col="red",lwd=2)
-rug(jitter(pred_cov_g3[,ind-15]),col="green",lwd=2)
-rug(jitter(pred_cov_g4[,ind-15]),col="magenta",lwd=2)
-#rug(jitter(pred_cov_g5[,ind-15]),col="orange",lwd=2)
-}
-
-
+df_pred <- data.frame(matchRTComp[matchRTComp$newTRT==1, c(16:38)])
+df_pred$Group <- as.character(labels)
+df_pred %>%
+  pivot_longer(!Group, names_to = "variable", values_to = "value") %>%
+  ggplot(aes(x = value)) + geom_density() + 
+  #geom_point(aes(x =GSK3.alpha.beta, y= 0), col = labels, shape=labels, size=2.5) 
+  geom_rug(mapping = aes(color = Group), sides = "b", size = 1, length = unit(0.05, "npc"))+
+  facet_wrap(~variable, scales = "free", ncol = 4) + 
+  ggtitle("Predictive covariates densities") #+ 
+  #theme_classic()
 
 #rg5 <- as.character(myc[as.character(g5),2])
 #lab_g5 <- as.character(lab[as.character(g5),])
@@ -141,24 +166,34 @@ prog_cov_g3 <- prog_cov[as.character(g3),]
 prog_cov_g4 <- prog_cov[as.character(g4),]
 #prog_cov_g5 <- prog_cov[as.character(g5),]
 
-par(mfrow = c(1, 2))
-plot(density(matchRTComp[matchRTComp$newTRT==1, c(11)]), 
-     xlab = colnames(matchRTComp)[11],
-     main = paste0("Empirical dens ", colnames(matchRTComp)[11]))
-rug(jitter(prog_cov_g1$`ACVRL1-R-C`),col="blue",lwd=2)
-rug(jitter(prog_cov_g2$`ACVRL1-R-C`),col="red",lwd=2)
-rug(jitter(prog_cov_g3$`ACVRL1-R-C`),col="green",lwd=2)
-rug(jitter(prog_cov_g4$`ACVRL1-R-C`),col="magenta",lwd=2)
-#rug(jitter(prog_cov_g5$`ACVRL1-R-C`),col="orange",lwd=2)
+#par(mfrow = c(1, 2))
+#plot(density(matchRTComp[matchRTComp$newTRT==1, c(11)]), 
+#     xlab = colnames(matchRTComp)[11],
+#     main = paste0("Empirical dens ", colnames(matchRTComp)[11]))
+#rug(jitter(prog_cov_g1$`ACVRL1-R-C`),col="blue",lwd=2)
+#rug(jitter(prog_cov_g2$`ACVRL1-R-C`),col="red",lwd=2)
+#rug(jitter(prog_cov_g3$`ACVRL1-R-C`),col="green",lwd=2)
+#rug(jitter(prog_cov_g4$`ACVRL1-R-C`),col="magenta",lwd=2)
+##rug(jitter(prog_cov_g5$`ACVRL1-R-C`),col="orange",lwd=2)
 
-plot(density(matchRTComp[matchRTComp$newTRT==1, c(13)]), 
-     xlab = colnames(matchRTComp)[13],
-     main = paste0("Empirical dens ", colnames(matchRTComp)[13]))
-rug(jitter(prog_cov_g1$`HSP70-R-C`),col="blue",lwd=2)
-rug(jitter(prog_cov_g2$`HSP70-R-C`),col="red",lwd=2)
-rug(jitter(prog_cov_g3$`HSP70-R-C`),col="green",lwd=2)
-rug(jitter(prog_cov_g4$`HSP70-R-C`),col="magenta",lwd=2)
-#rug(jitter(prog_cov_g5$`HSP70-R-C`),col="orange",lwd=2)
+#plot(density(matchRTComp[matchRTComp$newTRT==1, c(13)]), 
+#     xlab = colnames(matchRTComp)[13],
+#     main = paste0("Empirical dens ", colnames(matchRTComp)[13]))
+#rug(jitter(prog_cov_g1$`HSP70-R-C`),col="blue",lwd=2)
+#rug(jitter(prog_cov_g2$`HSP70-R-C`),col="red",lwd=2)
+#rug(jitter(prog_cov_g3$`HSP70-R-C`),col="green",lwd=2)
+#rug(jitter(prog_cov_g4$`HSP70-R-C`),col="magenta",lwd=2)
+##rug(jitter(prog_cov_g5$`HSP70-R-C`),col="orange",lwd=2)
+
+df_prog <- data.frame(matchRTComp[matchRTComp$newTRT==1, c(11, 13)])
+df_prog$Group <- as.character(labels)
+df_prog %>%
+  pivot_longer(!Group, names_to = "variable", values_to = "value") %>%
+  ggplot(aes(x = value)) + geom_density() + 
+  #geom_point(aes(x =GSK3.alpha.beta, y= 0), col = labels, shape=labels, size=2.5) 
+  geom_rug(mapping = aes(color = Group), sides = "b", size = 1, length = unit(0.05, "npc"))+
+  facet_wrap(~variable, scales = "free", ncol = 2) + 
+  ggtitle("Prognostic covariates densities") #+ 
 
 #baseline probabilities & predicted probabilities
 beta <- array(0, dim=c(2, 3, 10))

@@ -199,7 +199,7 @@ colnames(clu) <- c("avg # trt 1", "avg # trt 2", "VI trt 1", "VI trt 2")
 NPC; ESM; resPPMX; clu
 
 #save(myres0, file = "output/lgg_analysis_24mar.RData")
-k <- 4
+k <- 10
 out_ppmx <- myres0[[k]]
 
 currfold <- (vectf[k]:(vectf[k+1]-1))
