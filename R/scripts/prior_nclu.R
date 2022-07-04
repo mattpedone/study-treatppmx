@@ -81,11 +81,11 @@ res <- t(rbind(res1/nout, res2/nout, res3/nout, res4/nout,
 res <- (res[which(rowSums(res) != 0),])
 res[which(res==0)] <- NA
 res <- rownames_to_column(as.data.frame(res), var = "cluster")
-newres <- cbind(similarity = c(rep("NGG-nocal", nrow(res)), 
+newres <- cbind(similarity = c(rep("NGGP-nocal", nrow(res)), 
                                #rep("NGG-dd-cal", nrow(res)), 
                                rep("DP-sim", nrow(res)), 
-                               rep("NGG-sim", nrow(res)), 
-                               rep("DP", nrow(res)), rep("NGG", nrow(res))),
+                               rep("NGGP-sim", nrow(res)), 
+                               rep("DP", nrow(res)), rep("NGGP", nrow(res))),
                 cluster = rep(res[,1], 5),
                 freq = c(unlist(res[, c(2:6)])))
 
@@ -96,18 +96,20 @@ dfres <- newres %>%
   mutate(freq = as.numeric(freq)) #%>%
   #mutate(sd = as.numeric(sd))
 
-ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
+plot1 <- ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity)) +
   #geom_errorbar(aes(ymin=freq-sd, ymax=freq+sd), width=.1) +
   geom_line() +
   geom_point()+
   scale_color_manual(values=c("#E69F00", "#56B4E9", "#009E73", "#0072B2", "#999999"))+
-  theme_minimal() +
+  theme_classic() +
   #xlab(expression(c)) +
   #ylab(expression(P(C[n] == c)))
   labs(x = expression(c), y = expression(P(C[50] == c)), 
        color = expression(' '))
 
-#ggsave("figs/plot_pnc.pdf")
+plot1 + theme(legend.position=c(.75,.75), legend.key.size = unit(1, 'cm'))
+
+ggsave("figs/plot_pnc.pdf")
 
 ##tentativi grafico su scala di grigi invece che colorato
 #ggplot(dfres, aes(x=cluster, y=freq, group=similarity, color=similarity, linetype=similarity)) +

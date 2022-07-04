@@ -42,46 +42,46 @@ nout <- 1600
 X <- scale(matchRTComp[,16:38])
 Z <- scale(matchRTComp[,c(11,13)])
 
-myres0 <- foreach(k = 1:10) %dopar%
-  {
-    currfold <- (vectf[k]:(vectf[k+1]-1))
-    X_train <- data.frame(X[-currfold,])
-    Z_train <- data.frame(Z[-currfold,])
-    Y_train <- data.frame(Y[-currfold,])
-    
-    X_test <- data.frame(X[currfold,])
-    Z_test <- data.frame(Z[currfold,])
-    Y_test <- data.frame(Y[currfold,])
-    
-    trtsgn_train <- trtsgn[-currfold]
-    trtsgn_test <- trtsgn[currfold]
-    
-    modelpriors <- list()
-    modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(10, ncol(Y_train))
-    modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(1, ncol(Y_train))
-    
-    #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
-    vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
-    #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
-    iterations <- 12000
-    burnin <- 4000
-    thinning <- 5
-    
-    nout <- (iterations-burnin)/thinning
-    predAPT <- c()
-    
-    res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
-                                   Xpred = data.frame(X_test), Z = data.frame(Z_train), 
-                                   Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
-                                   PPMx = 1, cohesion = 2, kappa = c(.1, 10, 5, 2.5), sigma = c(0.01, .5, 6),
-                                   similarity = 2, consim = 2, similparam = vec_par, 
-                                   calibration = 2, coardegree = 2, modelpriors, 
-                                   update_hierarchy = T,
-                                   hsp = F, iter = iterations, burn = burnin, thin = thinning, 
-                                   mhtunepar = c(0.05, 0.05), CC = 3, reuse = 1, 
-                                   nclu_init = 10), error = function(e){FALSE})
-    return(res0)
-  }
+#myres0 <- foreach(k = 1:10) %dopar%
+#  {
+#    currfold <- (vectf[k]:(vectf[k+1]-1))
+#    X_train <- data.frame(X[-currfold,])
+#    Z_train <- data.frame(Z[-currfold,])
+#    Y_train <- data.frame(Y[-currfold,])
+#    
+#    X_test <- data.frame(X[currfold,])
+#    Z_test <- data.frame(Z[currfold,])
+#    Y_test <- data.frame(Y[currfold,])
+#    
+#    trtsgn_train <- trtsgn[-currfold]
+#    trtsgn_test <- trtsgn[currfold]
+#    
+#    modelpriors <- list()
+#    modelpriors$hP0_m0 <- rep(0, ncol(Y_train)); modelpriors$hP0_L0 <- diag(10, ncol(Y_train))
+#    modelpriors$hP0_nu0 <- ncol(Y_train) + 2; modelpriors$hP0_V0 <- diag(1, ncol(Y_train))
+#    
+#    #n_aux <- 5 # auxiliary variable for Neal's Algorithm 8
+#    vec_par <- c(0.0, 1.0, .5, 1.0, 2.0, 2.0, 0.1)
+#    #double m0=0.0, s20=10.0, v=.5, k0=1.0, nu0=2.0, n0 = 2.0;
+#    iterations <- 12000
+#    burnin <- 4000
+#    thinning <- 5
+#    
+#    nout <- (iterations-burnin)/thinning
+#    predAPT <- c()
+#    
+#    res0 <- tryCatch(expr = ppmxct(y = data.matrix(Y_train), X = data.frame(X_train), 
+#                                   Xpred = data.frame(X_test), Z = data.frame(Z_train), 
+#                                   Zpred = data.frame(Z_test), asstreat = trtsgn_train, #treatment,
+#                                   PPMx = 1, cohesion = 2, kappa = c(.1, 10, 5, 2.5), sigma = c(0.01, .5, 6),
+#                                   similarity = 2, consim = 2, similparam = vec_par, 
+#                                   calibration = 2, coardegree = 2, modelpriors, 
+#                                   update_hierarchy = T,
+#                                   hsp = F, iter = iterations, burn = burnin, thin = thinning, 
+#                                   mhtunepar = c(0.05, 0.05), CC = 3, reuse = 1, 
+#                                   nclu_init = 10), error = function(e){FALSE})
+#    return(res0)
+#  }
 
 for(k in 1:K){
   currfold <- (vectf[k]:(vectf[k+1]-1))
@@ -160,7 +160,7 @@ NPC <- npc_tf(temp, trtsgn, as.numeric(matchRTComp[,9]))
 #ESM
 # non ho definito come respondent anche i partial responent
 myoutot <- as.numeric(matchRTComp[,9])#simdata$yord[[k]][131:158,]
-mytab <- cbind(myass = predAPT_all[,3], rndass = trtsgn, resp = as.numeric(myoutot>=2))
+mytab <- cbind(myass = predAPT_all[,3], rndass = trtsgn, resp = as.numeric(myoutot>2))
 pred1 <- subset(mytab, mytab[,1]==1)
 table1 <- table(pred1[,3],pred1[,2])
 pred2 <- subset(mytab, mytab[,1]==2)
@@ -181,7 +181,7 @@ if(length(table2) == 4){
 if(length(table2) < 4){
   crt2 <- as.numeric(row.names(table2))
 }
-ESM <- c(crt1*p1 + crt2*p2 - sum(as.numeric(myoutot>=2))/npat)
+ESM <- c(crt1*p1 + crt2*p2 - sum(as.numeric(myoutot>2))/npat)
 ### summary meaures
 
 #FIT
@@ -244,6 +244,7 @@ coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
 mC <- melt(coincidences)
 c1 <- ggplot(mC, aes(Var1,Var2, fill=value/nout)) + geom_raster() +
   scale_fill_continuous(type = "viridis") + 
+  theme_classic() +
   xlab("Patients") + ylab("Patients") + ggtitle("Treatment 1")
 
 cp1 <- c1 + labs(fill = "Probability")
@@ -253,13 +254,14 @@ data <- data[,reord2]
 coincidences<-sapply(1:ncol(data), function(i){ colSums(data[,i]==data) })
 c2 <- ggplot(melt(coincidences), aes(Var1,Var2, fill=value/nout)) + geom_raster() +
   scale_fill_continuous(type = "viridis") + 
+  theme_classic() +
   xlab("Patients") + ylab("Patients") + ggtitle("Treatment 2")
 
 cp2 <- c2 + labs(fill = "Probability")
 
 corrp_vi <- ggpubr::ggarrange(cp1, cp2, nrow=1, ncol = 2, common.legend = TRUE, legend="bottom")#, panel.border = element_blank())
 corrp_vi
-#ggsave(corrp, device = "pdf", path = "figs", filename = "corr_plot.pdf")
+#ggsave(corrp_vi, device = "pdf", path = "figs", filename = "corr_plot.pdf")
 
 data <- t(out_ppmx$label[[1]])
 data <- data[,reordb]

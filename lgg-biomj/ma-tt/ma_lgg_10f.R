@@ -197,7 +197,7 @@ for(k in 1:K){
     
     n <- dim(train_pred)[1]
     
-    HC.sum<-matrix(0,nrow=n,ncol=14)
+    HC.sum<-matrix(0,nrow=n,ncol=9)
     #HC.sum<-matrix(0,nrow=n,ncol=4)
     
     for (mysub in 1:n){
@@ -208,7 +208,7 @@ for(k in 1:K){
       s_train_trt <- train_trt[-mysub]
       
       ### clustering using CONSENSUS MATRIX method ###################################
-      con_clu <- ConsensusClusterPlus(t(s_train_pred),maxK=15,reps=500,pItem=0.90,pFeature=1,
+      con_clu <- ConsensusClusterPlus(t(s_train_pred),maxK=10,reps=10,pItem=0.80,pFeature=1,
                                       clusterAlg="hc",distance="pearson", 
                                       #clusterAlg="km",distance="euclidean", 
                                       #clusterAlg="pam",distance="manhattan",
@@ -232,16 +232,6 @@ for(k in 1:K){
                          prog = s_train_prog, trt = s_train_trt)
       hc10 <- con.cluster(con_clu[[10]][["consensusMatrix"]], ymat = s_train_ymat,  yvec = s_train_yord, 
                           prog = s_train_prog, trt = s_train_trt)
-      hc11 <- con.cluster(con_clu[[11]][["consensusMatrix"]], ymat = s_train_ymat,  yvec = s_train_yord, 
-                          prog = s_train_prog, trt = s_train_trt)
-      hc12 <- con.cluster(con_clu[[12]][["consensusMatrix"]], ymat = s_train_ymat,  yvec = s_train_yord, 
-                          prog = s_train_prog, trt = s_train_trt)
-      hc13 <- con.cluster(con_clu[[13]][["consensusMatrix"]], ymat = s_train_ymat,  yvec = s_train_yord, 
-                          prog = s_train_prog, trt = s_train_trt)
-      hc14 <- con.cluster(con_clu[[14]][["consensusMatrix"]], ymat = s_train_ymat,  yvec = s_train_yord, 
-                          prog = s_train_prog, trt = s_train_trt)
-      hc15 <- con.cluster(con_clu[[15]][["consensusMatrix"]], ymat = s_train_ymat,  yvec = s_train_yord, 
-                          prog = s_train_prog, trt = s_train_trt)
       
       out.response <- as.numeric(s_train_yord > 1)
       SUB.ID <- c(1:(n-1))
@@ -254,12 +244,7 @@ for(k in 1:K){
                           PreUt(hc7, s_train_trt, out.response, SUB.ID), 
                           PreUt(hc8, s_train_trt, out.response, SUB.ID), 
                           PreUt(hc9, s_train_trt, out.response, SUB.ID), 
-                          PreUt(hc10, s_train_trt, out.response, SUB.ID), 
-                          PreUt(hc11, s_train_trt, out.response, SUB.ID), 
-                          PreUt(hc12, s_train_trt, out.response, SUB.ID), 
-                          PreUt(hc13, s_train_trt, out.response, SUB.ID), 
-                          PreUt(hc14, s_train_trt, out.response, SUB.ID), 
-                          PreUt(hc15, s_train_trt, out.response, SUB.ID))
+                          PreUt(hc10, s_train_trt, out.response, SUB.ID))
       
     }
     HC.sum.all[[k]] <- HC.sum
@@ -273,14 +258,14 @@ for(k in 1:K){
   temp <- HC.sum.all[[k]]
   max_clus_vec[k] <- median(apply(temp,1,which.max)+1)
 }
-
+#max_clus_vec <- rep(5, K)
 utpred1APT.all <- matrix(0, nrow = 158, ncol = 19)
 
 ### clustering using CONSENSUS MATRIX method ###################################
 
-rst.hc<-ConsensusClusterPlus(t(data$pred),maxK=15,reps=500,pItem=0.90,pFeature=1,
-                             #clusterAlg="hc",distance="pearson", 
-                             clusterAlg="km",distance="euclidean", 
+rst.hc<-ConsensusClusterPlus(t(data$pred),maxK=10,reps=10,pItem=0.80,pFeature=1,
+                             clusterAlg="hc",distance="pearson", 
+                             #clusterAlg="km",distance="euclidean", 
                              #clusterAlg="pam",distance="manhattan", 
                              seed=126);
 
@@ -377,12 +362,12 @@ for(k in 1:K){
 
 
 NPC
-
+sum(NPC)
 
 mth<-utpred1APT.all
 trtsgn <- as.numeric(paste(matchRTComp[,10]))
 myoutot <- as.numeric(matchRTComp[,9])
-myresults<-cbind(mth,as.numeric(trtsgn),as.numeric(myoutot>=2))
+myresults<-cbind(mth,as.numeric(trtsgn),as.numeric(myoutot>2))
 pred1<-subset( myresults,myresults[,3]==1);
 table1<-table(pred1[,21],pred1[,20]);
 pred2<-subset( myresults,myresults[,3]==2);
@@ -400,5 +385,5 @@ if(length(crt1) == 0) {crt1<-0}
 if (length(table2)==4){  crt2<-table2[2,2]/sum(table2[,2])};
 if (length(table2)<4) {  crt2<-as.numeric(row.names(table2))};
 ### summary meaures
-return<-crt1*p1+crt2*p2-sum(as.numeric(myoutot>=2))/158
+return<-crt1*p1+crt2*p2-sum(as.numeric(myoutot>2))/158
 return
