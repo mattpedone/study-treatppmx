@@ -348,23 +348,28 @@ df4 <- cbind(df4, var_cc=c(0.1553, 0.2041, 0.1776, 0.2891, -0.3054, 0.4334,
 #SIMILARITY MATRIX
 #pred_cov2 <- scale(pred_cov[which(trtsgn == 2),])
 pred_cov2 <- pred_cov[which(trtsgn == 2),]
+#pred_cov2 <- pred_cov2[-c(7, 62, 72),]
 
 sim_mat <- matrix(NA, dim(pred_cov2)[1], dim(pred_cov2)[1])
 
 for(i in 1:dim(pred_cov2)[1]){
   for(j in 1:dim(pred_cov2)[1]){
-    sim <- 1
+    sim <- 0
     for(p in 1:dim(pred_cov2)[2]){
       somma <- pred_cov2[i, p] + pred_cov2[j, p]
-      sim <- sim + treatppmx::gsimconNNIG(m0 = 0, k0 = 1, nu0 = 2.0, s20 = 1.0, 
+      sim <- sim + treatppmx::gsimconNNIG(m0 = 0, k0 = 1, nu0 = 2.0, s20 = 1, 
                                           sumx = somma, sumx2 = somma*somma, 
-                                          n = 2, DD = 2, logout = 1)
-      sim <- sim+(1/sqrt(dim(pred_cov2)[2]))
+                                          n = 2, DD = 1, logout = 1)
+      #sim <- sim+(1/sqrt(dim(pred_cov2)[2]))
+      sim2 <- sim
+      #print(sim2)
     }
+    #print(sim)
     sim_mat[i, j] <- sim
   }
 }
 reord <- c()
+#labels <- labels[-c(7, 62, 72)]
 for(i in 1:max(labels)){
   reord <- c(reord, which(labels == i))
 }
@@ -395,6 +400,7 @@ simp <- ggplot(mc2, aes(Var1, Var2, fill=`Similarity`)) + geom_tile() + #color =
   geom_rect(mapping = aes(xmin = 73.5, xmax = 79.5, ymin = 73.5, ymax = 79.5),
             fill = NA, col = "black")
 
+simp 
 ggsave(simp, device = "pdf", path = "figs", filename = "sim_plot.pdf")
 
 X[which(labels==3),]
