@@ -208,7 +208,7 @@ for(k in 1:K){
       s_train_trt <- train_trt[-mysub]
       
       ### clustering using CONSENSUS MATRIX method ###################################
-      con_clu <- ConsensusClusterPlus(t(s_train_pred),maxK=10,reps=10,pItem=0.80,pFeature=1,
+      con_clu <- ConsensusClusterPlus(t(s_train_pred),maxK=10,reps=100,pItem=0.80,pFeature=1,
                                       clusterAlg="hc",distance="pearson", 
                                       #clusterAlg="km",distance="euclidean", 
                                       #clusterAlg="pam",distance="manhattan",
@@ -263,7 +263,7 @@ utpred1APT.all <- matrix(0, nrow = 158, ncol = 19)
 
 ### clustering using CONSENSUS MATRIX method ###################################
 
-rst.hc<-ConsensusClusterPlus(t(data$pred),maxK=10,reps=10,pItem=0.80,pFeature=1,
+rst.hc<-ConsensusClusterPlus(t(data$pred),maxK=10,reps=100,pItem=0.80,pFeature=1,
                              clusterAlg="hc",distance="pearson", 
                              #clusterAlg="km",distance="euclidean", 
                              #clusterAlg="pam",distance="manhattan", 
